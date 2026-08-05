@@ -11,3 +11,6 @@ wheels/
 
 # Vector store (generated)
 data/vector_store/
+
+# Secrets
+.env
