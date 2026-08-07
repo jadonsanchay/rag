@@ -25,9 +25,20 @@ class AnswerGenerator:
         self.model = model
         self.client = OpenAI(api_key=api_key)
 
+    @staticmethod
+    def format_location(metadata: Dict[str, Any]) -> str:
+        """Human-readable citation target, e.g. fastapi/routing.py:120-186."""
+        location = metadata.get("path") or metadata.get("source") or "unknown"
+        start, end = metadata.get("start_line"), metadata.get("end_line")
+        if start and end:
+            return f"{location}:{start}-{end}"
+        if start:
+            return f"{location}:{start}"
+        return str(location)
+
     def build_context(self, retrieved_docs: List[Dict[str, Any]]) -> str:
         return "\n\n".join(
-            f"[{doc['rank']}] (source: {doc['metadata'].get('source', 'unknown')})\n{doc['content']}"
+            f"[{doc['rank']}] {self.format_location(doc['metadata'])}\n{doc['content']}"
             for doc in retrieved_docs
         )
 

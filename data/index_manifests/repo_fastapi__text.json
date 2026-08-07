@@ -1,0 +1,37 @@
+{
+  "repo": "fastapi",
+  "repo_path": "/Users/i_Sanchay.Jadon/.cache/codebase-qa/repos/fastapi",
+  "commit_sha": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+  "collection": "repo_fastapi__text",
+  "strategy": "text",
+  "chunk_size": 1000,
+  "chunk_overlap": 200,
+  "embedding_provider": "sentence-transformers",
+  "embedding_model": "all-MiniLM-L6-v2",
+  "include_only": [
+    "fastapi",
+    "docs/en"
+  ],
+  "excluded": [],
+  "files_indexed": 201,
+  "chunks": 2976,
+  "skipped": {
+    "outside include list": 1993,
+    "ignored extension": 210,
+    "unknown extension": 12,
+    "empty file": 3
+  },
+  "token_budget": {
+    "token_limit": 256,
+    "inspected_chunks": 400,
+    "chunks_over_limit": 293,
+    "pct_over_limit": 73.2,
+    "max_tokens_seen": 530
+  },
+  "duplicates": {
+    "total_chunks": 2976,
+    "unique_chunks": 2602,
+    "duplicate_chunks": 374,
+    "pct_duplicate": 12.6
+  }
+}
