@@ -14,6 +14,8 @@ from langchain_core.documents import Document
 
 from pipeline import config
 from pipeline.embeddings import EmbeddingManager
+from pipeline.ids import chunk_ids_for
+from pipeline.lexical_index import LexicalIndex
 from pipeline.repo_loader import language_stats, load_repo_documents
 from pipeline.splitter import split_documents
 from pipeline.vector_store import VectorStore, collection_name_for_repo
@@ -168,8 +170,16 @@ def main():
     variant = args.variant or args.strategy
     store = VectorStore.for_repo(repo_path.name, variant)
     store.reset()
-    store.add_documents(chunks, embeddings)
+
+    # Shared ids let rank fusion merge the two indexes.
+    ids = chunk_ids_for(chunks)
+    store.add_documents(chunks, embeddings, ids=ids)
     print(f"\nCollection '{store.collection_name}' now has {store.count()} chunks")
+
+    lexical = LexicalIndex(store.collection_name)
+    lexical.reset()
+    lexical.add_documents(chunks, ids)
+    print(f"Lexical index '{lexical.db_path.name}' now has {lexical.count()} chunks")
 
     MANIFEST_DIR.mkdir(parents=True, exist_ok=True)
     manifest = {

@@ -15,7 +15,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from pipeline import config  # noqa: E402
 from pipeline.embeddings import EmbeddingManager  # noqa: E402
-from pipeline.retriever import RAGRetriever  # noqa: E402
+from pipeline.lexical_index import LexicalIndex  # noqa: E402
+from pipeline.retriever import HybridRetriever  # noqa: E402
 from pipeline.vector_store import VectorStore, collection_name_for_repo  # noqa: E402
 
 GOLDEN_PATH = config.EVAL_DIR / "golden.jsonl"
@@ -38,11 +39,17 @@ def first_hit_rank(retrieved_paths: Sequence[str], expected_files: Sequence[str]
 
 
 def evaluate_question(
-    retriever: RAGRetriever, question: Dict[str, Any], retrieve_k: int
+    retriever: HybridRetriever, question: Dict[str, Any], retrieve_k: int
 ) -> Dict[str, Any]:
     results = retriever.retrieve(question["question"], top_k=retrieve_k)
     retrieved_paths = [r["metadata"].get("path", "") for r in results]
     rank = first_hit_rank(retrieved_paths, question["expected_files"])
+
+    # Which retrieval path surfaced the first correct chunk. This is what shows
+    # whether lexical or semantic is doing the work for each question class.
+    hit_sources = []
+    if rank:
+        hit_sources = results[rank - 1].get("sources", [])
 
     return {
         "id": question["id"],
@@ -54,6 +61,7 @@ def evaluate_question(
         "reciprocal_rank": 1.0 / rank if rank else 0.0,
         "distinct_files_retrieved": len(dict.fromkeys(retrieved_paths[:10])),
         "top_5_paths": retrieved_paths[:5],
+        "hit_sources": hit_sources,
     }
 
 
@@ -120,6 +128,12 @@ def main():
     parser.add_argument(
         "--variant", default=None, help="Collection suffix (defaults to --strategy)"
     )
+    parser.add_argument(
+        "--mode", default="semantic", choices=["semantic", "lexical", "hybrid"]
+    )
+    parser.add_argument("--semantic-weight", type=float, default=1.0)
+    parser.add_argument("--lexical-weight", type=float, default=1.0)
+    parser.add_argument("--rrf-k", type=int, default=60)
     args = parser.parse_args()
 
     questions = load_golden()
@@ -128,7 +142,16 @@ def main():
 
     # The query must be embedded by the same model that built the index.
     embedder = EmbeddingManager(model_name=args.model, provider=args.provider)
-    retriever = RAGRetriever(VectorStore(collection_name=collection), embedder)
+    retriever = HybridRetriever(
+        VectorStore(collection_name=collection),
+        embedder,
+        lexical_index=LexicalIndex(collection) if args.mode != "semantic" else None,
+        mode=args.mode,
+        semantic_weight=args.semantic_weight,
+        lexical_weight=args.lexical_weight,
+        rrf_k=args.rrf_k,
+        candidate_k=max(40, args.retrieve_k),
+    )
 
     rows = [evaluate_question(retriever, q, args.retrieve_k) for q in questions]
     summary = aggregate(rows)
@@ -146,6 +169,10 @@ def main():
             "embedding_provider": args.provider,
             "embedding_model": embedder.model_name,
             "token_limit": embedder.token_limit,
+            "mode": args.mode,
+            "semantic_weight": args.semantic_weight,
+            "lexical_weight": args.lexical_weight,
+            "rrf_k": args.rrf_k,
         },
         "index_manifest": load_manifest(collection),
         "summary": summary,

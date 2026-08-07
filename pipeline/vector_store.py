@@ -1,12 +1,12 @@
 import re
-import uuid
-from typing import List, Optional
+from typing import List, Optional, Sequence
 
 import chromadb
 import numpy as np
 from langchain_core.documents import Document
 
 from . import config
+from .ids import chunk_ids_for
 
 BATCH_SIZE = 2000
 
@@ -54,12 +54,24 @@ class VectorStore:
             metadata={"hnsw:space": "cosine"},
         )
 
-    def add_documents(self, documents: List[Document], embeddings: np.ndarray) -> None:
-        """Add documents and their embeddings to the vector store"""
+    def add_documents(
+        self,
+        documents: List[Document],
+        embeddings: np.ndarray,
+        ids: Optional[Sequence[str]] = None,
+    ) -> None:
+        """Add documents and their embeddings to the vector store.
+
+        ids default to the deterministic scheme in pipeline.ids so the lexical
+        index can refer to the same chunks and rank fusion can merge them.
+        """
         if len(documents) != len(embeddings):
             raise ValueError("Number of documents must match number of embeddings")
 
-        ids: List[str] = []
+        ids = list(ids) if ids is not None else chunk_ids_for(documents)
+        if len(ids) != len(documents):
+            raise ValueError("Number of ids must match number of documents")
+
         metadatas: List[dict] = []
         texts: List[str] = []
         embeddings_list: List[list] = []
@@ -68,8 +80,6 @@ class VectorStore:
             metadata = {k: v for k, v in doc.metadata.items() if v is not None}
             metadata["doc_index"] = i
             metadata["content_length"] = len(doc.page_content)
-
-            ids.append(f"doc_{uuid.uuid4().hex[:8]}_{i}")
             metadatas.append(metadata)
             texts.append(doc.page_content)
             embeddings_list.append(

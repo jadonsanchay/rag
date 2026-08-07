@@ -5,11 +5,15 @@
   "variant": "astcode-openai",
   "collection": "repo_fastapi__astcode-openai",
   "retrieve_k": 20,
-  "questions": 30,
+  "questions": 54,
   "config": {
     "embedding_provider": "openai",
     "embedding_model": "text-embedding-3-small",
-    "token_limit": 8191
+    "token_limit": 8191,
+    "mode": "semantic",
+    "semantic_weight": 1.0,
+    "lexical_weight": 1.0,
+    "rrf_k": 60
   },
   "index_manifest": {
     "repo": "fastapi",
@@ -54,27 +58,28 @@
   },
   "summary": {
     "overall": {
-      "n": 30,
+      "n": 54,
       "recall@1": 0.333,
-      "recall@5": 0.567,
-      "recall@10": 0.667,
-      "mrr": 0.433,
+      "recall@5": 0.593,
+      "recall@10": 0.722,
+      "mrr": 0.452,
       "misses": [
         "b05",
         "b06",
         "b07",
         "b12",
         "a03",
-        "a06"
+        "a06",
+        "n07"
       ]
     },
     "by_type": {
       "architectural": {
-        "n": 6,
-        "recall@1": 0.0,
-        "recall@5": 0.167,
-        "recall@10": 0.333,
-        "mrr": 0.107,
+        "n": 15,
+        "recall@1": 0.2,
+        "recall@5": 0.333,
+        "recall@10": 0.533,
+        "mrr": 0.307,
         "misses": [
           "a03",
           "a06"
@@ -91,6 +96,16 @@
           "b06",
           "b07",
           "b12"
+        ]
+      },
+      "paraphrase": {
+        "n": 15,
+        "recall@1": 0.333,
+        "recall@5": 0.733,
+        "recall@10": 0.867,
+        "mrr": 0.499,
+        "misses": [
+          "n07"
         ]
       },
       "pinpoint": {
@@ -125,6 +140,9 @@
         "docs/en/docs/tutorial/bigger-applications.md",
         "fastapi/routing.py",
         "docs/en/docs/tutorial/bigger-applications.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -146,8 +164,11 @@
         "fastapi/dependencies/utils.py",
         "fastapi/dependencies/utils.py",
         "fastapi/dependencies/utils.py",
-        "docs/en/docs/tutorial/dependencies/dependencies-in-path-operation-decorators.md",
-        "docs/en/docs/tutorial/dependencies/sub-dependencies.md"
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/tutorial/dependencies/dependencies-in-path-operation-decorators.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -171,6 +192,9 @@
         "docs/en/docs/tutorial/encoder.md",
         "docs/en/docs/tutorial/encoder.md",
         "fastapi/encoders.py"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -187,13 +211,16 @@
         "10": true
       },
       "reciprocal_rank": 1.0,
-      "distinct_files_retrieved": 7,
+      "distinct_files_retrieved": 6,
       "top_5_paths": [
         "fastapi/exceptions.py",
         "docs/en/docs/advanced/security/oauth2-scopes.md",
         "docs/en/docs/tutorial/handling-errors.md",
         "fastapi/exception_handlers.py",
         "docs/en/docs/reference/exceptions.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -217,6 +244,9 @@
         "docs/en/docs/reference/uploadfile.md",
         "docs/en/docs/tutorial/request-files.md",
         "docs/en/docs/tutorial/request-files.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -240,6 +270,9 @@
         "fastapi/security/oauth2.py",
         "docs/en/docs/tutorial/security/oauth2-jwt.md",
         "fastapi/openapi/models.py"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -263,6 +296,9 @@
         "fastapi/openapi/utils.py",
         "fastapi/openapi/utils.py",
         "docs/en/docs/how-to/extending-openapi.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -287,6 +323,9 @@
         "docs/en/docs/reference/dependencies.md",
         "docs/en/docs/tutorial/dependencies/sub-dependencies.md",
         "fastapi/dependencies/utils.py"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -310,6 +349,9 @@
         "docs/en/docs/reference/background.md",
         "docs/en/docs/tutorial/background-tasks.md",
         "docs/en/docs/tutorial/background-tasks.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -333,6 +375,9 @@
         "docs/en/docs/advanced/custom-response.md",
         "docs/en/docs/tutorial/response-model.md",
         "docs/en/docs/reference/responses.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -356,6 +401,9 @@
         "fastapi/_compat.py",
         "fastapi/_compat.py",
         "fastapi/_compat.py"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -379,6 +427,9 @@
         "docs/en/docs/advanced/security/oauth2-scopes.md",
         "docs/en/docs/advanced/security/oauth2-scopes.md",
         "docs/en/docs/advanced/security/oauth2-scopes.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -402,6 +453,9 @@
         "docs/en/docs/tutorial/encoder.md",
         "docs/en/docs/features.md",
         "docs/en/docs/tutorial/encoder.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -426,6 +480,9 @@
         "fastapi/exception_handlers.py",
         "fastapi/openapi/utils.py",
         "fastapi/exceptions.py"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -451,6 +508,9 @@
         "docs/en/docs/how-to/sql-databases-peewee.md",
         "docs/en/docs/how-to/sql-databases-peewee.md",
         "docs/en/docs/async.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -475,6 +535,9 @@
         "docs/en/docs/advanced/testing-dependencies.md",
         "fastapi/dependencies/utils.py",
         "docs/en/docs/tutorial/dependencies/sub-dependencies.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -498,7 +561,8 @@
         "docs/en/docs/advanced/path-operation-advanced-configuration.md",
         "docs/en/docs/tutorial/dependencies/index.md",
         "docs/en/docs/tutorial/first-steps.md"
-      ]
+      ],
+      "hit_sources": []
     },
     {
       "id": "b06",
@@ -522,7 +586,8 @@
         "docs/en/docs/tutorial/request-files.md",
         "docs/en/docs/tutorial/request-forms.md",
         "docs/en/docs/tutorial/request-form-models.md"
-      ]
+      ],
+      "hit_sources": []
     },
     {
       "id": "b07",
@@ -545,7 +610,8 @@
         "docs/en/docs/release-notes.md",
         "docs/en/docs/tutorial/response-model.md",
         "docs/en/docs/tutorial/response-model.md"
-      ]
+      ],
+      "hit_sources": []
     },
     {
       "id": "b08",
@@ -569,6 +635,9 @@
         "fastapi/routing.py",
         "docs/en/docs/advanced/websockets.md",
         "docs/en/docs/advanced/websockets.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -593,6 +662,9 @@
         "docs/en/docs/release-notes.md",
         "fastapi/routing.py",
         "docs/en/docs/tutorial/bigger-applications.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -617,6 +689,9 @@
         "docs/en/docs/tutorial/handling-errors.md",
         "fastapi/exception_handlers.py",
         "docs/en/docs/tutorial/handling-errors.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -640,6 +715,9 @@
         "docs/en/docs/how-to/custom-docs-ui-assets.md",
         "fastapi/openapi/docs.py",
         "docs/en/docs/how-to/configure-swagger-ui.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -663,7 +741,8 @@
         "docs/en/docs/tutorial/dependencies/dependencies-with-yield.md",
         "docs/en/docs/tutorial/dependencies/index.md",
         "docs/en/docs/release-notes.md"
-      ]
+      ],
+      "hit_sources": []
     },
     {
       "id": "a01",
@@ -687,6 +766,9 @@
         "fastapi/routing.py",
         "docs/en/docs/deployment/manually.md",
         "docs/en/docs/advanced/middleware.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -712,6 +794,9 @@
         "docs/en/docs/tutorial/dependencies/index.md",
         "docs/en/docs/features.md",
         "docs/en/docs/tutorial/dependencies/index.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -738,7 +823,8 @@
         "docs/en/docs/tutorial/security/simple-oauth2.md",
         "docs/en/docs/tutorial/security/index.md",
         "docs/en/docs/tutorial/security/index.md"
-      ]
+      ],
+      "hit_sources": []
     },
     {
       "id": "a04",
@@ -762,6 +848,9 @@
         "docs/en/docs/alternatives.md",
         "docs/en/docs/alternatives.md",
         "docs/en/docs/alternatives.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -786,6 +875,9 @@
         "docs/en/docs/advanced/events.md",
         "docs/en/docs/deployment/server-workers.md",
         "docs/en/docs/deployment/server-workers.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     },
     {
@@ -809,6 +901,662 @@
         "docs/en/docs/deployment/versions.md",
         "docs/en/docs/release-notes.md",
         "docs/en/docs/release-notes.md"
+      ],
+      "hit_sources": []
+    },
+    {
+      "id": "n01",
+      "type": "paraphrase",
+      "question": "How do I split my routes across several files instead of one big file?",
+      "expected_files": [
+        "docs/en/docs/tutorial/bigger-applications.md",
+        "fastapi/routing.py"
+      ],
+      "first_hit_rank": 1,
+      "hit_at": {
+        "1": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 1.0,
+      "distinct_files_retrieved": 5,
+      "top_5_paths": [
+        "docs/en/docs/tutorial/bigger-applications.md",
+        "docs/en/docs/tutorial/bigger-applications.md",
+        "docs/en/docs/advanced/behind-a-proxy.md",
+        "fastapi/openapi/utils.py",
+        "docs/en/docs/release-notes.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n02",
+      "type": "paraphrase",
+      "question": "How can I make an endpoint return only some of the fields of my model?",
+      "expected_files": [
+        "docs/en/docs/tutorial/response-model.md",
+        "fastapi/routing.py"
+      ],
+      "first_hit_rank": 9,
+      "hit_at": {
+        "1": false,
+        "5": false,
+        "10": true
+      },
+      "reciprocal_rank": 0.1111111111111111,
+      "distinct_files_retrieved": 6,
+      "top_5_paths": [
+        "fastapi/openapi/utils.py",
+        "fastapi/dependencies/utils.py",
+        "fastapi/dependencies/utils.py",
+        "fastapi/_compat.py",
+        "fastapi/_compat.py"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n03",
+      "type": "paraphrase",
+      "question": "How do I read a value that the client sent in the request headers?",
+      "expected_files": [
+        "docs/en/docs/tutorial/header-params.md",
+        "fastapi/param_functions.py"
+      ],
+      "first_hit_rank": 3,
+      "hit_at": {
+        "1": false,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 0.3333333333333333,
+      "distinct_files_retrieved": 8,
+      "top_5_paths": [
+        "docs/en/docs/tutorial/middleware.md",
+        "docs/en/docs/tutorial/header-param-models.md",
+        "docs/en/docs/tutorial/header-params.md",
+        "docs/en/docs/tutorial/header-params.md",
+        "docs/en/docs/advanced/response-headers.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n04",
+      "type": "paraphrase",
+      "question": "How do I make sure only signed-in users can call an endpoint?",
+      "expected_files": [
+        "docs/en/docs/tutorial/security/get-current-user.md",
+        "docs/en/docs/tutorial/security/index.md",
+        "docs/en/docs/tutorial/security/first-steps.md",
+        "fastapi/security/oauth2.py"
+      ],
+      "first_hit_rank": 3,
+      "hit_at": {
+        "1": false,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 0.3333333333333333,
+      "distinct_files_retrieved": 6,
+      "top_5_paths": [
+        "docs/en/docs/advanced/security/oauth2-scopes.md",
+        "docs/en/docs/tutorial/security/oauth2-jwt.md",
+        "docs/en/docs/tutorial/security/first-steps.md",
+        "docs/en/docs/tutorial/security/simple-oauth2.md",
+        "docs/en/docs/tutorial/security/simple-oauth2.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n05",
+      "type": "paraphrase",
+      "question": "How can I do slow work after the response has already been sent to the user?",
+      "expected_files": [
+        "docs/en/docs/tutorial/background-tasks.md",
+        "fastapi/background.py"
+      ],
+      "first_hit_rank": 3,
+      "hit_at": {
+        "1": false,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 0.3333333333333333,
+      "distinct_files_retrieved": 6,
+      "top_5_paths": [
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/async.md",
+        "docs/en/docs/tutorial/background-tasks.md",
+        "docs/en/docs/tutorial/dependencies/dependencies-with-yield.md",
+        "docs/en/docs/how-to/sql-databases-peewee.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n06",
+      "type": "paraphrase",
+      "question": "How do I let someone upload a picture to my API?",
+      "expected_files": [
+        "docs/en/docs/tutorial/request-files.md",
+        "fastapi/datastructures.py",
+        "fastapi/param_functions.py"
+      ],
+      "first_hit_rank": 1,
+      "hit_at": {
+        "1": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 1.0,
+      "distinct_files_retrieved": 7,
+      "top_5_paths": [
+        "docs/en/docs/tutorial/request-files.md",
+        "docs/en/docs/tutorial/security/simple-oauth2.md",
+        "docs/en/docs/reference/uploadfile.md",
+        "docs/en/docs/advanced/openapi-webhooks.md",
+        "docs/en/docs/tutorial/request-files.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n07",
+      "type": "paraphrase",
+      "question": "How do I reuse the same setup logic across many endpoints without copying it?",
+      "expected_files": [
+        "docs/en/docs/tutorial/dependencies/index.md",
+        "fastapi/dependencies/utils.py",
+        "fastapi/param_functions.py"
+      ],
+      "first_hit_rank": null,
+      "hit_at": {
+        "1": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank": 0.0,
+      "distinct_files_retrieved": 7,
+      "top_5_paths": [
+        "docs/en/docs/advanced/events.md",
+        "docs/en/docs/tutorial/security/get-current-user.md",
+        "docs/en/docs/tutorial/dependencies/sub-dependencies.md",
+        "docs/en/docs/deployment/concepts.md",
+        "docs/en/docs/deployment/concepts.md"
+      ],
+      "hit_sources": []
+    },
+    {
+      "id": "n08",
+      "type": "paraphrase",
+      "question": "Why does my app freeze when I call a slow blocking library inside an endpoint?",
+      "expected_files": [
+        "docs/en/docs/async.md",
+        "fastapi/routing.py",
+        "fastapi/concurrency.py"
+      ],
+      "first_hit_rank": 3,
+      "hit_at": {
+        "1": false,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 0.3333333333333333,
+      "distinct_files_retrieved": 6,
+      "top_5_paths": [
+        "docs/en/docs/how-to/sql-databases-peewee.md",
+        "docs/en/docs/how-to/sql-databases-peewee.md",
+        "docs/en/docs/async.md",
+        "docs/en/docs/async.md",
+        "docs/en/docs/async.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "a07",
+      "type": "architectural",
+      "question": "How is the OpenAPI schema generation code organized?",
+      "expected_files": [
+        "fastapi/openapi/utils.py",
+        "fastapi/openapi/models.py",
+        "fastapi/openapi/docs.py"
+      ],
+      "first_hit_rank": 12,
+      "hit_at": {
+        "1": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank": 0.08333333333333333,
+      "distinct_files_retrieved": 7,
+      "top_5_paths": [
+        "docs/en/docs/advanced/additional-responses.md",
+        "docs/en/docs/how-to/extending-openapi.md",
+        "fastapi/applications.py",
+        "docs/en/docs/tutorial/first-steps.md",
+        "docs/en/docs/tutorial/schema-extra-example.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "a08",
+      "type": "architectural",
+      "question": "How are the parameter declaration helpers organized relative to the parameter classes they construct?",
+      "expected_files": [
+        "fastapi/param_functions.py",
+        "fastapi/params.py"
+      ],
+      "first_hit_rank": 18,
+      "hit_at": {
+        "1": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank": 0.05555555555555555,
+      "distinct_files_retrieved": 7,
+      "top_5_paths": [
+        "docs/en/docs/tutorial/header-param-models.md",
+        "docs/en/docs/tutorial/header-params.md",
+        "fastapi/openapi/models.py",
+        "fastapi/dependencies/utils.py",
+        "fastapi/openapi/models.py"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "a09",
+      "type": "architectural",
+      "question": "What middleware ships with FastAPI and how is it wired into an application?",
+      "expected_files": [
+        "fastapi/middleware/cors.py",
+        "fastapi/middleware/gzip.py",
+        "fastapi/middleware/trustedhost.py",
+        "fastapi/middleware/httpsredirect.py",
+        "fastapi/applications.py"
+      ],
+      "first_hit_rank": 19,
+      "hit_at": {
+        "1": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank": 0.05263157894736842,
+      "distinct_files_retrieved": 9,
+      "top_5_paths": [
+        "docs/en/docs/tutorial/middleware.md",
+        "docs/en/docs/project-generation.md",
+        "docs/en/docs/reference/middleware.md",
+        "docs/en/docs/advanced/middleware.md",
+        "docs/en/docs/about/index.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "a10",
+      "type": "architectural",
+      "question": "How is the routing layer split between individual routes, routers, and Starlette's own router?",
+      "expected_files": [
+        "fastapi/routing.py"
+      ],
+      "first_hit_rank": 1,
+      "hit_at": {
+        "1": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 1.0,
+      "distinct_files_retrieved": 8,
+      "top_5_paths": [
+        "fastapi/routing.py",
+        "docs/en/docs/alternatives.md",
+        "fastapi/routing.py",
+        "docs/en/docs/advanced/websockets.md",
+        "fastapi/applications.py"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "a11",
+      "type": "architectural",
+      "question": "How are exception classes and their handlers organized across the codebase?",
+      "expected_files": [
+        "fastapi/exceptions.py",
+        "fastapi/exception_handlers.py",
+        "fastapi/applications.py"
+      ],
+      "first_hit_rank": 2,
+      "hit_at": {
+        "1": false,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 0.5,
+      "distinct_files_retrieved": 5,
+      "top_5_paths": [
+        "docs/en/docs/tutorial/handling-errors.md",
+        "fastapi/applications.py",
+        "docs/en/docs/tutorial/handling-errors.md",
+        "docs/en/docs/advanced/security/oauth2-scopes.md",
+        "docs/en/docs/tutorial/handling-errors.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "a12",
+      "type": "architectural",
+      "question": "How is dependency metadata represented internally?",
+      "expected_files": [
+        "fastapi/dependencies/models.py",
+        "fastapi/params.py",
+        "fastapi/dependencies/utils.py"
+      ],
+      "first_hit_rank": 1,
+      "hit_at": {
+        "1": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 1.0,
+      "distinct_files_retrieved": 4,
+      "top_5_paths": [
+        "fastapi/dependencies/utils.py",
+        "docs/en/docs/tutorial/dependencies/sub-dependencies.md",
+        "docs/en/docs/tutorial/dependencies/index.md",
+        "docs/en/docs/tutorial/dependencies/classes-as-dependencies.md",
+        "docs/en/docs/tutorial/dependencies/index.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "a13",
+      "type": "architectural",
+      "question": "How does the framework delegate field validation to Pydantic?",
+      "expected_files": [
+        "fastapi/_compat.py",
+        "fastapi/utils.py"
+      ],
+      "first_hit_rank": 10,
+      "hit_at": {
+        "1": false,
+        "5": false,
+        "10": true
+      },
+      "reciprocal_rank": 0.1,
+      "distinct_files_retrieved": 6,
+      "top_5_paths": [
+        "docs/en/docs/features.md",
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/tutorial/body-fields.md",
+        "docs/en/docs/advanced/security/oauth2-scopes.md",
+        "docs/en/docs/features.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "a14",
+      "type": "architectural",
+      "question": "How are the response classes organized and how does a route pick one?",
+      "expected_files": [
+        "fastapi/responses.py",
+        "fastapi/routing.py"
+      ],
+      "first_hit_rank": 6,
+      "hit_at": {
+        "1": false,
+        "5": false,
+        "10": true
+      },
+      "reciprocal_rank": 0.16666666666666666,
+      "distinct_files_retrieved": 6,
+      "top_5_paths": [
+        "docs/en/docs/how-to/custom-request-and-route.md",
+        "docs/en/docs/reference/responses.md",
+        "docs/en/docs/advanced/custom-response.md",
+        "docs/en/docs/advanced/custom-response.md",
+        "docs/en/docs/advanced/custom-response.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "a15",
+      "type": "architectural",
+      "question": "How is security dependency resolution connected to the general dependency injection system?",
+      "expected_files": [
+        "fastapi/security/base.py",
+        "fastapi/dependencies/utils.py",
+        "fastapi/security/oauth2.py"
+      ],
+      "first_hit_rank": 1,
+      "hit_at": {
+        "1": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 1.0,
+      "distinct_files_retrieved": 7,
+      "top_5_paths": [
+        "fastapi/dependencies/utils.py",
+        "docs/en/docs/tutorial/dependencies/classes-as-dependencies.md",
+        "docs/en/docs/tutorial/dependencies/dependencies-in-path-operation-decorators.md",
+        "docs/en/docs/tutorial/dependencies/index.md",
+        "docs/en/docs/tutorial/dependencies/sub-dependencies.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n09",
+      "type": "paraphrase",
+      "question": "Can I open a database connection once, share it with my route, and close it afterwards?",
+      "expected_files": [
+        "docs/en/docs/tutorial/dependencies/dependencies-with-yield.md",
+        "fastapi/dependencies/utils.py"
+      ],
+      "first_hit_rank": 13,
+      "hit_at": {
+        "1": false,
+        "5": false,
+        "10": false
+      },
+      "reciprocal_rank": 0.07692307692307693,
+      "distinct_files_retrieved": 3,
+      "top_5_paths": [
+        "docs/en/docs/tutorial/sql-databases.md",
+        "docs/en/docs/tutorial/sql-databases.md",
+        "docs/en/docs/tutorial/sql-databases.md",
+        "docs/en/docs/how-to/sql-databases-peewee.md",
+        "docs/en/docs/tutorial/sql-databases.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n10",
+      "type": "paraphrase",
+      "question": "How do I give my API a title and description that show up in the generated docs?",
+      "expected_files": [
+        "docs/en/docs/tutorial/metadata.md",
+        "fastapi/applications.py"
+      ],
+      "first_hit_rank": 1,
+      "hit_at": {
+        "1": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 1.0,
+      "distinct_files_retrieved": 7,
+      "top_5_paths": [
+        "docs/en/docs/tutorial/metadata.md",
+        "docs/en/docs/tutorial/query-params-str-validations.md",
+        "docs/en/docs/tutorial/query-params-str-validations.md",
+        "docs/en/docs/tutorial/metadata.md",
+        "docs/en/docs/how-to/extending-openapi.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n11",
+      "type": "paraphrase",
+      "question": "How do I send back an HTML page instead of JSON?",
+      "expected_files": [
+        "docs/en/docs/advanced/custom-response.md",
+        "fastapi/responses.py"
+      ],
+      "first_hit_rank": 8,
+      "hit_at": {
+        "1": false,
+        "5": false,
+        "10": true
+      },
+      "reciprocal_rank": 0.125,
+      "distinct_files_retrieved": 7,
+      "top_5_paths": [
+        "docs/en/docs/advanced/additional-responses.md",
+        "docs/en/docs/advanced/additional-status-codes.md",
+        "docs/en/docs/tutorial/first-steps.md",
+        "docs/en/docs/reference/responses.md",
+        "docs/en/docs/advanced/additional-responses.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n12",
+      "type": "paraphrase",
+      "question": "How do I get at the raw incoming request inside my endpoint?",
+      "expected_files": [
+        "docs/en/docs/advanced/using-request-directly.md"
+      ],
+      "first_hit_rank": 1,
+      "hit_at": {
+        "1": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 1.0,
+      "distinct_files_retrieved": 7,
+      "top_5_paths": [
+        "docs/en/docs/advanced/using-request-directly.md",
+        "docs/en/docs/how-to/custom-request-and-route.md",
+        "docs/en/docs/advanced/using-request-directly.md",
+        "docs/en/docs/how-to/custom-request-and-route.md",
+        "docs/en/docs/tutorial/middleware.md"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n13",
+      "type": "paraphrase",
+      "question": "How do I write automated tests for my endpoints?",
+      "expected_files": [
+        "docs/en/docs/tutorial/testing.md"
+      ],
+      "first_hit_rank": 2,
+      "hit_at": {
+        "1": false,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 0.5,
+      "distinct_files_retrieved": 6,
+      "top_5_paths": [
+        "docs/en/docs/advanced/async-tests.md",
+        "docs/en/docs/tutorial/testing.md",
+        "docs/en/docs/tutorial/testing.md",
+        "docs/en/mkdocs.yml",
+        "docs/en/data/external_links.yml"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n14",
+      "type": "paraphrase",
+      "question": "How do I show a helpful error message with a specific status code?",
+      "expected_files": [
+        "docs/en/docs/tutorial/handling-errors.md",
+        "fastapi/exceptions.py"
+      ],
+      "first_hit_rank": 3,
+      "hit_at": {
+        "1": false,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 0.3333333333333333,
+      "distinct_files_retrieved": 6,
+      "top_5_paths": [
+        "docs/en/docs/tutorial/response-status-code.md",
+        "docs/en/docs/tutorial/response-status-code.md",
+        "docs/en/docs/tutorial/handling-errors.md",
+        "docs/en/docs/advanced/additional-status-codes.md",
+        "fastapi/utils.py"
+      ],
+      "hit_sources": [
+        "semantic"
+      ]
+    },
+    {
+      "id": "n15",
+      "type": "paraphrase",
+      "question": "How do I set a maximum length on a query parameter?",
+      "expected_files": [
+        "docs/en/docs/tutorial/query-params-str-validations.md",
+        "fastapi/param_functions.py"
+      ],
+      "first_hit_rank": 1,
+      "hit_at": {
+        "1": true,
+        "5": true,
+        "10": true
+      },
+      "reciprocal_rank": 1.0,
+      "distinct_files_retrieved": 5,
+      "top_5_paths": [
+        "docs/en/docs/tutorial/query-params-str-validations.md",
+        "docs/en/docs/tutorial/query-params-str-validations.md",
+        "docs/en/docs/tutorial/query-params-str-validations.md",
+        "docs/en/docs/tutorial/query-params-str-validations.md",
+        "docs/en/docs/tutorial/query-param-models.md"
+      ],
+      "hit_sources": [
+        "semantic"
       ]
     }
   ]

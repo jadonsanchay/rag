@@ -5,6 +5,7 @@ DATA_DIR = BASE_DIR / "data"
 PDF_DIR = DATA_DIR / "pdf_files"
 TEXT_DIR = DATA_DIR / "text_files"
 VECTOR_STORE_DIR = DATA_DIR / "vector_store"
+LEXICAL_INDEX_DIR = DATA_DIR / "lexical_index"
 # Cloned repos live OUTSIDE the project tree: a vendored pyproject.toml inside
 # it makes uv treat the clone as a local package source and rebuild the venv.
 REPOS_DIR = Path.home() / ".cache" / "codebase-qa" / "repos"
@@ -43,6 +44,18 @@ TARGET_PROSE_TOKENS = 400  # markdown/text: no structure worth preserving
 MAX_CODE_CHUNK_TOKENS = 1200  # keeps most functions whole, splits monsters
 
 OPENAI_MODEL = "gpt-4o-mini"
+
+# --- Retrieval --------------------------------------------------------------
+# Step 4 result (eval/RESULTS.md). Lexical must outweigh semantic; equal
+# weighting is actively worse than lexical alone because it dilutes the stronger
+# ranking. These weights are tuned for recall@5 rather than MRR: the generator
+# is handed ~6 chunks, so what matters is whether the right file is in the
+# context at all, not whether it ranked first.
+RETRIEVAL_MODE = "hybrid"  # semantic | lexical | hybrid
+SEMANTIC_WEIGHT = 1.0
+LEXICAL_WEIGHT = 2.0
+RRF_K = 60
+CANDIDATE_K = 40
 
 # --- Repo walking -----------------------------------------------------------
 MAX_FILE_BYTES = 1_000_000
