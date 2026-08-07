@@ -57,6 +57,15 @@ LEXICAL_WEIGHT = 2.0
 RRF_K = 60
 CANDIDATE_K = 40
 
+# Step 5 result: cap chunks per file in the result set. One docs page was taking
+# 4 of 5 context slots; capping it lifted architectural recall@10 from 0.600 to
+# 0.800 by making room for the other files that answer the question.
+MAX_CHUNKS_PER_FILE = 2
+
+# Index structural file/package cards (step 5). Architectural questions are
+# about relationships between files, which no single code chunk contains.
+INDEX_CARDS = True
+
 # --- Repo walking -----------------------------------------------------------
 MAX_FILE_BYTES = 1_000_000
 

@@ -21,6 +21,7 @@ def build_retriever(
     semantic_weight: float = config.SEMANTIC_WEIGHT,
     lexical_weight: float = config.LEXICAL_WEIGHT,
     rrf_k: int = config.RRF_K,
+    max_per_file: int = config.MAX_CHUNKS_PER_FILE,
 ) -> HybridRetriever:
     collection = collection_name_for_repo(repo, variant)
     return HybridRetriever(
@@ -31,6 +32,8 @@ def build_retriever(
         semantic_weight=semantic_weight,
         lexical_weight=lexical_weight,
         rrf_k=rrf_k,
+        candidate_k=config.CANDIDATE_K,
+        max_per_file=max_per_file,
     )
 
 

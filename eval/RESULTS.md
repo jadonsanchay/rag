@@ -177,10 +177,88 @@ improved it from 0.218 (baseline) to 0.389.
 `candidate_k=40` — set as defaults in `pipeline/config.py`. Chosen on recall@5
 rather than MRR, for the reason in B4.
 
+---
+
+# Phase B — step 5: structural cards + result diversity
+
+Two changes, measured as a 2×2 so their effects are separable:
+
+1. **Structural cards** (`pipeline/cards.py`) — extra chunks that describe
+   structure rather than contain code. A `file_card` per module (path, docstring,
+   classes with methods, functions, imports) and a `package_card` per directory
+   (its modules and their main symbols). Built from the AST, not an LLM: 191 cards
+   for 201 files, at zero API cost and no measurable indexing time.
+2. **Result diversity** (`max_per_file=2`) — cap chunks per file in the returned
+   set. Question `a02` had *four of its top five slots* filled by the same docs
+   page, so the generator saw one source instead of five.
+
+| cards | diversity | r@1 | r@5 | r@10 | MRR | arch r@5 | arch r@10 | arch MRR |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| no | no | 0.333 | 0.778 | 0.815 | 0.507 | 0.533 | 0.600 | 0.389 |
+| yes | no | 0.370 | 0.778 | 0.815 | 0.531 | 0.600 | 0.600 | 0.372 |
+| no | yes | 0.333 | 0.778 | 0.870 | 0.516 | 0.533 | 0.733 | 0.400 |
+| **yes** | **yes** | **0.370** | **0.796** | **0.889** | **0.543** | **0.600** | **0.800** | 0.386 |
+
+Per segment, shipped configuration vs step 4:
+
+| segment | step 4 MRR | step 5 MRR | step 4 r@10 | step 5 r@10 |
+|---|---:|---:|---:|---:|
+| overall | 0.507 | **0.543** | 0.815 | **0.889** |
+| architectural | 0.389 | 0.386 | 0.600 | **0.800** |
+| behavioral | 0.520 | **0.574** | 0.917 | 0.917 |
+| paraphrase | 0.454 | **0.527** | 0.800 | **0.867** |
+| pinpoint | 0.708 | **0.729** | 1.000 | 1.000 |
+
+## Findings
+
+**B7. The metric could not credit the feature being built, and fixing that came first.**
+Package cards have directory paths (`fastapi/middleware/`), which never equal an
+expected file like `fastapi/middleware/cors.py`. On the first run the middleware
+package card ranked **4th** for `a09` and was scored as a miss, while the "first
+hit" was recorded at rank 9. Retrieving that card *is* a correct answer to "what
+middleware ships with FastAPI." `first_hit_rank` now credits a directory-shaped
+path when an expected file lives under it, and **both** arms were re-measured
+under the corrected metric — the table above is post-fix throughout. Without this
+the conclusion would have been "cards make architectural retrieval worse."
+
+**B8. Cards improve recall, not rank.**
+`architectural` r@10 went **0.600 → 0.800** (three more questions of fifteen) while
+`architectural` MRR stayed flat (0.389 → 0.386). Cards help the right file appear
+*at all*; they do not push it to the top. For a RAG generator that reads ~6 chunks
+this is the useful direction, but it should not be described as "fixing ranking."
+
+**B9. Diversity capping was the larger win for architectural questions, and it was free.**
+`max_per_file=2` alone lifted `architectural` r@10 from 0.600 to 0.733 with no new
+chunks, no indexing cost, and about ten lines of code — comparable to what the
+entire card subsystem delivered. Architectural questions expect *several* files,
+so spending five slots on one file is the exact wrong allocation.
+
+**B10. Package cards are mostly not retrieved; file cards carry the benefit.**
+Across 54 questions a package card reached the top 5 only twice (`p07` →
+`fastapi/openapi/`, `a09` → `fastapi/middleware/`). The per-file cards do the work.
+Package cards are cheap enough to keep, but they are not the mechanism.
+
+**B11. Cards cost a little precision on pinpoint questions.**
+`p01`, `p03` and `p05` each slipped exactly one rank as cards displaced code
+chunks, and `a12` fell from rank 1 to 5. Net effect is still clearly positive
+(15 questions improved, 5 regressed), but cards are not free: they add candidates
+that compete with the real definitions.
+
+## Chosen configuration
+
+Cards on (`INDEX_CARDS=True`), `MAX_CHUNKS_PER_FILE=2`, plus the step 4 hybrid
+settings. Reproduce step 4 with `index_repo.py --no-cards` and
+`run_eval.py` without `--max-per-file`.
+
 ## Open items carried into later steps
 
-- **Architectural retrieval** is still the weakest segment (MRR 0.389, r@5 0.533)
-  — step 5 (file-level cards) targets it, now against a 15-question sample
+- **Docs still crowd out source code.** `a03` ("how is security organized?") sits
+  at rank 10: its top six results are all Markdown, and `fastapi/security/*.py`
+  never appears. This is the same failure noted in step 1 and remains unfixed —
+  a per-kind or per-language quota in the fusion step is the likely remedy
+- **Architectural ranking, as opposed to recall,** is still unsolved (MRR 0.386)
+- 4 questions still miss entirely at k=20: `a02`, `a06`, `n03`, `a08`
+- `a02` regressed from rank 16 to a miss when cards were added — unexplained
 - **Behavioral MRR regressed** under the r@5-tuned weights (lexical 0.738 →
   hybrid 0.520) even though its r@5 improved (0.917 → 0.833). Worth a per-segment
   weighting experiment rather than one global setting

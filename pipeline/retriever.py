@@ -75,6 +75,7 @@ class HybridRetriever:
         lexical_weight: float = 1.0,
         rrf_k: int = DEFAULT_RRF_K,
         candidate_k: int = 40,
+        max_per_file: Optional[int] = None,
     ):
         if mode not in {"semantic", "lexical", "hybrid"}:
             raise ValueError(f"Unknown retrieval mode: {mode}")
@@ -89,6 +90,10 @@ class HybridRetriever:
         self.lexical_weight = lexical_weight
         self.rrf_k = rrf_k
         self.candidate_k = candidate_k
+        # Cap chunks per file. Without it a single doc page can take every slot
+        # in the context window, which wastes the generator's budget on one
+        # source and hides the other files that answer the question.
+        self.max_per_file = max_per_file
 
     def _semantic_candidates(self, query: str, limit: int) -> List[Dict[str, Any]]:
         embedding = self.embedding_manager.generate_embeddings([query])[0]
@@ -146,19 +151,29 @@ class HybridRetriever:
             )
 
         retrieved: List[Dict[str, Any]] = []
-        for rank, (chunk_id, score, rank_map) in enumerate(ordered[:top_k], start=1):
+        per_file: Dict[str, int] = {}
+
+        for chunk_id, score, rank_map in ordered:
+            if len(retrieved) >= top_k:
+                break
             candidate = lookup.get(chunk_id)
             if candidate is None:
                 continue
             if score_threshold is not None and score < score_threshold:
                 continue
 
+            path = candidate["metadata"].get("path", "")
+            if self.max_per_file is not None:
+                if per_file.get(path, 0) >= self.max_per_file:
+                    continue
+                per_file[path] = per_file.get(path, 0) + 1
+
             retrieved.append(
                 {
                     "id": chunk_id,
                     "content": candidate["content"],
                     "metadata": candidate["metadata"],
-                    "rank": rank,
+                    "rank": len(retrieved) + 1,
                     "score": score,
                     # Retrieval trace: which path surfaced this, and at what rank.
                     "semantic_rank": rank_map.get(SEMANTIC),

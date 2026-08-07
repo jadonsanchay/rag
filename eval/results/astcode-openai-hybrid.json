@@ -13,7 +13,8 @@
     "mode": "hybrid",
     "semantic_weight": 1.0,
     "lexical_weight": 2.0,
-    "rrf_k": 60
+    "rrf_k": 60,
+    "max_per_file": null
   },
   "index_manifest": {
     "repo": "fastapi",
@@ -781,13 +782,13 @@
         "10": true
       },
       "reciprocal_rank": 1.0,
-      "distinct_files_retrieved": 7,
+      "distinct_files_retrieved": 6,
       "top_5_paths": [
         "fastapi/routing.py",
         "docs/en/docs/how-to/custom-request-and-route.md",
         "docs/en/docs/how-to/custom-request-and-route.md",
         "docs/en/docs/advanced/async-tests.md",
-        "docs/en/docs/alternatives.md"
+        "docs/en/docs/advanced/middleware.md"
       ],
       "hit_sources": [
         "semantic",
@@ -1115,13 +1116,13 @@
         "10": true
       },
       "reciprocal_rank": 0.5,
-      "distinct_files_retrieved": 8,
+      "distinct_files_retrieved": 7,
       "top_5_paths": [
         "docs/en/docs/advanced/events.md",
         "docs/en/docs/tutorial/dependencies/index.md",
-        "fastapi/routing.py",
         "docs/en/docs/advanced/additional-responses.md",
-        "docs/en/docs/project-generation.md"
+        "docs/en/docs/project-generation.md",
+        "docs/en/docs/deployment/docker.md"
       ],
       "hit_sources": [
         "semantic",

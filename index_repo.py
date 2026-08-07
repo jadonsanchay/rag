@@ -7,6 +7,7 @@ Usage:
 import argparse
 import json
 import subprocess
+from collections import Counter
 from pathlib import Path
 from typing import List
 
@@ -117,6 +118,12 @@ def main():
         default=None,
         help="Collection suffix for this experiment (defaults to --strategy)",
     )
+    parser.add_argument(
+        "--cards",
+        action=argparse.BooleanOptionalAction,
+        default=config.INDEX_CARDS,
+        help="Index structural file/package cards (--no-cards to reproduce step 4)",
+    )
     args = parser.parse_args()
 
     repo_path = args.repo_path.resolve()
@@ -161,6 +168,18 @@ def main():
         )
     print(f"Split {len(documents)} files into {len(chunks)} chunks ({args.strategy})")
 
+    if args.cards:
+        from pipeline.cards import build_cards
+
+        cards = build_cards(
+            documents,
+            max_tokens=config.TARGET_PROSE_TOKENS,
+            count_tokens=embedder.count_tokens,
+        )
+        kinds = Counter(card.metadata.get("kind") for card in cards)
+        chunks += cards
+        print(f"Added {len(cards)} structural cards ({dict(kinds)})")
+
     duplicates = report_duplicates(chunks)
     budget = report_token_budget(chunks, embedder)
 
@@ -196,6 +215,7 @@ def main():
         "token_limit": embedder.token_limit,
         "include_only": args.include,
         "excluded": args.exclude,
+        "cards": args.cards,
         "files_indexed": len(documents),
         "chunks": len(chunks),
         "skipped": dict(stats.skipped),
