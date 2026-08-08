@@ -55,7 +55,10 @@ class LexicalIndex:
         base = directory or config.LEXICAL_INDEX_DIR
         base.mkdir(parents=True, exist_ok=True)
         self.db_path = base / f"{collection_name}.sqlite3"
-        self.connection = sqlite3.connect(self.db_path)
+        # check_same_thread=False because the API serves queries from a threadpool
+        # (retrieval is blocking, so it must not run on the event loop). Queries
+        # are read-only; writes happen only during indexing, single-threaded.
+        self.connection = sqlite3.connect(self.db_path, check_same_thread=False)
         self._ensure_schema()
 
     def _ensure_schema(self) -> None:

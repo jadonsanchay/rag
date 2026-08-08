@@ -1,6 +1,6 @@
 import os
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, Iterator, List, Optional, Sequence
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -133,3 +133,54 @@ class AnswerGenerator:
             answer.verification = verify_answer(text, answer.sources, repo_root)
 
         return answer
+
+    def finalize(
+        self,
+        text: str,
+        retrieved_docs: Sequence[Dict[str, Any]],
+        repo_root: Optional[Any] = None,
+    ) -> GeneratedAnswer:
+        """Assemble the result object for an already-streamed answer.
+
+        Citation verification needs the whole answer, so it can only run once the
+        stream has finished — the token stream and the verified result are two
+        separate events for that reason, not by accident.
+        """
+        answer = GeneratedAnswer(
+            text=text,
+            refused=text.upper().startswith(REFUSAL_TOKEN),
+            sources=list(retrieved_docs),
+            cited_indices=parse_markers(text),
+        )
+        if repo_root is not None:
+            from .citations import verify_answer
+
+            answer.verification = verify_answer(text, answer.sources, repo_root)
+        return answer
+
+    def stream(
+        self, query: str, retrieved_docs: Sequence[Dict[str, Any]]
+    ) -> Iterator[str]:
+        """Yield answer text deltas as they arrive."""
+        if not retrieved_docs:
+            yield f"{REFUSAL_TOKEN}\nNothing was retrieved for this question."
+            return
+
+        context = self.build_context(retrieved_docs)
+        user_prompt = f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer:"
+
+        stream = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_prompt},
+            ],
+            temperature=0,
+            stream=True,
+        )
+        for event in stream:
+            if not event.choices:
+                continue
+            delta = event.choices[0].delta.content
+            if delta:
+                yield delta

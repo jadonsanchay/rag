@@ -107,14 +107,20 @@ class OpenAIEmbeddingProvider:
         vectors: List[List[float]] = []
         batches = self._batches(texts)
 
+        # Progress is only useful when indexing. A single-batch call is a query
+        # embedding, and printing there pollutes server logs.
+        show_progress = len(batches) > 1
+
         for index, batch in enumerate(batches, start=1):
             # The API errors on empty strings.
             cleaned = [text if text.strip() else " " for text in batch]
             response = self.client.embeddings.create(model=self.model_name, input=cleaned)
             vectors.extend(item.embedding for item in response.data)
-            print(f"  embedded batch {index}/{len(batches)}", end="\r", flush=True)
+            if show_progress:
+                print(f"  embedded batch {index}/{len(batches)}", end="\r", flush=True)
 
-        print(" " * 40, end="\r")
+        if show_progress:
+            print(" " * 40, end="\r")
         return np.array(vectors, dtype=np.float32)
 
 
