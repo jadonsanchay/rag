@@ -144,6 +144,13 @@ def main():
     parser.add_argument("--lexical-weight", type=float, default=1.0)
     parser.add_argument("--rrf-k", type=int, default=60)
     parser.add_argument(
+        "--stratify",
+        action="store_true",
+        help="Separate code/prose rank spaces before fusion",
+    )
+    parser.add_argument("--code-weight", type=float, default=1.0)
+    parser.add_argument("--prose-weight", type=float, default=1.0)
+    parser.add_argument(
         "--max-per-file",
         type=int,
         default=None,
@@ -167,6 +174,9 @@ def main():
         rrf_k=args.rrf_k,
         candidate_k=max(40, args.retrieve_k),
         max_per_file=args.max_per_file,
+        stratify=args.stratify,
+        code_weight=args.code_weight,
+        prose_weight=args.prose_weight,
     )
 
     rows = [evaluate_question(retriever, q, args.retrieve_k) for q in questions]
@@ -190,6 +200,9 @@ def main():
             "lexical_weight": args.lexical_weight,
             "rrf_k": args.rrf_k,
             "max_per_file": args.max_per_file,
+            "stratify": args.stratify,
+            "code_weight": args.code_weight,
+            "prose_weight": args.prose_weight,
         },
         "index_manifest": load_manifest(collection),
         "summary": summary,

@@ -22,6 +22,7 @@ def build_retriever(
     lexical_weight: float = config.LEXICAL_WEIGHT,
     rrf_k: int = config.RRF_K,
     max_per_file: int = config.MAX_CHUNKS_PER_FILE,
+    stratify: bool = config.STRATIFY_RETRIEVAL,
 ) -> HybridRetriever:
     collection = collection_name_for_repo(repo, variant)
     return HybridRetriever(
@@ -34,6 +35,9 @@ def build_retriever(
         rrf_k=rrf_k,
         candidate_k=config.CANDIDATE_K,
         max_per_file=max_per_file,
+        stratify=stratify,
+        code_weight=config.CODE_WEIGHT,
+        prose_weight=config.PROSE_WEIGHT,
     )
 
 
@@ -62,12 +66,14 @@ def main():
         return
 
     for result in results:
-        # Retrieval trace: which path surfaced this chunk, and at what rank.
-        trace = ", ".join(
-            f"{name}#{result[f'{name}_rank']}"
+        # Retrieval trace: which list surfaced this chunk, and at what rank.
+        # Stratified retrieval reports per-stratum ranks; pooled reports two.
+        ranks = result.get("ranks") or {
+            name: result[f"{name}_rank"]
             for name in ("semantic", "lexical")
             if result.get(f"{name}_rank")
-        )
+        }
+        trace = ", ".join(f"{name}#{rank}" for name, rank in sorted(ranks.items()))
         symbol = result["metadata"].get("qualified_symbol")
         suffix = f"  [{symbol}]" if symbol else ""
         print(

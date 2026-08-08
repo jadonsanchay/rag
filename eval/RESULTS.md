@@ -250,15 +250,94 @@ Cards on (`INDEX_CARDS=True`), `MAX_CHUNKS_PER_FILE=2`, plus the step 4 hybrid
 settings. Reproduce step 4 with `index_repo.py --no-cards` and
 `run_eval.py` without `--max-per-file`.
 
+---
+
+# Phase B — step 5b: stratified retrieval (fixing docs crowding)
+
+## The defect
+
+Documentation crowded source code out of the results for code questions. `a03`
+("how is the security system organized?") returned six Markdown chunks and no
+`fastapi/security/*.py` at all. Noted as far back as step 1 (top-10 was 9 Markdown
+/ 1 Python) and still unfixed after step 5.
+
+The cause was not ranking quality but **corpus imbalance at the chunk level**:
+
+| | chunks | share |
+|---|---:|---:|
+| prose (markdown, yaml, html, css) | 2201 | **83.7%** |
+| code (python) | 430 | 16.3% |
+
+At a 5:1 ratio, prose wins the top-k on volume regardless of relevance.
+
+## The fix
+
+Give code and prose **separate rank spaces** and fuse them: four ranked lists
+({semantic, lexical} × {code, prose}) instead of two. Because RRF scores by
+position within a list, the best code chunk gets rank-1 treatment even when it
+would place 30th in a pooled list. Candidates are fetched *per stratum* from the
+stores (Chroma `$in`/`$nin`, a new `language` column in FTS5) — filtering one
+pooled list would not work, since a pool of 40 can contain almost no code.
+
+| config | r@1 | r@5 | r@10 | MRR | pinpoint | behavioral | architectural | paraphrase |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| step 5 (pooled) | 0.370 | 0.796 | 0.889 | 0.543 | 0.729 | 0.574 | 0.386 | **0.527** |
+| code floor = 2 | 0.389 | 0.833 | 0.926 | 0.557 | 0.729 | 0.560 | 0.469 | 0.505 |
+| code floor = 5 | 0.389 | 0.870 | **0.963** | 0.568 | 0.729 | 0.560 | 0.550 | 0.465 |
+| **stratified** | **0.574** | **0.870** | 0.926 | **0.706** | **0.875** | **0.785** | **0.761** | 0.452 |
+
+`architectural` goes from MRR 0.386 to **0.761** with r@5 and r@10 both at
+**1.000**. Overall MRR rises 0.543 → 0.706, the largest single improvement in the
+project.
+
+## Findings
+
+**B12. A softer intervention was tried first and was clearly worse.**
+A "code floor" (pooled fusion, then top up if fewer than N code results made the
+cut) reached only MRR 0.568 against stratification's 0.706. The reason is
+positional: the floor injects code *after* fusion, so it enters at the bottom of
+the list, whereas stratification lets code compete from rank 1 of its own space.
+Where an intervention happens in the pipeline mattered more than how much code it
+forced in.
+
+**B13. Equal stratum weighting is the only stable point — it is not a tunable.**
+Tilting toward prose collapses the system, and the boundary is at exactly parity:
+
+| prose_weight (code = 1.0) | overall MRR |
+|---|---:|
+| 1.0 | **0.706** |
+| 1.1 | 0.349 |
+| 1.2 | 0.312 |
+| 1.5 | 0.258 |
+
+Any tilt makes one stratum systematically outrank the other at equal
+within-stratum rank; since each stratum supplies more candidates (40) than there
+are slots (20), the lighter stratum is shut out almost entirely. Noted in
+`config.py` so nobody "optimises" it later.
+
+**B14. The fix has a real cost: `paraphrase` regressed.**
+`paraphrase` MRR fell 0.527 → 0.452 and r@5 0.800 → 0.600, and `n12`/`n13` now
+miss entirely. Those questions are answered by documentation, so guaranteeing code
+half the slots displaces the pages that answer them. The trade is 0.075
+`paraphrase` MRR for 0.375 `architectural` MRR and 0.163 overall — worth taking,
+but it is a trade, not a free win. The principled fix is query-dependent
+stratum weighting (identifier-bearing queries favour code, prose-shaped queries
+favour docs), deliberately not attempted here to avoid overfitting 54 questions.
+
+## Chosen configuration
+
+`STRATIFY_RETRIEVAL=True`, `CODE_WEIGHT=PROSE_WEIGHT=1.0`, plus step 4/5
+settings. Reproduce the pooled behaviour by omitting `--stratify`.
+
 ## Open items carried into later steps
 
-- **Docs still crowd out source code.** `a03` ("how is security organized?") sits
-  at rank 10: its top six results are all Markdown, and `fastapi/security/*.py`
-  never appears. This is the same failure noted in step 1 and remains unfixed —
-  a per-kind or per-language quota in the fusion step is the likely remedy
-- **Architectural ranking, as opposed to recall,** is still unsolved (MRR 0.386)
-- 4 questions still miss entirely at k=20: `a02`, `a06`, `n03`, `a08`
-- `a02` regressed from rank 16 to a miss when cards were added — unexplained
+- **`paraphrase` regression** from stratification (see B14) — query-dependent
+  stratum weighting is the proposed fix
+- 3 questions miss entirely at k=20: `n03`, `n12`, `n13` — all `paraphrase`,
+  consistent with B14 rather than a separate defect
+- `behavioral`/`pinpoint` remain n=12; grow before trusting small differences
+- Untested: does indexing `tests/` help or hurt?
+- Untested: `jina-embeddings-v2-base-code` vs `text-embedding-3-small`
 - **Behavioral MRR regressed** under the r@5-tuned weights (lexical 0.738 →
   hybrid 0.520) even though its r@5 improved (0.917 → 0.833). Worth a per-segment
   weighting experiment rather than one global setting

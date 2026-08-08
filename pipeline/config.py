@@ -66,6 +66,23 @@ MAX_CHUNKS_PER_FILE = 2
 # about relationships between files, which no single code chunk contains.
 INDEX_CARDS = True
 
+# Prose outnumbers code 5:1 at the chunk level (2201 vs 430 on the fastapi
+# corpus), so docs crowd source files out of the top-k regardless of relevance.
+# Stratified retrieval gives code and prose separate rank spaces and fuses them,
+# so the best code chunk competes at rank 1 of its own list.
+STRATIFY_RETRIEVAL = True
+CODE_LANGUAGES = {
+    "python", "javascript", "typescript", "go", "java", "ruby", "rust",
+    "c", "cpp", "csharp", "php", "swift", "kotlin", "scala", "shell", "sql",
+}
+# Do NOT tune these away from parity. Equal weighting is the only stable point:
+# any tilt makes one stratum systematically outrank the other at equal
+# within-stratum rank, and since each stratum supplies more candidates than there
+# are slots, the lighter stratum is shut out. prose_weight=1.1 alone drops overall
+# MRR from 0.706 to 0.349.
+CODE_WEIGHT = 1.0
+PROSE_WEIGHT = 1.0
+
 # --- Repo walking -----------------------------------------------------------
 MAX_FILE_BYTES = 1_000_000
 
