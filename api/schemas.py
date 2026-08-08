@@ -70,3 +70,53 @@ class AnswerOut(BaseModel):
 class ErrorOut(BaseModel):
     message: str
     detail: Optional[Any] = None
+
+
+# --- steps 10-12: repo lifecycle and conversations -------------------------
+
+
+class AddRepoRequest(BaseModel):
+    url: str = Field(min_length=8, max_length=300)
+    variant: str = Field(default="main", pattern=r"^[A-Za-z0-9_-]{1,32}$")
+
+
+class RepoStatusOut(BaseModel):
+    id: str
+    name: str
+    url: Optional[str] = None
+    variant: str
+    collection: str
+    status: str
+    stage: Optional[str] = None
+    error: Optional[str] = None
+    commit_sha: Optional[str] = None
+    files_indexed: int = 0
+    chunks: int = 0
+    languages: Dict[str, int] = Field(default_factory=dict)
+    indexed_at: Optional[float] = None
+    ready: bool = False
+
+
+class NewConversationRequest(BaseModel):
+    repo_id: str
+
+
+class ConversationOut(BaseModel):
+    id: str
+    repo_id: str
+    title: Optional[str] = None
+
+
+class MessageOut(BaseModel):
+    id: str
+    role: str
+    content: str
+    rewritten_query: Optional[str] = None
+    trace: Optional[Any] = None
+    created_at: float
+
+
+class ChatRequest(BaseModel):
+    question: str = Field(min_length=1, max_length=1000)
+    mode: str = Field(default="hybrid", pattern="^(semantic|lexical|hybrid)$")
+    top_k: int = Field(default=6, ge=1, le=20)

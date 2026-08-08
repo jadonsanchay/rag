@@ -6,6 +6,7 @@ Usage:
 """
 
 import argparse
+from typing import Optional
 
 from pipeline import config
 from pipeline.embeddings import EmbeddingManager
@@ -23,11 +24,16 @@ def build_retriever(
     rrf_k: int = config.RRF_K,
     max_per_file: int = config.MAX_CHUNKS_PER_FILE,
     stratify: bool = config.STRATIFY_RETRIEVAL,
+    provider: Optional[str] = None,
+    model: Optional[str] = None,
 ) -> HybridRetriever:
     collection = collection_name_for_repo(repo, variant)
+    # The query must be embedded by the model that built the index. Querying a
+    # 384-dim MiniLM collection with a 1536-dim OpenAI vector fails outright, and
+    # a same-dimension mismatch would fail silently as bad results.
     return HybridRetriever(
         VectorStore(collection_name=collection),
-        EmbeddingManager(),
+        EmbeddingManager(model_name=model, provider=provider or config.EMBEDDING_PROVIDER),
         lexical_index=LexicalIndex(collection) if mode != "semantic" else None,
         mode=mode,
         semantic_weight=semantic_weight,

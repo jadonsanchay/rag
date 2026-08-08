@@ -27,13 +27,14 @@ from api.schemas import (
     AskRequest,
     CitationOut,
     FileOut,
-    RepoOut,
     SourceOut,
 )
+from api.conversations import router as conversations_router
+from api.repos import router as repos_router
 from api.sse import sse_comment, sse_event
 from pipeline import config
 from pipeline.generator import AnswerGenerator
-from pipeline.manifests import all_manifests, manifest_path, repo_root_for
+from pipeline.manifests import load_manifest_for, manifest_path, repo_root_for
 from pipeline.retriever import HybridRetriever
 from pipeline.vector_store import collection_name_for_repo
 from query import build_retriever
@@ -42,7 +43,7 @@ MANIFEST_DIR = config.DATA_DIR / "index_manifests"
 PREVIEW_CHARS = 400
 MAX_FILE_LINES = 2000
 
-app = FastAPI(title="Codebase Q&A", version="0.7.0")
+app = FastAPI(title="Codebase Q&A", version="0.12.0")
 
 # The step 8 frontend runs on a separate dev-server origin.
 app.add_middleware(
@@ -51,6 +52,21 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+app.include_router(repos_router)
+app.include_router(conversations_router)
+
+
+@app.on_event("startup")
+def backfill_registry() -> None:
+    """Import manifests written before the registry existed, so CLI-indexed
+    repos appear alongside ones added through the API."""
+    from pipeline.registry import import_manifests
+
+    imported = import_manifests()
+    if imported:
+        print(f"[startup] imported {imported} repo(s) from manifests")
+
 
 # Building a retriever opens a Chroma client and a SQLite connection, so they are
 # reused across requests rather than rebuilt per question.
@@ -78,10 +94,30 @@ def ensure_indexed(repo: str, variant: str) -> None:
         )
 
 
+def embedding_for(repo: str, variant: str) -> tuple:
+    """The provider/model a collection was built with.
+
+    Collections are not interchangeable: one built with MiniLM holds 384-dim
+    vectors and rejects a 1536-dim OpenAI query outright. The registry records
+    what was used, with the manifest as a fallback for older indexes.
+    """
+    from pipeline.registry import get_registry
+
+    entry = get_registry().find_repo(repo, variant)
+    if entry and entry.embedding_model:
+        return entry.embedding_provider, entry.embedding_model
+
+    manifest = load_manifest_for(repo, variant)
+    return manifest.get("embedding_provider"), manifest.get("embedding_model")
+
+
 def get_retriever(repo: str, variant: str, mode: str) -> HybridRetriever:
     key = (repo, variant, mode)
     if key not in _retrievers:
-        _retrievers[key] = build_retriever(repo, variant, mode)
+        provider, model = embedding_for(repo, variant)
+        _retrievers[key] = build_retriever(
+            repo, variant, mode, provider=provider, model=model
+        )
     return _retrievers[key]
 
 
@@ -120,29 +156,6 @@ def to_source_out(index: int, result: dict) -> SourceOut:
 @app.get("/health")
 def health() -> dict:
     return {"status": "ok", "indexed_repos": len(list(MANIFEST_DIR.glob("*.json")))}
-
-
-@app.get("/repos", response_model=List[RepoOut])
-def list_repos() -> List[RepoOut]:
-    """Indexed collections, read from the manifests written by index_repo.py."""
-    repos = []
-    for path in sorted(MANIFEST_DIR.glob("*.json")):
-        try:
-            manifest = json.loads(path.read_text())
-        except (OSError, json.JSONDecodeError):
-            continue
-        repos.append(
-            RepoOut(
-                repo=manifest.get("repo", path.stem),
-                variant=manifest.get("variant", ""),
-                collection=manifest.get("collection", path.stem),
-                chunks=manifest.get("chunks", 0),
-                files_indexed=manifest.get("files_indexed"),
-                commit_sha=manifest.get("commit_sha"),
-                embedding_model=manifest.get("embedding_model"),
-            )
-        )
-    return repos
 
 
 @app.get("/file", response_model=FileOut)

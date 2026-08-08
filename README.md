@@ -32,6 +32,9 @@ turn out to be elsewhere:
   rank spaces.
 - **An answer you cannot check is not useful.** Citations are verified against the
   working tree, and the system refuses rather than guessing.
+- **A follow-up is unretrievable as written.** "And where is that called from?"
+  embeds to noise. Condensing it against the history first moved retrieval MRR
+  from 0.259 to 0.823.
 - **"Supports language X" is easy to claim and easy to get wrong.** The first
   TypeScript spec recognised classes and `function` declarations — and matched
   almost nothing in a real Next.js project, where every component is
@@ -115,7 +118,13 @@ uv run uvicorn api.main:app --reload --port 8000
 
 | endpoint | purpose |
 |---|---|
-| `POST /ask` | SSE stream: `trace` → `token`… → `done` |
+| `POST /repos` | add a public GitHub URL; clones and indexes in the background (202) |
+| `GET /repos/{id}` | poll the indexing stage: `queued → cloning → indexing → ready` |
+| `POST /repos/{id}/reindex` | re-clone and rebuild |
+| `DELETE /repos/{id}` | drop indexes, registry row, and the clone |
+| `POST /conversations` | start a thread against one repo |
+| `POST /conversations/{id}/messages` | SSE: `rewrite` → `trace` → `token`… → `done` |
+| `POST /ask` | stateless single question; SSE `trace` → `token`… → `done` |
 | `GET /repos` | indexed collections and their manifests |
 | `GET /file` | a slice of a source file, for the viewer behind a citation |
 | `GET /health` | liveness |
@@ -135,10 +144,11 @@ npm install
 npm run dev            # http://localhost:5173
 ```
 
-Three panels: the streamed answer with clickable `[n]` citation markers, the
-retrieved sources with the trace that explains why each one ranked
-(`lexical:code #3 · semantic:code #1`), and a slide-over source viewer that opens
-the cited file with the cited lines highlighted.
+Paste a GitHub URL to index a repo, switch between indexed repos, then chat. Each
+turn shows the streamed answer with clickable `[n]` citation markers, the sources
+with the trace explaining why each ranked (`lexical:code #3 · semantic:code #1`),
+and — for follow-ups — the standalone query the question was rewritten into. Click
+any source to open the file at the cited lines.
 
 `EventSource` cannot issue a POST, so SSE frames are parsed by hand off the fetch
 body stream (`web/src/api.ts`). The answer renders with a regex walk rather than a
@@ -147,7 +157,7 @@ fences, dangling backticks — and a parser flickers as tokens arrive.
 
 ```bash
 npx playwright install chromium
-npm run smoke          # 13 browser checks
+npm run smoke          # 11 browser checks
 ```
 
 The smoke test asserts the thing unit tests cannot: that sources are on screen
@@ -196,6 +206,9 @@ pipeline/          library code
   generator.py       cited answers, refusal contract, streaming
   citations.py       verify cited spans against the working tree
   manifests.py       where each indexed repo actually lives on disk
+  registry.py        SQLite: indexed repos, their status, conversations
+  ingest_job.py      clone + background indexing with guards
+  conversation.py    rewrite follow-ups into standalone queries
 api/               FastAPI + SSE
 web/               React + TypeScript SPA (Vite)
 eval/              golden set, harnesses, judge, RESULTS.md
@@ -214,4 +227,7 @@ query.py / ask.py  CLI
   Other languages fall back to text windows. The eval set is Python-only, so
   multi-language support is verified structurally (spans, symbol extraction)
   rather than by a retrieval metric.
-- Single repo per collection, no incremental re-indexing.
+- Re-indexing rebuilds from scratch; there is no incremental update.
+- Background jobs run in-process (FastAPI `BackgroundTasks`). Fine for one user;
+  a restart mid-index leaves a repo stuck in `indexing`.
+- No auth. Public GitHub repos only, capped at 400MB and 6000 indexable files.

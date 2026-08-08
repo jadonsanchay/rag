@@ -216,15 +216,21 @@ def build_file_cards(
         if not text:
             continue
 
+        # Anchor to line 1, not the whole file. A card is a generated summary, not
+        # a span of code, and citing "sessions.py:1-920" tells a reader nothing —
+        # the same defect fixed for class skeletons in step 5.
         cards.append(
             Chunk(
                 text=text,
                 path=path,
                 start_line=1,
-                end_line=len(document.page_content.splitlines()) or 1,
+                end_line=1,
                 kind="file_card",
                 language=language,
-                extra={"is_card": True},
+                extra={
+                    "is_card": True,
+                    "file_line_count": len(document.page_content.splitlines()) or 1,
+                },
             )
         )
 

@@ -1,122 +1,291 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  askStream,
-  fetchRepos,
-  type AnswerDone,
-  type Repo,
+  addRepo,
+  createConversation,
+  deleteRepo,
+  listRepoStatuses,
+  reindexRepo,
+  sendMessage,
+  type ChatDone,
+  type RepoStatus,
   type Source,
 } from "./api";
 import { AnswerText } from "./components/AnswerText";
+import { RepoBar } from "./components/RepoBar";
 import { SourceList } from "./components/SourceList";
 import { SourceViewer } from "./components/SourceViewer";
 
-const REPO = "fastapi";
-const VARIANT = "astcode-cards";
-
-const EXAMPLES = [
-  "Where is the APIRouter class defined?",
-  "How is the security system organized?",
-  "How does FastAPI decide to run my endpoint in a threadpool?",
-  "How do I let someone upload a file?",
-  "How does the billing module calculate charges?",
-];
-
 const REFUSAL_TOKEN = "INSUFFICIENT_CONTEXT";
+const POLL_MS = 2000;
+const IN_PROGRESS = new Set(["queued", "cloning", "indexing"]);
+
+interface Turn {
+  id: string;
+  question: string;
+  rewritten: string | null;
+  answer: string;
+  sources: Source[];
+  retrievalMs: number | null;
+  done: ChatDone | null;
+  error: string | null;
+  streaming: boolean;
+}
 
 export default function App() {
+  const [repos, setRepos] = useState<RepoStatus[]>([]);
+  const [activeRepoId, setActiveRepoId] = useState<string | null>(null);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [turns, setTurns] = useState<Turn[]>([]);
   const [question, setQuestion] = useState("");
-  const [sources, setSources] = useState<Source[]>([]);
-  const [answer, setAnswer] = useState("");
-  const [done, setDone] = useState<AnswerDone | null>(null);
-  const [retrievalMs, setRetrievalMs] = useState<number | null>(null);
-  const [streaming, setStreaming] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [viewing, setViewing] = useState<Source | null>(null);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [repo, setRepo] = useState<Repo | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [viewing, setViewing] = useState<{ source: Source; repo: string } | null>(null);
 
   const abortRef = useRef<AbortController | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const activeRepo = repos.find((r) => r.id === activeRepoId) ?? null;
+  const streaming = turns.some((t) => t.streaming);
+
+  const refreshRepos = useCallback(async () => {
+    try {
+      const rows = await listRepoStatuses();
+      setRepos(rows);
+      setActiveRepoId((current) => {
+        if (current && rows.some((r) => r.id === current)) return current;
+        return rows.find((r) => r.ready)?.id ?? rows[0]?.id ?? null;
+      });
+    } catch {
+      setNotice("Cannot reach the API. Is uvicorn running on port 8000?");
+    }
+  }, []);
 
   useEffect(() => {
-    fetchRepos()
-      .then((repos) => setRepo(repos.find((r) => r.variant === VARIANT) ?? null))
-      .catch(() => setRepo(null));
-  }, []);
+    void refreshRepos();
+  }, [refreshRepos]);
 
-  useEffect(() => () => abortRef.current?.abort(), []);
+  // Poll only while something is actually indexing, so an idle page is quiet.
+  useEffect(() => {
+    if (!repos.some((r) => IN_PROGRESS.has(r.status))) return;
+    const timer = setInterval(() => void refreshRepos(), POLL_MS);
+    return () => clearInterval(timer);
+  }, [repos, refreshRepos]);
 
-  const ask = useCallback((text: string) => {
-    const trimmed = text.trim();
-    if (!trimmed) return;
+  // A conversation is scoped to one repo; switching repos starts a new thread.
+  useEffect(() => {
+    if (!activeRepo?.ready) {
+      setConversationId(null);
+      return;
+    }
+    let cancelled = false;
+    setTurns([]);
+    createConversation(activeRepo.id)
+      .then((id) => !cancelled && setConversationId(id))
+      .catch(() => !cancelled && setNotice("Could not start a conversation."));
+    return () => {
+      cancelled = true;
+    };
+  }, [activeRepo?.id, activeRepo?.ready]);
 
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [turns.length]);
 
-    setQuestion(trimmed);
-    setSources([]);
-    setAnswer("");
-    setDone(null);
-    setRetrievalMs(null);
-    setError(null);
-    setActiveIndex(null);
-    setStreaming(true);
+  const patchTurn = (id: string, patch: Partial<Turn>) =>
+    setTurns((prev) => prev.map((t) => (t.id === id ? { ...t, ...patch } : t)));
 
-    void askStream(
-      { question: trimmed, repo: REPO, variant: VARIANT, signal: controller.signal },
-      {
-        onTrace: (incoming, ms) => {
-          // Sources land before generation starts, so they render immediately
-          // rather than after the answer completes.
-          setSources(incoming);
-          setRetrievalMs(ms);
+  const ask = useCallback(
+    (text: string) => {
+      const trimmed = text.trim();
+      if (!trimmed || !conversationId) return;
+
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+
+      const turnId = `${Date.now()}`;
+      setTurns((prev) => [
+        ...prev,
+        {
+          id: turnId,
+          question: trimmed,
+          rewritten: null,
+          answer: "",
+          sources: [],
+          retrievalMs: null,
+          done: null,
+          error: null,
+          streaming: true,
         },
-        onToken: (chunk) => setAnswer((prev) => prev + chunk),
-        onDone: (payload) => {
-          setDone(payload);
-          setAnswer(payload.answer);
-          setStreaming(false);
-        },
-        onError: (message) => {
-          setError(message);
-          setStreaming(false);
-        },
-      },
-    );
-  }, []);
+      ]);
+      setQuestion("");
 
-  const jumpToSource = useCallback((index: number) => {
-    setActiveIndex(index);
-    document
-      .getElementById(`source-${index}`)
-      ?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, []);
-
-  const invalidCitations = new Set(
-    (done?.citations ?? []).filter((c) => !c.valid).map((c) => c.index),
+      void sendMessage(
+        conversationId,
+        trimmed,
+        {
+          onRewrite: (_original, query) => patchTurn(turnId, { rewritten: query }),
+          onTrace: (sources, ms) => patchTurn(turnId, { sources, retrievalMs: ms }),
+          onToken: (chunk) =>
+            setTurns((prev) =>
+              prev.map((t) => (t.id === turnId ? { ...t, answer: t.answer + chunk } : t)),
+            ),
+          onDone: (payload) =>
+            patchTurn(turnId, { done: payload, answer: payload.answer, streaming: false }),
+          onError: (message) => patchTurn(turnId, { error: message, streaming: false }),
+        },
+        controller.signal,
+      );
+    },
+    [conversationId],
   );
-  const refused = done?.refused ?? answer.startsWith(REFUSAL_TOKEN);
-  const refusalDetail = refused
-    ? answer.slice(answer.indexOf(REFUSAL_TOKEN) + REFUSAL_TOKEN.length).trim()
-    : "";
+
+  const handleAdd = async (url: string) => {
+    setBusy(true);
+    setNotice(null);
+    try {
+      const repo = await addRepo(url);
+      setActiveRepoId(repo.id);
+      await refreshRepos();
+    } catch (error) {
+      setNotice((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    await deleteRepo(id).catch((e: Error) => setNotice(e.message));
+    setConversationId(null);
+    await refreshRepos();
+  };
+
+  const handleReindex = async (id: string) => {
+    await reindexRepo(id).catch((e: Error) => setNotice(e.message));
+    await refreshRepos();
+  };
 
   return (
     <div className="app">
       <div className="masthead">
         <h1>Codebase Q&amp;A</h1>
-        {repo && (
-          <span className="repo-chip">
-            {repo.repo} @ {repo.commit_sha?.slice(0, 7)} · {repo.chunks} chunks
-          </span>
-        )}
+        <span className="tagline-inline">
+          hybrid retrieval · verified citations · follow-ups rewritten before search
+        </span>
       </div>
-      <p className="tagline">
-        Hybrid retrieval over source and docs. Every citation is checked against the
-        working tree, and the trace shows why each source ranked.
-      </p>
+
+      <RepoBar
+        repos={repos}
+        activeId={activeRepoId}
+        busy={busy}
+        onSelect={setActiveRepoId}
+        onAdd={handleAdd}
+        onDelete={handleDelete}
+        onReindex={handleReindex}
+      />
+
+      {notice && <p className="error">{notice}</p>}
+
+      {!repos.length && (
+        <p className="placeholder">
+          No repositories indexed yet. Paste a public GitHub URL above — it will be
+          cloned and indexed in the background.
+        </p>
+      )}
+
+      {activeRepo && !activeRepo.ready && (
+        <p className="placeholder">
+          {activeRepo.status === "failed"
+            ? "This repository failed to index. Fix the URL or try another."
+            : "Indexing… you can ask questions as soon as it is ready."}
+        </p>
+      )}
+
+      <div className="transcript">
+        {turns.map((turn) => {
+          const invalid = new Set(
+            (turn.done?.citations ?? []).filter((c) => !c.valid).map((c) => c.index),
+          );
+          const refused = turn.done?.refused ?? turn.answer.startsWith(REFUSAL_TOKEN);
+
+          return (
+            <div className="turn" key={turn.id}>
+              <div className="bubble user">{turn.question}</div>
+
+              {turn.rewritten && (
+                /* Surfacing the rewrite matters: otherwise a user cannot tell why
+                   a follow-up returned what it did. */
+                <div className="rewrite-note">
+                  searched for: <span>{turn.rewritten}</span>
+                </div>
+              )}
+
+              <div className="turn-body">
+                <div className="bubble assistant">
+                  {turn.error && <p className="error">{turn.error}</p>}
+
+                  {!turn.error && refused && (
+                    <div className="refusal">
+                      <strong>Not answerable from this repository.</strong>
+                    </div>
+                  )}
+
+                  {!turn.error && !refused && turn.answer && (
+                    <div className="answer">
+                      <AnswerText
+                        text={turn.answer}
+                        invalid={invalid}
+                        onCitationClick={(index) =>
+                          document
+                            .getElementById(`src-${turn.id}-${index}`)
+                            ?.scrollIntoView({ behavior: "smooth", block: "center" })
+                        }
+                      />
+                      {turn.streaming && <span className="caret" />}
+                    </div>
+                  )}
+
+                  {!turn.error && !turn.answer && turn.streaming && (
+                    <p className="placeholder">
+                      {turn.sources.length ? "Sources retrieved — generating…" : "Retrieving…"}
+                    </p>
+                  )}
+
+                  {turn.done && !refused && (
+                    <div className="verify">
+                      <span className={invalid.size ? "bad" : "ok"}>
+                        {turn.done.citation_summary || "no citations"}
+                      </span>
+                      <span>
+                        {turn.done.timing_ms.retrieval}ms + {turn.done.timing_ms.generation}ms
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {turn.sources.length > 0 && (
+                  <div className="turn-sources" id={`sources-${turn.id}`}>
+                    <SourceList
+                      sources={turn.sources}
+                      citedIndices={turn.done?.cited_indices ?? []}
+                      citations={turn.done?.citations ?? []}
+                      activeIndex={null}
+                      idPrefix={`src-${turn.id}`}
+                      onSelect={(source) =>
+                        activeRepo && setViewing({ source, repo: activeRepo.name })
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+        <div ref={bottomRef} />
+      </div>
 
       <form
-        className="ask"
+        className="ask sticky"
         onSubmit={(event) => {
           event.preventDefault();
           ask(question);
@@ -125,11 +294,16 @@ export default function App() {
         <input
           value={question}
           onChange={(event) => setQuestion(event.target.value)}
-          placeholder="Ask about the indexed repository…"
+          placeholder={
+            turns.length
+              ? "Follow up — pronouns are resolved against the conversation…"
+              : "Ask about this repository…"
+          }
           aria-label="Question"
+          disabled={!conversationId}
         />
-        <button type="submit" disabled={streaming || !question.trim()}>
-          {streaming ? "Answering…" : "Ask"}
+        <button type="submit" disabled={streaming || !question.trim() || !conversationId}>
+          {streaming ? "…" : "Send"}
         </button>
         {streaming && (
           <button
@@ -137,7 +311,7 @@ export default function App() {
             className="secondary"
             onClick={() => {
               abortRef.current?.abort();
-              setStreaming(false);
+              setTurns((prev) => prev.map((t) => ({ ...t, streaming: false })));
             }}
           >
             Stop
@@ -145,107 +319,12 @@ export default function App() {
         )}
       </form>
 
-      <div className="examples">
-        {EXAMPLES.map((example) => (
-          <button key={example} disabled={streaming} onClick={() => ask(example)}>
-            {example}
-          </button>
-        ))}
-      </div>
-
-      <div className="columns">
-        <section className="panel">
-          <div className="panel-head">
-            <h2>Answer</h2>
-            {done && (
-              <span style={{ font: "11px var(--mono)", color: "var(--muted)" }}>
-                {done.timing_ms.retrieval}ms retrieval · {done.timing_ms.generation}ms
-                generation
-              </span>
-            )}
-          </div>
-          <div className="panel-body">
-            {error && <p className="error">{error}</p>}
-
-            {!error && !answer && !streaming && (
-              <p className="placeholder">
-                Ask a question, or try one of the examples. The last example is
-                deliberately unanswerable — the system should refuse rather than
-                invent something.
-              </p>
-            )}
-
-            {!error && refused && (
-              <div className="refusal">
-                <strong>Not answerable from this repository.</strong>
-                {refusalDetail && <div style={{ marginTop: 4 }}>{refusalDetail}</div>}
-              </div>
-            )}
-
-            {!error && !refused && answer && (
-              <div className="answer">
-                <AnswerText
-                  text={answer}
-                  invalid={invalidCitations}
-                  onCitationClick={jumpToSource}
-                />
-                {streaming && <span className="caret" />}
-              </div>
-            )}
-
-            {!error && !answer && streaming && (
-              <p className="placeholder">
-                {sources.length
-                  ? "Sources retrieved — generating…"
-                  : "Retrieving…"}
-              </p>
-            )}
-
-            {done && !refused && (
-              <div className="verify" style={{ marginTop: 16 }}>
-                <span className={invalidCitations.size ? "bad" : "ok"}>
-                  {done.citation_summary || "no citations"}
-                </span>
-                {done.fabricated_indices.length > 0 && (
-                  <span className="bad">
-                    fabricated source numbers: {done.fabricated_indices.join(", ")}
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-        </section>
-
-        <section className="panel">
-          <div className="panel-head">
-            <h2>Retrieved sources</h2>
-            {retrievalMs !== null && (
-              <span style={{ font: "11px var(--mono)", color: "var(--muted)" }}>
-                {sources.length} in {retrievalMs}ms
-              </span>
-            )}
-          </div>
-          {sources.length ? (
-            <SourceList
-              sources={sources}
-              citedIndices={done?.cited_indices ?? []}
-              citations={done?.citations ?? []}
-              activeIndex={activeIndex}
-              onSelect={setViewing}
-            />
-          ) : (
-            <div className="panel-body">
-              <p className="placeholder">
-                Sources appear here as soon as retrieval finishes — before the answer
-                is written. Click one to read the code.
-              </p>
-            </div>
-          )}
-        </section>
-      </div>
-
       {viewing && (
-        <SourceViewer source={viewing} repo={REPO} onClose={() => setViewing(null)} />
+        <SourceViewer
+          source={viewing.source}
+          repo={viewing.repo}
+          onClose={() => setViewing(null)}
+        />
       )}
     </div>
   );

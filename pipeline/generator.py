@@ -159,22 +159,36 @@ class AnswerGenerator:
         return answer
 
     def stream(
-        self, query: str, retrieved_docs: Sequence[Dict[str, Any]]
+        self,
+        query: str,
+        retrieved_docs: Sequence[Dict[str, Any]],
+        history: Optional[Sequence[Dict[str, str]]] = None,
     ) -> Iterator[str]:
-        """Yield answer text deltas as they arrive."""
+        """Yield answer text deltas as they arrive.
+
+        `history` makes the answer conversational. Only the current turn's sources
+        are supplied, so the model cannot cite a chunk number from an earlier turn
+        that no longer maps to anything.
+        """
         if not retrieved_docs:
             yield f"{REFUSAL_TOKEN}\nNothing was retrieved for this question."
             return
 
         context = self.build_context(retrieved_docs)
-        user_prompt = f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer:"
+
+        if history:
+            from .conversation import build_chat_messages
+
+            messages = build_chat_messages(query, context, history, SYSTEM_PROMPT)
+        else:
+            messages = [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer:"},
+            ]
 
         stream = self.client.chat.completions.create(
             model=self.model,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_prompt},
-            ],
+            messages=messages,
             temperature=0,
             stream=True,
         )

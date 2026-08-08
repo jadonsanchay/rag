@@ -5,6 +5,8 @@ interface Props {
   citedIndices: number[];
   citations: Citation[];
   activeIndex: number | null;
+  /** Ids must be unique per turn once several turns are on screen. */
+  idPrefix?: string;
   onSelect(source: Source): void;
 }
 
@@ -42,6 +44,7 @@ export function SourceList({
   citedIndices,
   citations,
   activeIndex,
+  idPrefix = "source",
   onSelect,
 }: Props) {
   const cited = new Set(citedIndices);
@@ -62,7 +65,7 @@ export function SourceList({
         return (
           <button
             key={source.index}
-            id={`source-${source.index}`}
+            id={`${idPrefix}-${source.index}`}
             className={classes.join(" ")}
             onClick={() => onSelect(source)}
           >

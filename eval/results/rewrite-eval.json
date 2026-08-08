@@ -1,0 +1,90 @@
+{
+  "summary": {
+    "n": 8,
+    "raw": {
+      "recall@5": 0.375,
+      "recall@10": 0.625,
+      "mrr": 0.259
+    },
+    "rewritten": {
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 0.823
+    },
+    "rewrite_applied": 8
+  },
+  "results": [
+    {
+      "id": "r1",
+      "follow_up": "and where is it included into an app?",
+      "rewritten_query": "Where is the APIRouter class included into an app?",
+      "was_rewritten": true,
+      "reason": "rewritten from history",
+      "raw_rank": 3,
+      "rewritten_rank": 3
+    },
+    {
+      "id": "r2",
+      "follow_up": "which file is that in?",
+      "rewritten_query": "Which file is jsonable_encoder in?",
+      "was_rewritten": true,
+      "reason": "rewritten from history",
+      "raw_rank": 8,
+      "rewritten_rank": 1
+    },
+    {
+      "id": "r3",
+      "follow_up": "what status code does it return?",
+      "rewritten_query": "What status code does the request_validation_exception_handler return?",
+      "was_rewritten": true,
+      "reason": "rewritten from history",
+      "raw_rank": 2,
+      "rewritten_rank": 1
+    },
+    {
+      "id": "r4",
+      "follow_up": "does it cache them?",
+      "rewritten_query": "Does solve_dependencies cache the resolved dependencies?",
+      "was_rewritten": true,
+      "reason": "rewritten from history",
+      "raw_rank": 9,
+      "rewritten_rank": 1
+    },
+    {
+      "id": "r5",
+      "follow_up": "and how does the Swagger page get served?",
+      "rewritten_query": "How does the Swagger page get served?",
+      "was_rewritten": true,
+      "reason": "rewritten from history",
+      "raw_rank": 1,
+      "rewritten_rank": 1
+    },
+    {
+      "id": "r6",
+      "follow_up": "where is that class defined?",
+      "rewritten_query": "Where is the BackgroundTasks class defined?",
+      "was_rewritten": true,
+      "reason": "rewritten from history",
+      "raw_rank": null,
+      "rewritten_rank": 1
+    },
+    {
+      "id": "r7",
+      "follow_up": "which module holds it?",
+      "rewritten_query": "Which module holds the compatibility layer for FastAPI to support both Pydantic v1 and v2?",
+      "was_rewritten": true,
+      "reason": "rewritten from history",
+      "raw_rank": null,
+      "rewritten_rank": 1
+    },
+    {
+      "id": "r8",
+      "follow_up": "what does it use to do that?",
+      "rewritten_query": "What does FastAPI use to run an endpoint in a threadpool?",
+      "was_rewritten": true,
+      "reason": "rewritten from history",
+      "raw_rank": null,
+      "rewritten_rank": 4
+    }
+  ]
+}

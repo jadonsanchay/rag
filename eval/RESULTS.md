@@ -547,3 +547,52 @@ elaboration, not stating things the sources refute.
 - Untested: does indexing `tests/` help or hurt? The harness makes it measurable
 - Untested: a code-specific embedding model (`jina-embeddings-v2-base-code`)
   against `text-embedding-3-small`, now that the harness can settle it
+
+---
+
+# Step 12 — query rewriting for multi-turn
+
+A follow-up like "and where is that called from?" is unretrievable as written:
+embedded alone it matches nothing in particular, and BM25 sees only stopwords. The
+referent lives in the prior turns, so the question is condensed into a standalone
+query *before* it reaches either index.
+
+Measured on 8 two-turn exchanges against the fastapi corpus
+(`uv run python eval/rewrite_eval.py`):
+
+| | recall@5 | recall@10 | MRR |
+|---|---:|---:|---:|
+| raw follow-up | 0.375 | 0.625 | 0.259 |
+| **rewritten** | **1.000** | **1.000** | **0.823** |
+
+Three of eight went from *not found in the top 10* to rank 1:
+
+| follow-up | rewritten to | rank |
+|---|---|---|
+| "where is that class defined?" | "Where is the BackgroundTasks class defined?" | miss → 1 |
+| "which module holds it?" | "Which module holds the compatibility layer for Pydantic v1 and v2?" | miss → 1 |
+| "what does it use to do that?" | "What does FastAPI use to run an endpoint in a threadpool?" | miss → 4 |
+
+## Findings
+
+**B24. Rewriting is the single highest-leverage mechanism measured in this project.**
+MRR more than tripled (0.259 → 0.823) from one cheap call to a small model. No
+retrieval change in Phase B came close to that on its own.
+
+**B25. A cheap pre-filter keeps it from costing anything on normal questions.**
+Rewriting only runs when the question looks dependent — a follow-up opener, a
+pronoun, or fewer than five words. A self-contained question skips the call
+entirely, so the latency and cost land only where they buy something.
+
+**B26. The rewritten query is shown in the UI, not hidden.**
+Retrieval acting on a query the user did not type is the most confusing thing this
+system can do. The `rewrite` SSE frame carries the condensed query and the
+transcript renders it ("searched for: …"), so a surprising result is explainable
+rather than mysterious.
+
+## Limitation
+
+n=8, hand-written by the same person who wrote the rewriter's prompt. The effect
+size is large enough that the direction is not in doubt, but the absolute numbers
+should not be quoted as precise. Rewrite quality also depends on the prior turn
+being correct: a wrong first answer poisons the referent for the follow-up.
