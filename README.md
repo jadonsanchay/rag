@@ -101,6 +101,34 @@ Retrieval and generation both block, so they are pumped on a worker thread;
 concurrent requests return their traces within 1ms of each other rather than
 serialising.
 
+**Web UI** (needs the API running on port 8000):
+
+```bash
+cd web
+npm install
+npm run dev            # http://localhost:5173
+```
+
+Three panels: the streamed answer with clickable `[n]` citation markers, the
+retrieved sources with the trace that explains why each one ranked
+(`lexical:code #3 · semantic:code #1`), and a slide-over source viewer that opens
+the cited file with the cited lines highlighted.
+
+`EventSource` cannot issue a POST, so SSE frames are parsed by hand off the fetch
+body stream (`web/src/api.ts`). The answer renders with a regex walk rather than a
+markdown parser: a half-streamed answer is frequently invalid markdown — unclosed
+fences, dangling backticks — and a parser flickers as tokens arrive.
+
+```bash
+npx playwright install chromium
+npm run smoke          # 13 browser checks
+```
+
+The smoke test asserts the thing unit tests cannot: that sources are on screen
+*while the answer element does not yet exist*, that citation spans verify, that
+clicking a marker highlights its source, and that an unanswerable question is
+refused rather than answered.
+
 ## Evaluation
 
 The part that makes the rest trustworthy. Nothing was shipped on a hunch.
@@ -142,6 +170,7 @@ pipeline/          library code
   generator.py       cited answers, refusal contract, streaming
   citations.py       verify cited spans against the working tree
 api/               FastAPI + SSE
+web/               React + TypeScript SPA (Vite)
 eval/              golden set, harnesses, judge, RESULTS.md
 index_repo.py      build the indexes
 query.py / ask.py  CLI
