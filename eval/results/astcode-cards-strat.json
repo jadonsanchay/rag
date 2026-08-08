@@ -38,7 +38,7 @@
     "excluded": [],
     "cards": true,
     "files_indexed": 201,
-    "chunks": 2631,
+    "chunks": 2634,
     "skipped": {
       "outside include list": 1993,
       "ignored extension": 210,
@@ -47,16 +47,16 @@
     },
     "token_budget": {
       "token_limit": 8191,
-      "inspected_chunks": 2631,
+      "inspected_chunks": 2634,
       "chunks_over_limit": 0,
       "pct_over_limit": 0.0,
       "max_tokens_seen": 1137,
-      "mean_tokens": 225.0,
-      "total_tokens": 592087
+      "mean_tokens": 224.6,
+      "total_tokens": 591678
     },
     "duplicates": {
-      "total_chunks": 2631,
-      "unique_chunks": 2590,
+      "total_chunks": 2634,
+      "unique_chunks": 2593,
       "duplicate_chunks": 41,
       "pct_duplicate": 1.6
     }
@@ -67,7 +67,7 @@
       "recall@1": 0.5,
       "recall@5": 0.889,
       "recall@10": 0.926,
-      "mrr": 0.663,
+      "mrr": 0.661,
       "misses": [
         "n03",
         "n12",
@@ -96,7 +96,7 @@
         "recall@1": 0.333,
         "recall@5": 0.6,
         "recall@10": 0.733,
-        "mrr": 0.453,
+        "mrr": 0.448,
         "misses": [
           "n03",
           "n12",
@@ -236,7 +236,7 @@
         "10": true
       },
       "reciprocal_rank": 0.5,
-      "distinct_files_retrieved": 6,
+      "distinct_files_retrieved": 7,
       "top_5_paths": [
         "docs/en/docs/reference/uploadfile.md",
         "fastapi/datastructures.py",
@@ -293,8 +293,8 @@
       "distinct_files_retrieved": 7,
       "top_5_paths": [
         "fastapi/openapi/",
-        "fastapi/openapi/utils.py",
         "docs/en/docs/how-to/extending-openapi.md",
+        "fastapi/openapi/utils.py",
         "fastapi/openapi/utils.py",
         "docs/en/docs/how-to/extending-openapi.md"
       ],
@@ -955,7 +955,7 @@
         "10": true
       },
       "reciprocal_rank": 0.3333333333333333,
-      "distinct_files_retrieved": 9,
+      "distinct_files_retrieved": 8,
       "top_5_paths": [
         "fastapi/openapi/utils.py",
         "docs/en/docs/advanced/behind-a-proxy.md",
@@ -1016,8 +1016,8 @@
         "docs/en/docs/advanced/response-headers.md",
         "fastapi/exception_handlers.py",
         "docs/en/docs/tutorial/middleware.md",
-        "fastapi/security/http.py",
-        "docs/en/docs/tutorial/header-param-models.md"
+        "docs/en/docs/tutorial/header-param-models.md",
+        "fastapi/security/http.py"
       ],
       "hit_sources": []
     },
@@ -1101,7 +1101,7 @@
         "fastapi/security/api_key.py",
         "fastapi/security/api_key.py",
         "docs/en/docs/js/custom.js",
-        "docs/en/docs/js/custom.js"
+        "docs/en/docs/js/termynal.js"
       ],
       "hit_sources": [
         "lexical:prose"
@@ -1214,7 +1214,7 @@
         "fastapi/params.py",
         "fastapi/applications.py",
         "docs/en/docs/release-notes.md",
-        "docs/en/docs/js/termynal.js"
+        "fastapi/openapi/models.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -1486,19 +1486,19 @@
         "docs/en/docs/advanced/custom-response.md",
         "fastapi/responses.py"
       ],
-      "first_hit_rank": 3,
+      "first_hit_rank": 4,
       "hit_at": {
         "1": false,
         "5": true,
         "10": true
       },
-      "reciprocal_rank": 0.3333333333333333,
+      "reciprocal_rank": 0.25,
       "distinct_files_retrieved": 8,
       "top_5_paths": [
         "fastapi/openapi/docs.py",
         "fastapi/openapi/docs.py",
-        "docs/en/docs/advanced/custom-response.md",
         "docs/en/docs/js/custom.js",
+        "docs/en/docs/advanced/custom-response.md",
         "docs/en/docs/reference/websockets.md"
       ],
       "hit_sources": [

@@ -32,6 +32,10 @@ turn out to be elsewhere:
   rank spaces.
 - **An answer you cannot check is not useful.** Citations are verified against the
   working tree, and the system refuses rather than guessing.
+- **"Supports language X" is easy to claim and easy to get wrong.** The first
+  TypeScript spec recognised classes and `function` declarations — and matched
+  almost nothing in a real Next.js project, where every component is
+  `const Foo = () => {}`.
 
 Headline movement on a 62-question labelled set: retrieval MRR **0.334 → 0.706**,
 recall@5 **0.519 → 0.889**, with `pinpoint` and `architectural` both at recall@5 =
@@ -65,6 +69,28 @@ uv run python index_repo.py ~/.cache/codebase-qa/repos/fastapi \
 `--include` restricts the corpus to named subtrees, which keeps an eval corpus
 reproducible. FastAPI ships 26 translations of its docs and 701 near-duplicate
 tutorial snippets; indexing them floods the index with near-identical chunks.
+
+Any repo works, not just the sample. The manifest records where each indexed tree
+lives, so a repo outside the cache directory still resolves for citation
+verification and the source viewer:
+
+```bash
+uv run python index_repo.py ~/code/my-typescript-app --variant ts
+uv run python ask.py "How is the websocket server set up?" --repo my-typescript-app --variant ts
+```
+
+## Languages
+
+Structural (declaration-aware) chunking: **Python, TypeScript, JavaScript, Go,
+Rust, Java** — plus TSX/JSX. Everything else falls back to line-aware text
+windows, which still carry real line numbers for citations.
+
+Python uses the stdlib `ast` module; the rest use tree-sitter. That split is
+deliberate rather than lazy: `ast` understands docstrings and decorators natively
+and its output was already measured, so the `Chunker` interface exists to let the
+better parser win per language rather than to force one code path. Adding a
+language is a `LanguageSpec` entry (which node types are functions, which are
+containers) plus a smoke test — no grammar queries to write.
 
 **Search** (retrieval only, with the trace showing which retriever found what):
 
@@ -160,7 +186,7 @@ against only the easy questions had reported 8/8.
 ```
 pipeline/          library code
   repo_loader.py     walk a repo, ignore rules, language detection
-  chunkers/          AST chunking (Python) + line-aware text fallback
+  chunkers/          stdlib-ast (Python), tree-sitter (5 languages), text fallback
   cards.py           file/package structure summaries
   embeddings.py      swappable providers, exposing their token limits
   vector_store.py    ChromaDB
@@ -169,6 +195,7 @@ pipeline/          library code
   retriever.py       hybrid + stratified retrieval
   generator.py       cited answers, refusal contract, streaming
   citations.py       verify cited spans against the working tree
+  manifests.py       where each indexed repo actually lives on disk
 api/               FastAPI + SSE
 web/               React + TypeScript SPA (Vite)
 eval/              golden set, harnesses, judge, RESULTS.md
@@ -183,5 +210,8 @@ query.py / ask.py  CLI
   a deliberate trade, documented in RESULTS.md finding B14.
 - Answer *correctness* is unmeasured. Faithfulness checks that the sources support
   each claim, not that the claim is right.
-- Python only for AST chunking; other languages use the text fallback.
+- Structural chunking covers Python, TypeScript, JavaScript, Go, Rust and Java.
+  Other languages fall back to text windows. The eval set is Python-only, so
+  multi-language support is verified structurally (spans, symbol extraction)
+  rather than by a retrieval metric.
 - Single repo per collection, no incremental re-indexing.

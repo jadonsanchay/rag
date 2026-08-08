@@ -1,7 +1,7 @@
 import ast
 from typing import Callable, List, Optional, Tuple
 
-from .base import Chunk
+from .base import Chunk, emit_windowed
 from .text import TextChunker, default_token_counter
 
 DEF_NODES = (ast.FunctionDef, ast.AsyncFunctionDef)
@@ -231,70 +231,16 @@ class PythonASTChunker:
         parent_symbol: Optional[str],
         header: str,
     ) -> List[Chunk]:
-        """One chunk if it fits the token budget, otherwise windowed parts
-        that each re-state the signature."""
-        if self.count_tokens(text) <= self.max_tokens:
-            return [
-                Chunk(
-                    text=text,
-                    path=path,
-                    start_line=start_line,
-                    end_line=end_line,
-                    kind=kind,
-                    language=self.language,
-                    symbol=symbol,
-                    parent_symbol=parent_symbol,
-                )
-            ]
-
-        lines = text.splitlines()
-        # Bound the header so it can never dominate the part it labels.
-        header = header[:300]
-        header_cost = min(self.count_tokens(header), self.max_tokens // 4)
-        budget = max(self.max_tokens - header_cost, self.max_tokens // 4)
-
-        # Per-line costs, summed. Re-tokenizing the whole window on every line
-        # is quadratic; summing per-line counts slightly over-estimates, which
-        # errs on the safe side of the limit.
-        line_costs = [self.count_tokens(line) + 1 for line in lines]
-
-        windows: List[Tuple[int, int, str]] = []
-        index = 0
-        while index < len(lines):
-            cursor = index
-            running = 0
-            while cursor < len(lines):
-                if cursor > index and running + line_costs[cursor] > budget:
-                    break
-                running += line_costs[cursor]
-                cursor += 1
-            windows.append((index, cursor, "\n".join(lines[index:cursor])))
-            if cursor >= len(lines):
-                break
-            index = cursor
-
-        total = len(windows)
-        header_lines = len(header.splitlines())
-        chunks: List[Chunk] = []
-        for part_number, (offset, cursor, body) in enumerate(windows, start=1):
-            is_continuation = part_number > 1
-            prefix = f"{header}\n" if is_continuation else ""
-            chunks.append(
-                Chunk(
-                    text=f"{prefix}{body}".strip(),
-                    path=path,
-                    start_line=start_line + offset,
-                    end_line=start_line + cursor - 1,
-                    kind=kind,
-                    language=self.language,
-                    symbol=symbol,
-                    parent_symbol=parent_symbol,
-                    part=part_number,
-                    part_count=total,
-                    # Continuation parts get a synthetic identifier header that
-                    # is NOT present at start_line. A source viewer must skip
-                    # these lines when mapping chunk text back to the file.
-                    extra={"header_lines": header_lines if is_continuation else 0},
-                )
-            )
-        return chunks
+        return emit_windowed(
+            text=text,
+            path=path,
+            start_line=start_line,
+            end_line=end_line,
+            kind=kind,
+            language=self.language,
+            header=header,
+            max_tokens=self.max_tokens,
+            count_tokens=self.count_tokens,
+            symbol=symbol,
+            parent_symbol=parent_symbol,
+        )

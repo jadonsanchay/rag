@@ -135,8 +135,69 @@ def markdown_file_card(source: str, path: str) -> Optional[str]:
     return f"{path} — documentation page.\nSections: {shown}."
 
 
-def build_file_cards(documents: Sequence[Document]) -> List[Chunk]:
+def chunk_derived_file_card(
+    path: str, language: str, chunks: Sequence[Document]
+) -> Optional[str]:
+    """Build a card for any language from chunks already produced for its file.
+
+    Python and Markdown have bespoke extractors, but re-parsing every other
+    language to summarise it would duplicate work the chunker already did: the
+    symbols and their kinds are sitting in chunk metadata. This keeps cards
+    language-agnostic without a second parser per language.
+    """
+    containers: List[str] = []
+    functions: List[str] = []
+    methods: Dict[str, List[str]] = defaultdict(list)
+
+    for chunk in chunks:
+        metadata = chunk.metadata
+        symbol = metadata.get("symbol")
+        if not symbol:
+            continue
+        kind = metadata.get("kind")
+        parent = metadata.get("parent_symbol")
+        if kind == "class_skeleton":
+            containers.append(symbol)
+        elif parent:
+            methods[parent].append(symbol)
+        elif kind == "function":
+            functions.append(symbol)
+
+    if not (containers or functions):
+        return None
+
+    posix = PurePosixPath(path)
+    package = str(posix.parent) if str(posix.parent) != "." else "(root)"
+    lines = [f"{path} — {language} module in {package}."]
+
+    if containers:
+        described = []
+        for name in _dedupe(containers)[:MAX_SYMBOLS_LISTED]:
+            members = _dedupe(methods.get(name, []))[:8]
+            described.append(
+                f"{name} (members: {', '.join(members)})" if members else name
+            )
+        lines.append("Declares types: " + "; ".join(described) + ".")
+
+    if functions:
+        lines.append(
+            "Declares functions: "
+            + ", ".join(_dedupe(functions)[:MAX_SYMBOLS_LISTED])
+            + "."
+        )
+
+    return "\n".join(lines)
+
+
+def build_file_cards(
+    documents: Sequence[Document],
+    chunks: Optional[Sequence[Document]] = None,
+) -> List[Chunk]:
     cards: List[Chunk] = []
+
+    chunks_by_path: Dict[str, List[Document]] = defaultdict(list)
+    for chunk in chunks or []:
+        chunks_by_path[chunk.metadata.get("path", "")].append(chunk)
 
     for document in documents:
         metadata = document.metadata
@@ -147,6 +208,8 @@ def build_file_cards(documents: Sequence[Document]) -> List[Chunk]:
             text = python_file_card(document.page_content, path)
         elif language == "markdown":
             text = markdown_file_card(document.page_content, path)
+        elif chunks_by_path.get(path):
+            text = chunk_derived_file_card(path, language, chunks_by_path[path])
         else:
             text = None
 
@@ -247,9 +310,14 @@ def build_cards(
     documents: Sequence[Document],
     max_tokens: int = 400,
     count_tokens: Optional[Callable[[str], int]] = None,
+    file_chunks: Optional[Sequence[Document]] = None,
 ) -> List[Document]:
-    """All structural cards for a corpus, as Documents ready to embed."""
-    chunks = build_file_cards(documents) + build_package_cards(
+    """All structural cards for a corpus, as Documents ready to embed.
+
+    file_chunks, when supplied, lets non-Python languages get cards derived from
+    their already-computed chunk symbols.
+    """
+    chunks = build_file_cards(documents, file_chunks) + build_package_cards(
         documents, max_tokens=max_tokens, count_tokens=count_tokens
     )
 

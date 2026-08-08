@@ -6,15 +6,25 @@ from .. import config
 from .base import Chunk, Chunker
 from .python_ast import PythonASTChunker
 from .text import TextChunker, default_token_counter
+from .tree_sitter_chunker import SPECS as TREE_SITTER_SPECS
+from .tree_sitter_chunker import TreeSitterChunker, supported_languages
 
 __all__ = [
     "Chunk",
     "Chunker",
     "PythonASTChunker",
     "TextChunker",
+    "TreeSitterChunker",
     "chunk_documents",
     "get_chunker",
+    "structural_languages",
+    "supported_languages",
 ]
+
+
+def structural_languages() -> list:
+    """Languages that get structural (declaration-aware) chunking."""
+    return sorted({"python", *TREE_SITTER_SPECS})
 
 
 def get_chunker(
@@ -22,9 +32,14 @@ def get_chunker(
     max_tokens: int,
     count_tokens: Optional[Callable[[str], int]] = None,
 ) -> Chunker:
-    """Dispatch by language. Step 9 registers tree-sitter chunkers here."""
+    """Dispatch by language: stdlib ast for Python, tree-sitter where a grammar
+    is registered, line-aware text windows otherwise."""
     if language == "python":
         return PythonASTChunker(max_tokens=max_tokens, count_tokens=count_tokens)
+    if language in TREE_SITTER_SPECS:
+        return TreeSitterChunker(
+            language=language, max_tokens=max_tokens, count_tokens=count_tokens
+        )
     return TextChunker(language=language, max_tokens=max_tokens, count_tokens=count_tokens)
 
 
@@ -52,8 +67,12 @@ def chunk_documents(
     for document in documents:
         language = document.metadata.get("language", "text")
         if language not in chunkers:
-            budget = code_budget if language == "python" else prose_budget
-            chunkers[language] = get_chunker(language, budget, counter)
+            # Code gets the larger budget so a whole function usually survives
+            # intact; prose is windowed smaller for retrieval precision.
+            is_code = language in config.CODE_LANGUAGES
+            chunkers[language] = get_chunker(
+                language, code_budget if is_code else prose_budget, counter
+            )
 
         path = document.metadata.get("path", document.metadata.get("source", "unknown"))
         base_metadata = {

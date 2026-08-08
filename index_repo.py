@@ -152,12 +152,15 @@ def main():
         chunks = []
         if args.strategy == "ast-code":
             # Hold prose chunking at the baseline so any metric change is
-            # attributable to code chunking alone.
+            # attributable to code chunking alone. "Code" is every language with a
+            # structural chunker, not just Python (step 9).
             structural_docs = [
-                d for d in documents if d.metadata.get("language") == "python"
+                d for d in documents
+                if d.metadata.get("language") in config.CODE_LANGUAGES
             ]
             prose_docs = [
-                d for d in documents if d.metadata.get("language") != "python"
+                d for d in documents
+                if d.metadata.get("language") not in config.CODE_LANGUAGES
             ]
             chunks += split_documents(prose_docs, args.chunk_size, args.chunk_overlap)
 
@@ -175,6 +178,9 @@ def main():
             documents,
             max_tokens=config.TARGET_PROSE_TOKENS,
             count_tokens=embedder.count_tokens,
+            # Non-Python languages derive their cards from chunk symbols rather
+            # than a second parse.
+            file_chunks=chunks,
         )
         kinds = Counter(card.metadata.get("kind") for card in cards)
         chunks += cards

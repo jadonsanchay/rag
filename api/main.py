@@ -33,6 +33,7 @@ from api.schemas import (
 from api.sse import sse_comment, sse_event
 from pipeline import config
 from pipeline.generator import AnswerGenerator
+from pipeline.manifests import all_manifests, manifest_path, repo_root_for
 from pipeline.retriever import HybridRetriever
 from pipeline.vector_store import collection_name_for_repo
 from query import build_retriever
@@ -91,11 +92,12 @@ def get_generator() -> AnswerGenerator:
     return _generator
 
 
-def repo_root(repo: str) -> Path:
-    root = (config.REPOS_DIR / repo).resolve()
-    if not root.is_dir():
+def repo_root(repo: str, variant: Optional[str] = None) -> Path:
+    """Where the indexed tree lives, per its manifest."""
+    root = repo_root_for(repo, variant)
+    if root is None:
         raise HTTPException(status_code=404, detail=f"Repo '{repo}' is not on disk")
-    return root
+    return root.resolve()
 
 
 def to_source_out(index: int, result: dict) -> SourceOut:
@@ -146,13 +148,14 @@ def list_repos() -> List[RepoOut]:
 @app.get("/file", response_model=FileOut)
 def read_file(
     repo: str = Query(default="fastapi"),
+    variant: Optional[str] = Query(default=None),
     path: str = Query(..., min_length=1),
     start: int = Query(default=1, ge=1),
     end: Optional[int] = Query(default=None, ge=1),
     context: int = Query(default=0, ge=0, le=200),
 ) -> FileOut:
     """Return a slice of a file, for the source viewer behind a citation."""
-    root = repo_root(repo)
+    root = repo_root(repo, variant)
     target = (root / path).resolve()
 
     # Path traversal guard: a citation path is user-controllable input.
@@ -225,7 +228,9 @@ def ask_stream(request: AskRequest) -> Iterator[str]:
     generation_ms = int((time.perf_counter() - generation_started) * 1000)
 
     # Verification needs the complete answer, so it runs after the token stream.
-    answer = generator.finalize(text, results, repo_root=repo_root(request.repo))
+    answer = generator.finalize(
+        text, results, repo_root=repo_root(request.repo, request.variant)
+    )
     verification = answer.verification
 
     payload = AnswerOut(
@@ -261,7 +266,7 @@ async def ask(request: AskRequest) -> StreamingResponse:
     # Validate before the stream opens: once a 200 + text/event-stream is
     # committed, a client-visible status code is no longer available.
     ensure_indexed(request.repo, request.variant)
-    repo_root(request.repo)
+    repo_root(request.repo, request.variant)
     frames = ask_stream(request)
 
     async def pump():

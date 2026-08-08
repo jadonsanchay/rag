@@ -1,0 +1,38 @@
+{
+  "repo": "Collab",
+  "repo_path": "/Users/i_Sanchay.Jadon/Desktop/prepproj/Collab",
+  "commit_sha": "71d9903f945d1a1daf18defd95a7c9c1a7c8788b",
+  "collection": "repo_collab__ts-demo",
+  "strategy": "ast-code",
+  "variant": "ts-demo",
+  "chunk_size": 1000,
+  "chunk_overlap": 200,
+  "embedding_provider": "openai",
+  "embedding_model": "text-embedding-3-small",
+  "token_limit": 8191,
+  "include_only": [],
+  "excluded": [],
+  "cards": true,
+  "files_indexed": 90,
+  "chunks": 247,
+  "skipped": {
+    "unknown extension": 2,
+    "ignored filename": 1,
+    "ignored extension": 5
+  },
+  "token_budget": {
+    "token_limit": 8191,
+    "inspected_chunks": 247,
+    "chunks_over_limit": 0,
+    "pct_over_limit": 0.0,
+    "max_tokens_seen": 1143,
+    "mean_tokens": 125.9,
+    "total_tokens": 31098
+  },
+  "duplicates": {
+    "total_chunks": 247,
+    "unique_chunks": 246,
+    "duplicate_chunks": 1,
+    "pct_duplicate": 0.4
+  }
+}

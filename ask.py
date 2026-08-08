@@ -6,8 +6,9 @@ Usage:
 
 import argparse
 
-from pipeline import config
 from pipeline.generator import REFUSAL_TOKEN, AnswerGenerator
+from pipeline.config import RETRIEVAL_MODE
+from pipeline.manifests import repo_root_for
 from query import build_retriever, format_location
 
 
@@ -17,7 +18,7 @@ def main():
     parser.add_argument("--repo", default="fastapi", help="Indexed repo name")
     parser.add_argument("--variant", default="astcode-cards", help="Collection suffix")
     parser.add_argument(
-        "--mode", default=config.RETRIEVAL_MODE, choices=["semantic", "lexical", "hybrid"]
+        "--mode", default=RETRIEVAL_MODE, choices=["semantic", "lexical", "hybrid"]
     )
     parser.add_argument("--top-k", type=int, default=6)
     args = parser.parse_args()
@@ -26,7 +27,8 @@ def main():
     retriever = build_retriever(args.repo, args.variant, args.mode)
     results = retriever.retrieve(query, top_k=args.top_k)
 
-    repo_root = config.REPOS_DIR / args.repo
+    # Resolve from the manifest: the repo need not live under REPOS_DIR.
+    repo_root = repo_root_for(args.repo, args.variant)
     answer = AnswerGenerator().generate(query, results, repo_root=repo_root)
 
     if answer.refused:
