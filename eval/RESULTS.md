@@ -329,13 +329,101 @@ favour docs), deliberately not attempted here to avoid overfitting 54 questions.
 `STRATIFY_RETRIEVAL=True`, `CODE_WEIGHT=PROSE_WEIGHT=1.0`, plus step 4/5
 settings. Reproduce the pooled behaviour by omitting `--stratify`.
 
-## Open items carried into later steps
+---
 
-- **`paraphrase` regression** from stratification (see B14) — query-dependent
-  stratum weighting is the proposed fix
-- 3 questions miss entirely at k=20: `n03`, `n12`, `n13` — all `paraphrase`,
-  consistent with B14 rather than a separate defect
+# Step 6 — grounded answers, citations, and refusal
+
+Retrieval metrics say whether the right file was found. They say nothing about
+whether the answer is grounded in it, whether its citations are real, or whether
+the system admits ignorance. `eval/answer_eval.py` grades those.
+
+The golden set gained **8 `unanswerable` questions** — refusal cannot be measured
+without a negative class. Their subjects were chosen by grepping the corpus for
+zero matches (`billing`, `tenant`, `feature flag`, `circuit breaker`, `LDAP`,
+`audit log`, `AWS region`, `users table`), because several obvious candidates were
+contaminated: `redis` appears in 5 files, `kubernetes` 5, `rust` 12, `ORM` 163.
+`run_eval.py` excludes them from retrieval metrics, since a question with no
+correct file would otherwise score as a permanent recall miss.
+
+| metric | initial prompt | calibrated prompt |
+|---|---:|---:|
+| refusal rate on answerable | 0.259 | **0.074** |
+| — unwarranted (generator's fault) | 0.148 | **0.019** |
+| — warranted (retrieval missed) | 0.111 | 0.056 |
+| citation rate | 0.741 | **0.926** |
+| grounded rate (cites an expected file) | 0.593 | **0.815** |
+| **refusal rate on unanswerable** | 1.000 | **1.000** |
+| **hallucination rate on unanswerable** | 0.000 | **0.000** |
+| citations verified | 66/66 | **131/131** |
+| fabricated source numbers | 0 | **0** |
+
+Per segment (calibrated):
+
+| segment | n | false refusal | grounded |
+|---|---:|---:|---:|
+| pinpoint | 12 | 0.000 | **1.000** |
+| behavioral | 12 | 0.000 | 0.917 |
+| architectural | 15 | 0.000 | 0.933 |
+| paraphrase | 15 | 0.267 | 0.467 |
+
+## Findings
+
+**B15. The refusal metric was blaming the wrong component.**
+`false_refusal_rate` counted every refusal of an answerable question. But 6 of the
+first 14 refusals happened when retrieval had *not* surfaced the expected file —
+the model had nothing to work with, and refusing was correct. Splitting the metric
+into **unwarranted** (right file was in context, refused anyway — the generator's
+bug) and **warranted** (context lacked the answer — upstream) moved the generator's
+true failure rate from 0.259 to 0.148 before any code changed. A single number was
+holding two different failures.
+
+**B16. A prompt phrase created a refusal attractor and broke everything.**
+The first attempt at softening refusal included "…answer what they collectively
+support, naming any part you could not determine." That phrase mirrors the refusal
+template ("one sentence naming what is missing"), and the model pattern-matched
+into it: **refusal rate went to 1.000 and citation rate to 0.000**, refusing even
+"where is the `APIRouter` class defined?" with the file path visibly in its
+context. Rewriting to state that each source's `path:lines` label is authoritative,
+and gating refusal behind "only when the sources are entirely unrelated", took
+refusal to 0.074. Prompt wording near a sentinel behaves like an attractor, and the
+eval caught in one run what spot-checking would have missed.
+
+**B17. More context made refusal worse, so it was never slot starvation.**
+The obvious hypothesis was that stratification left prose only 3 of 6 slots. Raising
+`top_k` from 6 to 10 moved refusal the wrong way (0.259 → 0.315) and `paraphrase`
+from 0.667 to 0.733. Extra context added noise, not evidence. Worth recording as a
+rejected hypothesis, because it is the change most people would try first.
+
+**B18. Recall improved without trading away refusal integrity.**
+The usual failure mode when reducing over-refusal is that the model starts
+answering things it shouldn't. It did not: `unanswerable` refusal held at **1.000**
+and hallucination at **0.000** across both prompts. That is the property worth
+guarding, and it is only checkable because the negative class exists.
+
+**B19. Citation verification found nothing wrong — which is itself the result.**
+All 131 cited spans exist on disk with valid line ranges, and no answer ever cited
+a source number it wasn't given. The check is mechanical (no LLM), so it costs
+nothing to keep in the request path, and `ask.py` marks each source `OK` or `!!`.
+A clean result here is only meaningful because the checker is known to work: it
+caught the class-skeleton span bug in step 5 (`routing.py:593-4437`).
+
+**B20. `paraphrase` remains the weakest segment at every layer.**
+Grounded rate 0.467 and false refusal 0.267, against ≥0.917 grounded for the other
+three. This traces directly to the step 5b stratification trade (B14): guaranteeing
+code half the slots displaces the documentation those questions need. The answer
+layer makes the cost concrete — a 0.2 drop in `paraphrase` r@5 became a 0.267 false
+refusal rate.
+
+## Open items
+
+- **`paraphrase` end-to-end quality** is the top remaining defect, and the cause is
+  known (B14/B20). Query-dependent stratum weighting is the fix; not attempted
+  because tuning a query classifier against 15 questions would overfit
+- 1 unwarranted refusal remains (1 of 54)
 - `behavioral`/`pinpoint` remain n=12; grow before trusting small differences
+- Answer *correctness* is unmeasured — grounding checks that a cited file is the
+  expected one, not that the prose is right. That needs either human grading or an
+  LLM judge, and an LLM judge needs its own validation
 - Untested: does indexing `tests/` help or hurt?
 - Untested: `jina-embeddings-v2-base-code` vs `text-embedding-3-small`
 - **Behavioral MRR regressed** under the r@5-tuned weights (lexical 0.738 →

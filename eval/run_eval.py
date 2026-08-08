@@ -24,9 +24,20 @@ RECALL_KS = (1, 5, 10)
 RETRIEVE_K = 20
 
 
-def load_golden(path: Path = GOLDEN_PATH) -> List[Dict[str, Any]]:
+def load_golden(
+    path: Path = GOLDEN_PATH, include_unanswerable: bool = False
+) -> List[Dict[str, Any]]:
+    """Load the golden set.
+
+    Unanswerable questions are excluded by default: they have no correct file to
+    retrieve, so scoring them as recall misses would silently deflate every
+    retrieval metric. They are graded by answer_eval.py instead.
+    """
     with path.open() as handle:
-        return [json.loads(line) for line in handle if line.strip()]
+        rows = [json.loads(line) for line in handle if line.strip()]
+    if include_unanswerable:
+        return rows
+    return [row for row in rows if row.get("expected_files")]
 
 
 def first_hit_rank(retrieved_paths: Sequence[str], expected_files: Sequence[str]) -> Optional[int]:

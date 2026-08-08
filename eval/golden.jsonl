@@ -52,3 +52,11 @@
 {"id": "n13", "type": "paraphrase", "question": "How do I write automated tests for my endpoints?", "expected_files": ["docs/en/docs/tutorial/testing.md"], "notes": "TestClient; fastapi/testclient.py is a 1-line re-export shim"}
 {"id": "n14", "type": "paraphrase", "question": "How do I show a helpful error message with a specific status code?", "expected_files": ["docs/en/docs/tutorial/handling-errors.md", "fastapi/exceptions.py"], "notes": "HTTPException without naming it"}
 {"id": "n15", "type": "paraphrase", "question": "How do I set a maximum length on a query parameter?", "expected_files": ["docs/en/docs/tutorial/query-params-str-validations.md", "fastapi/param_functions.py"], "notes": "Query(max_length=...) without naming it"}
+{"id": "u01", "type": "unanswerable", "question": "How does the billing module calculate a customer's monthly charges?", "expected_files": [], "notes": "no billing code in corpus; 'billing' has 0 matches"}
+{"id": "u02", "type": "unanswerable", "question": "Where is tenant isolation implemented for multi-tenant deployments?", "expected_files": [], "notes": "'tenant' has 0 matches"}
+{"id": "u03", "type": "unanswerable", "question": "Which AWS region does the deployment pipeline target?", "expected_files": [], "notes": "'AWS region' has 0 matches"}
+{"id": "u04", "type": "unanswerable", "question": "What columns does the users table have in the database schema?", "expected_files": [], "notes": "'users table' has 0 matches"}
+{"id": "u05", "type": "unanswerable", "question": "How are feature flags evaluated at runtime?", "expected_files": [], "notes": "'feature flag' has 0 matches"}
+{"id": "u06", "type": "unanswerable", "question": "How does the audit log record administrator actions?", "expected_files": [], "notes": "'audit log' has 0 matches"}
+{"id": "u07", "type": "unanswerable", "question": "How is the circuit breaker configured for downstream service calls?", "expected_files": [], "notes": "'circuit breaker' has 0 matches"}
+{"id": "u08", "type": "unanswerable", "question": "How does LDAP group membership map to application roles?", "expected_files": [], "notes": "'LDAP' has 0 matches"}

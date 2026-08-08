@@ -1,4 +1,4 @@
-"""Retrieve context from an indexed repo and generate an answer with OpenAI.
+"""Retrieve context from an indexed repo and generate a cited answer.
 
 Usage:
     uv run python ask.py "how are dependencies resolved?"
@@ -7,7 +7,7 @@ Usage:
 import argparse
 
 from pipeline import config
-from pipeline.generator import AnswerGenerator
+from pipeline.generator import REFUSAL_TOKEN, AnswerGenerator
 from query import build_retriever, format_location
 
 
@@ -15,7 +15,7 @@ def main():
     parser = argparse.ArgumentParser(description="Ask a question about an indexed repo")
     parser.add_argument("question", nargs="+", help="The question to answer")
     parser.add_argument("--repo", default="fastapi", help="Indexed repo name")
-    parser.add_argument("--variant", default="astcode-openai", help="Collection suffix")
+    parser.add_argument("--variant", default="astcode-cards", help="Collection suffix")
     parser.add_argument(
         "--mode", default=config.RETRIEVAL_MODE, choices=["semantic", "lexical", "hybrid"]
     )
@@ -26,18 +26,36 @@ def main():
     retriever = build_retriever(args.repo, args.variant, args.mode)
     results = retriever.retrieve(query, top_k=args.top_k)
 
-    if not results:
-        print("No results found.")
+    repo_root = config.REPOS_DIR / args.repo
+    answer = AnswerGenerator().generate(query, results, repo_root=repo_root)
+
+    if answer.refused:
+        print("Not answerable from this repository.")
+        detail = answer.text[len(REFUSAL_TOKEN):].strip()
+        if detail:
+            print(f"  {detail}")
         return
 
-    answer = AnswerGenerator().generate(query, results)
+    print(answer.text)
 
-    print("Answer:\n")
-    print(answer)
     print("\nSources:")
-    for doc in results:
-        via = ",".join(doc.get("sources") or [])
-        print(f"[{doc['rank']}] {format_location(doc['metadata'])}  (via {via})")
+    checks = {check.index: check for check in (answer.verification.checks if answer.verification else [])}
+    for index, doc in enumerate(answer.sources, start=1):
+        cited = index in answer.cited_indices
+        check = checks.get(index)
+        if not cited:
+            mark = "  "  # retrieved but not used by the answer
+        elif check and check.ok:
+            mark = "OK"
+        else:
+            mark = "!!"
+        note = f"  <- {check.problem}" if check and check.problem else ""
+        print(f" {mark} [{index}] {format_location(doc['metadata'])}{note}")
+
+    if answer.verification:
+        print(f"\nCitations: {answer.verification.summary()}")
+        if answer.verification.fabricated_indices:
+            print("  WARNING: answer cited source numbers that were never provided")
 
 
 if __name__ == "__main__":
