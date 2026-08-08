@@ -1,0 +1,1949 @@
+{
+  "label": "step6-classctx",
+  "repo": "fastapi",
+  "variant": "astcode-cards",
+  "top_k": 6,
+  "generator_model": "gpt-4o-mini",
+  "summary": {
+    "answerable": {
+      "n": 54,
+      "refusal_rate": 0.074,
+      "unwarranted_refusal_rate": 0.019,
+      "warranted_refusal_rate": 0.056,
+      "citation_rate": 0.926,
+      "grounded_rate": 0.796,
+      "context_had_answer_rate": 0.889
+    },
+    "unanswerable": {
+      "n": 8,
+      "refusal_rate": 1.0,
+      "hallucination_rate": 0.0
+    },
+    "citations": {
+      "checked": 137,
+      "valid": 137,
+      "validity_rate": 1.0,
+      "fabricated": 0
+    },
+    "by_type": {
+      "architectural": {
+        "n": 15,
+        "false_refusal_rate": 0.0,
+        "grounded_rate": 0.867
+      },
+      "behavioral": {
+        "n": 12,
+        "false_refusal_rate": 0.0,
+        "grounded_rate": 0.917
+      },
+      "paraphrase": {
+        "n": 15,
+        "false_refusal_rate": 0.267,
+        "grounded_rate": 0.467
+      },
+      "pinpoint": {
+        "n": 12,
+        "false_refusal_rate": 0.0,
+        "grounded_rate": 1.0
+      },
+      "unanswerable": {
+        "n": 8,
+        "false_refusal_rate": null,
+        "grounded_rate": null
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "p01",
+      "type": "pinpoint",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        2
+      ],
+      "cited_paths": [
+        "fastapi/routing.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 1,
+      "citations_valid": 1,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/reference/apirouter.md",
+        "fastapi/routing.py",
+        "docs/en/docs/reference/apirouter.md",
+        "docs/en/docs/tutorial/bigger-applications.md",
+        "fastapi/routing.py",
+        "docs/en/docs/tutorial/bigger-applications.md"
+      ],
+      "answer": "The `APIRouter` class is defined in the file `fastapi/routing.py` at lines 593-618 [2]."
+    },
+    {
+      "id": "p02",
+      "type": "pinpoint",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1
+      ],
+      "cited_paths": [
+        "fastapi/dependencies/utils.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 1,
+      "citations_valid": 1,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/dependencies/utils.py",
+        "docs/en/docs/release-notes.md",
+        "fastapi/dependencies/utils.py",
+        "docs/en/docs/tutorial/dependencies/sub-dependencies.md",
+        "docs/en/docs/tutorial/dependencies/sub-dependencies.md",
+        "fastapi/dependencies/"
+      ],
+      "answer": "The `solve_dependencies` function is implemented in the file `fastapi/dependencies/utils.py` from lines 562 to 685 [1]."
+    },
+    {
+      "id": "p03",
+      "type": "pinpoint",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        3,
+        1
+      ],
+      "cited_paths": [
+        "fastapi/encoders.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/encoders.py",
+        "docs/en/docs/reference/encoders.md",
+        "fastapi/encoders.py",
+        "docs/en/docs/tutorial/encoder.md",
+        "docs/en/docs/tutorial/encoder.md",
+        "docs/en/docs/reference/encoders.md"
+      ],
+      "answer": "The `jsonable_encoder` function is defined in the file `fastapi/encoders.py`, specifically in the line ranges [3] (lines 102-248) and [1] (lines 249-343)."
+    },
+    {
+      "id": "p04",
+      "type": "pinpoint",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        2
+      ],
+      "cited_paths": [
+        "fastapi/exceptions.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/exceptions.py",
+        "fastapi/exceptions.py",
+        "docs/en/docs/tutorial/handling-errors.md",
+        "docs/en/docs/tutorial/handling-errors.md",
+        "docs/en/docs/reference/exceptions.md",
+        "docs/en/docs/reference/exceptions.md"
+      ],
+      "answer": "The `HTTPException` class is defined in the file `fastapi/exceptions.py`, specifically in the lines 9 to 35 for the class definition and 37 to 65 for its `__init__` method [1][2]."
+    },
+    {
+      "id": "p05",
+      "type": "pinpoint",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        2
+      ],
+      "cited_paths": [
+        "fastapi/datastructures.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 1,
+      "citations_valid": 1,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/reference/uploadfile.md",
+        "fastapi/datastructures.py",
+        "fastapi/datastructures.py",
+        "docs/en/docs/reference/uploadfile.md",
+        "docs/en/docs/tutorial/request-files.md",
+        "docs/en/docs/tutorial/request-files.md"
+      ],
+      "answer": "The `UploadFile` class is defined in the `fastapi/datastructures.py` file, specifically starting from line 141, where it extends `StarletteUploadFile` [2]."
+    },
+    {
+      "id": "p06",
+      "type": "pinpoint",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        3
+      ],
+      "cited_paths": [
+        "fastapi/security/oauth2.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 1,
+      "citations_valid": 1,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/tutorial/security/first-steps.md",
+        "fastapi/security/oauth2.py",
+        "fastapi/security/oauth2.py",
+        "docs/en/docs/tutorial/security/first-steps.md",
+        "fastapi/security/__init__.py",
+        "docs/en/docs/tutorial/security/simple-oauth2.md"
+      ],
+      "answer": "The `OAuth2PasswordBearer` class is defined in the file `fastapi/security/oauth2.py`, specifically between lines 400 and 485 [3]."
+    },
+    {
+      "id": "p07",
+      "type": "pinpoint",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        2
+      ],
+      "cited_paths": [
+        "fastapi/openapi/utils.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 1,
+      "citations_valid": 1,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/openapi/",
+        "fastapi/openapi/utils.py",
+        "docs/en/docs/how-to/extending-openapi.md",
+        "fastapi/openapi/utils.py",
+        "docs/en/docs/how-to/extending-openapi.md",
+        "fastapi/applications.py"
+      ],
+      "answer": "The `get_openapi` function is defined in the `fastapi/openapi/utils.py` module, as indicated in the source [2]."
+    },
+    {
+      "id": "p08",
+      "type": "pinpoint",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        2,
+        5
+      ],
+      "cited_paths": [
+        "fastapi/param_functions.py",
+        "fastapi/params.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/tutorial/dependencies/index.md",
+        "fastapi/param_functions.py",
+        "docs/en/docs/reference/dependencies.md",
+        "fastapi/dependencies/utils.py",
+        "fastapi/params.py",
+        "docs/en/docs/tutorial/dependencies/dependencies-in-path-operation-decorators.md"
+      ],
+      "answer": "The `Depends` function is defined in the file `fastapi/param_functions.py` at lines 2220-2277 [2]. Additionally, its constructor is defined in `fastapi/params.py` at lines 761-765 [5]."
+    },
+    {
+      "id": "p09",
+      "type": "pinpoint",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1
+      ],
+      "cited_paths": [
+        "fastapi/background.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 1,
+      "citations_valid": 1,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/background.py",
+        "docs/en/docs/reference/background.md",
+        "fastapi/background.py",
+        "docs/en/docs/tutorial/background-tasks.md",
+        "docs/en/docs/reference/background.md",
+        "docs/en/docs/tutorial/background-tasks.md"
+      ],
+      "answer": "The `BackgroundTasks` class is defined in the file `fastapi/background.py` at lines 9-36 [1]."
+    },
+    {
+      "id": "p10",
+      "type": "pinpoint",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1
+      ],
+      "cited_paths": [
+        "fastapi/routing.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 1,
+      "citations_valid": 1,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/routing.py",
+        "docs/en/docs/advanced/custom-response.md",
+        "fastapi/responses.py",
+        "fastapi/responses.py",
+        "docs/en/docs/advanced/response-directly.md",
+        "docs/en/docs/tutorial/response-model.md"
+      ],
+      "answer": "The `serialize_response` function is defined in the file `fastapi/routing.py` at lines 143-201 [1]."
+    },
+    {
+      "id": "p11",
+      "type": "pinpoint",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1
+      ],
+      "cited_paths": [
+        "fastapi/utils.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 1,
+      "citations_valid": 1,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/utils.py",
+        "fastapi/utils.py",
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/tutorial/body-fields.md",
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/how-to/separate-openapi-schemas.md"
+      ],
+      "answer": "The function `create_model_field` is defined in the file `fastapi/utils.py` at lines 63-106 [1]."
+    },
+    {
+      "id": "p12",
+      "type": "pinpoint",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        2
+      ],
+      "cited_paths": [
+        "fastapi/security/oauth2.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/security/oauth2.py",
+        "fastapi/security/oauth2.py",
+        "docs/en/docs/advanced/security/oauth2-scopes.md",
+        "docs/en/docs/advanced/security/oauth2-scopes.md",
+        "fastapi/dependencies/models.py",
+        "docs/en/docs/reference/security/index.md"
+      ],
+      "answer": "The `SecurityScopes` class is defined in the file `fastapi/security/oauth2.py` at lines 598-638, with its constructor specifically detailed in lines 611-638 [1][2]."
+    },
+    {
+      "id": "b01",
+      "type": "behavioral",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        2,
+        3
+      ],
+      "cited_paths": [
+        "fastapi/encoders.py",
+        "docs/en/docs/tutorial/encoder.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 3,
+      "citations_valid": 3,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/encoders.py",
+        "docs/en/docs/tutorial/encoder.md",
+        "docs/en/docs/tutorial/encoder.md",
+        "docs/en/docs/tutorial/body-nested-models.md",
+        "fastapi/openapi/models.py",
+        "fastapi/routing.py"
+      ],
+      "answer": "FastAPI uses the `jsonable_encoder` function to convert Pydantic models and other Python objects into JSON-serializable data. This function takes an object as input and returns a version that is compatible with JSON, typically a Python dictionary or list. \n\nThe `jsonable_encoder` function can handle various parameters to customize the encoding process, such as `include` and `exclude` to specify which fields to include or exclude, `by_alias` to determine if alias names should be used, and `exclude_none` to omit fields with `None` values. It also supports a `custom_encoder` parameter for defining custom serialization logic for specific types [1].\n\nInternally, if the object is a Pydantic model, `jsonable_encoder` converts it to a dictionary using the `_model_dump` method, which respects the specified parameters for inclusion and exclusion of fields. If the object is a dataclass, it uses `dataclasses.asdict` to convert it to a dictionary before applying the same encoding logic [1]. \n\nThis process ensures that the output is a standard data structure that can be easily serialized to JSON using Python's `json.dumps()` function [2][3]."
+    },
+    {
+      "id": "b02",
+      "type": "behavioral",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        2
+      ],
+      "cited_paths": [
+        "fastapi/exception_handlers.py",
+        "docs/en/docs/tutorial/handling-errors.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/exception_handlers.py",
+        "docs/en/docs/tutorial/handling-errors.md",
+        "fastapi/exception_handlers.py",
+        "docs/en/docs/tutorial/handling-errors.md",
+        "fastapi/exceptions.py",
+        "docs/en/docs/tutorial/response-status-code.md"
+      ],
+      "answer": "When a request contains invalid data, FastAPI raises a `RequestValidationError`, which is handled by the `request_validation_exception_handler`. This handler is defined in the code as an asynchronous function that takes a `Request` and the `RequestValidationError` exception as parameters. It returns a `JSONResponse` with a status code of `HTTP_422_UNPROCESSABLE_ENTITY` and includes the details of the validation errors in the response content, encoded as JSON using `jsonable_encoder` [1].\n\nTo customize this behavior, developers can override the default exception handler by using the `@app.exception_handler(RequestValidationError)` decorator, allowing them to define their own response format for validation errors [2]."
+    },
+    {
+      "id": "b03",
+      "type": "behavioral",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        2,
+        4
+      ],
+      "cited_paths": [
+        "fastapi/routing.py",
+        "docs/en/docs/async.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 3,
+      "citations_valid": 3,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/routing.py",
+        "docs/en/docs/async.md",
+        "fastapi/applications.py",
+        "docs/en/docs/async.md",
+        "docs/en/docs/how-to/sql-databases-peewee.md",
+        "fastapi/routing.py"
+      ],
+      "answer": "FastAPI decides whether to run an endpoint function in a threadpool or the event loop based on whether the function is defined as a coroutine or a regular function. If the endpoint function is defined with `async def`, it is treated as a coroutine and is awaited directly in the event loop. Conversely, if the function is defined with `def`, it is run in an external threadpool to prevent blocking the server, as blocking operations would hinder the performance of the asynchronous framework [1][2][4]. \n\nAdditionally, this behavior applies not only to path operation functions but also to dependencies defined as regular functions, which are also executed in the threadpool [4]."
+    },
+    {
+      "id": "b04",
+      "type": "behavioral",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        4,
+        5
+      ],
+      "cited_paths": [
+        "fastapi/dependencies/utils.py",
+        "fastapi/routing.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 3,
+      "citations_valid": 3,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/dependencies/utils.py",
+        "docs/en/docs/advanced/testing-dependencies.md",
+        "docs/en/docs/advanced/testing-dependencies.md",
+        "fastapi/routing.py",
+        "fastapi/routing.py",
+        "fastapi/dependencies/utils.py"
+      ],
+      "answer": "Dependency overrides are applied during the request handling process by utilizing the `dependency_overrides_provider` parameter in the `solve_dependencies` function. When a dependency is being resolved, the function checks if there are any overrides specified in the `dependency_overrides_provider`. If overrides exist, it retrieves the original callable for the dependency and replaces it with the overridden version from the `dependency_overrides` dictionary. This process allows for the original dependency to be substituted with a different implementation, which can be particularly useful for testing or modifying behavior without changing the core application logic [1].\n\nThe `get_request_handler` function also passes the `dependency_overrides_provider` to the `solve_dependencies` function, ensuring that any request handling that involves dependencies can utilize the overrides as needed [4][5]."
+    },
+    {
+      "id": "b05",
+      "type": "behavioral",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        4,
+        3,
+        5
+      ],
+      "cited_paths": [
+        "fastapi/openapi/utils.py",
+        "fastapi/applications.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 3,
+      "citations_valid": 3,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/advanced/path-operation-advanced-configuration.md",
+        "docs/en/docs/advanced/path-operation-advanced-configuration.md",
+        "fastapi/openapi/utils.py",
+        "fastapi/openapi/utils.py",
+        "fastapi/applications.py",
+        "docs/en/docs/how-to/extending-openapi.md"
+      ],
+      "answer": "FastAPI builds the OpenAPI schema for a single path operation by utilizing the `get_openapi_path` function, which is responsible for generating the OpenAPI metadata for each route defined in the application. This function takes several parameters, including the route itself, operation IDs, and schema generators, and constructs the OpenAPI path object accordingly.\n\n1. **Route Metadata**: The function first checks if the route is included in the schema and retrieves the response class associated with the route. It then iterates over the HTTP methods defined for that route to build the operation metadata, including parameters and responses [4].\n\n2. **Parameters and Request Body**: It collects parameters for the operation and, if the method allows a body (like POST or PUT), it generates the request body schema. This is done by calling `get_openapi_operation_request_body`, which constructs the request body schema based on the route's body field [4].\n\n3. **Responses**: The function sets up the responses for the operation, including default responses and any additional responses defined in the route. It merges any extra metadata provided in the `openapi_extra` attribute of the route into the operation schema, allowing for customization of the OpenAPI output [3][4].\n\n4. **Final Assembly**: After gathering all necessary information, the operation is assembled into a dictionary that represents the OpenAPI path operation, which includes details like the operation ID, summary, parameters, request body, and responses. This dictionary is then added to the overall OpenAPI schema [4][5].\n\nIn summary, FastAPI constructs the OpenAPI schema for a single path operation by gathering route metadata, parameters, request body, and responses, and then assembling them into a structured format that conforms to the OpenAPI specification."
+    },
+    {
+      "id": "b06",
+      "type": "behavioral",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        3,
+        6,
+        2
+      ],
+      "cited_paths": [
+        "docs/en/docs/tutorial/request-forms-and-files.md",
+        "docs/en/docs/tutorial/request-files.md"
+      ],
+      "grounded_in_expected": false,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 4,
+      "citations_valid": 4,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/tutorial/request-forms-and-files.md",
+        "docs/en/docs/tutorial/request-files.md",
+        "docs/en/docs/tutorial/request-files.md",
+        "fastapi/",
+        "fastapi/__init__.py",
+        "docs/en/docs/tutorial/request-forms-and-files.md"
+      ],
+      "answer": "FastAPI parses form data and uploaded files from a request by using the `File` and `Form` classes. When a request includes files, it is encoded as `multipart/form-data`, which allows FastAPI to correctly extract the files and form fields from the request body. If you declare parameters using `File` for files and `Form` for form fields, FastAPI will handle the parsing automatically based on the request's content type [1][3][6].\n\nTo receive uploaded files, you need to install the `python-multipart` package, as it is required for handling the form data encoding [2][6]. Additionally, you can declare multiple `File` and `Form` parameters in a single path operation, but you cannot also declare `Body` fields expecting JSON, since the request will be encoded as `multipart/form-data` instead of `application/json` [1][3]."
+    },
+    {
+      "id": "b07",
+      "type": "behavioral",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        4,
+        5,
+        6,
+        2,
+        3
+      ],
+      "cited_paths": [
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/tutorial/response-model.md",
+        "docs/en/docs/advanced/response-change-status-code.md",
+        "fastapi/routing.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 6,
+      "citations_valid": 6,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/release-notes.md",
+        "fastapi/routing.py",
+        "fastapi/routing.py",
+        "docs/en/docs/tutorial/response-model.md",
+        "docs/en/docs/tutorial/response-model.md",
+        "docs/en/docs/advanced/response-change-status-code.md"
+      ],
+      "answer": "The `response_model` in FastAPI filters the fields returned from an endpoint by creating a new Pydantic model object based on the data returned by the endpoint. This new object is constructed using the contents of the returned object and is filtered according to the fields declared in the `response_model`. As a result, only the specified fields in the `response_model` will be included in the final response, even if the original returned object contains additional data [1][4].\n\nWhen an endpoint is defined, if a `response_model` is provided, FastAPI will use it to validate and convert the output data to match the type declaration. This means that the `response_model` takes priority over the actual return type of the function, ensuring that the response adheres to the structure defined by the `response_model` [5][6]. \n\nAdditionally, the implementation in the `APIRoute` class ensures that a new field is created for the response, which prevents any inheritance issues from subclasses of the model, thereby guaranteeing that the response is always a new object filtered by the `response_model` [2][3]."
+    },
+    {
+      "id": "b08",
+      "type": "behavioral",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        2,
+        3,
+        6,
+        1
+      ],
+      "cited_paths": [
+        "fastapi/routing.py",
+        "fastapi/applications.py",
+        "docs/en/docs/reference/websockets.md",
+        "docs/en/docs/advanced/websockets.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 4,
+      "citations_valid": 4,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/advanced/websockets.md",
+        "fastapi/routing.py",
+        "fastapi/applications.py",
+        "fastapi/exceptions.py",
+        "docs/en/docs/advanced/websockets.md",
+        "docs/en/docs/reference/websockets.md"
+      ],
+      "answer": "A WebSocket connection in FastAPI is routed using the `websocket_route` method, which is defined in both the `APIRouter` and `FastAPI` classes. This method allows you to specify a path and a handler function for the WebSocket connection. When you call `websocket_route`, it adds the specified route to the router, enabling the application to handle WebSocket connections at that path [2][3].\n\nOnce a WebSocket connection is established, you typically declare a parameter of type `WebSocket` in your handler function. This allows you to read data from the client and send data back to it [6]. Additionally, when the WebSocket connection is closed, the `await websocket.receive_text()` call will raise a `WebSocketDisconnect` exception, which can be caught and handled to manage disconnections appropriately [1]."
+    },
+    {
+      "id": "b09",
+      "type": "behavioral",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        5,
+        6,
+        1,
+        2
+      ],
+      "cited_paths": [
+        "fastapi/routing.py",
+        "fastapi/applications.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 4,
+      "citations_valid": 4,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/routing.py",
+        "fastapi/applications.py",
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/release-notes.md",
+        "fastapi/routing.py",
+        "fastapi/applications.py"
+      ],
+      "answer": "The `include_router` method in both `APIRouter` and `FastAPI` merges prefixes, tags, and dependencies from a sub-router into the current router. \n\n1. **Merging Prefixes**: When including a sub-router, the prefix of the sub-router is combined with the prefix of the current router. The method ensures that the prefix starts with a '/' and does not end with one, as the routes will start with '/' [5][6].\n\n2. **Merging Tags**: The tags from the sub-router are extended to the current tags. If tags are provided in the `include_router` call, they are combined with the tags from the sub-router [1][2].\n\n3. **Merging Dependencies**: Dependencies from the sub-router are also merged with the current dependencies. The method allows for the inclusion of dependencies that apply to all path operations in the router [1][2][6].\n\nOverall, the `include_router` method effectively combines these elements to ensure that the routing configuration is coherent and comprehensive across the main and sub-routers."
+    },
+    {
+      "id": "b10",
+      "type": "behavioral",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        6
+      ],
+      "cited_paths": [
+        "fastapi/applications.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 1,
+      "citations_valid": 1,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/exception_handlers.py",
+        "docs/en/docs/tutorial/handling-errors.md",
+        "docs/en/docs/tutorial/handling-errors.md",
+        "fastapi/exception_handlers.py",
+        "docs/en/docs/release-notes.md",
+        "fastapi/applications.py"
+      ],
+      "answer": "Custom exception handlers in FastAPI are registered using the `exception_handler` method of the `FastAPI` class. This method takes an exception class or a status code as its first argument and a callable (the handler function) as its second argument. The handler function is then invoked whenever the specified exception is raised.\n\nHere is an example of how to register a custom exception handler:\n\n```python\nfrom fastapi import FastAPI, Request\nfrom fastapi.responses import JSONResponse\n\nclass UnicornException(Exception):\n    def __init__(self, name: str):\n        self.name = name\n\napp = FastAPI()\n\n@app.exception_handler(UnicornException)\nasync def unicorn_exception_handler(request: Request, exc: UnicornException):\n    return JSONResponse(\n        status_code=418,\n        content={\"message\": f\"Oops! {exc.name} did something. There goes a rainbow...\"},\n    )\n```\n\nIn this example, the `unicorn_exception_handler` function will be called whenever a `UnicornException` is raised, returning a JSON response with a custom message and status code [6]."
+    },
+    {
+      "id": "b11",
+      "type": "behavioral",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        3,
+        2
+      ],
+      "cited_paths": [
+        "fastapi/openapi/docs.py",
+        "fastapi/applications.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 3,
+      "citations_valid": 3,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/openapi/docs.py",
+        "fastapi/openapi/docs.py",
+        "fastapi/applications.py",
+        "docs/en/docs/how-to/configure-swagger-ui.md",
+        "docs/en/docs/how-to/custom-docs-ui-assets.md",
+        "docs/en/docs/reference/openapi/docs.md"
+      ],
+      "answer": "The Swagger UI HTML page is generated and served by the `get_swagger_ui_html` function, which constructs the HTML response that loads Swagger UI for the interactive API documentation, typically accessible at the `/docs` endpoint. This function takes several parameters, including the OpenAPI URL, title, and URLs for the Swagger UI JavaScript and CSS files, among others [1].\n\nIn the `FastAPI` class, the `setup` method is responsible for adding the route for the Swagger UI HTML page. It defines an asynchronous function `swagger_ui_html` that constructs the OpenAPI URL and the OAuth2 redirect URL, then calls `get_swagger_ui_html` with these parameters to generate the HTML response [3]. This route is added to the application using `self.add_route(self.docs_url, swagger_ui_html, include_in_schema=False)`, which makes the Swagger UI available at the specified `docs_url` [3].\n\nAdditionally, if OAuth2 is configured, the `setup` method also adds a route for handling the OAuth2 redirection by calling `get_swagger_ui_oauth2_redirect_html`, which generates the necessary HTML for the OAuth2 flow [2][3]."
+    },
+    {
+      "id": "b12",
+      "type": "behavioral",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        2,
+        3,
+        6,
+        5
+      ],
+      "cited_paths": [
+        "docs/en/docs/release-notes.md",
+        "fastapi/param_functions.py",
+        "docs/en/docs/tutorial/dependencies/sub-dependencies.md",
+        "fastapi/dependencies/utils.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 5,
+      "citations_valid": 5,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/release-notes.md",
+        "fastapi/param_functions.py",
+        "docs/en/docs/tutorial/dependencies/sub-dependencies.md",
+        "docs/en/docs/tutorial/sql-databases.md",
+        "fastapi/dependencies/utils.py",
+        "docs/en/docs/tutorial/dependencies/sub-dependencies.md"
+      ],
+      "answer": "FastAPI caches the result of a dependency within a single request by storing the returned value in a \"cache\" after the dependency is called for the first time. If the same dependency is declared multiple times within the same request, FastAPI will reuse the cached value instead of calling the dependency again. This behavior is controlled by the `use_cache` parameter in the `Depends` function, which is set to `True` by default. If a developer wants to ensure that the dependency is called again for each declaration within the same request, they can set `use_cache=False` when declaring the dependency [1][2][3][6]. \n\nThe caching mechanism is implemented in the `solve_dependencies` function, which checks if the dependency is already in the cache and uses it if available, otherwise it calls the dependency and stores the result in the cache for future use within that request [5]."
+    },
+    {
+      "id": "a01",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        2,
+        3,
+        1,
+        4
+      ],
+      "cited_paths": [
+        "docs/en/docs/how-to/custom-request-and-route.md",
+        "fastapi/routing.py",
+        "fastapi/applications.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 4,
+      "citations_valid": 4,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/routing.py",
+        "docs/en/docs/how-to/custom-request-and-route.md",
+        "fastapi/routing.py",
+        "fastapi/applications.py",
+        "docs/en/docs/advanced/middleware.md",
+        "docs/en/docs/deployment/manually.md"
+      ],
+      "answer": "The request flow in a FastAPI application begins at the ASGI entry point, where the ASGI server (like Uvicorn) receives the request. The server then forwards the request to the FastAPI application, which is an ASGI app. \n\n1. **ASGI Entry Point**: The ASGI server starts and waits for incoming requests. When a request is received, it is processed according to the ASGI specification, which includes the `scope` and `receive` components that are essential for creating a `Request` instance [2].\n\n2. **Routing**: FastAPI uses a router to match the incoming request to the appropriate endpoint. This is handled by the `APIRouter` class, which is part of the routing module [3]. The router checks the request path and method against the defined routes.\n\n3. **Getting the Request Handler**: Once a matching route is found, FastAPI retrieves the request handler for that route using the `get_request_handler` method [3]. This handler is responsible for processing the request.\n\n4. **Running the Endpoint Function**: The request handler calls the endpoint function. This is done through the `run_endpoint_function` method, which checks if the endpoint is a coroutine. If it is, it awaits the function; otherwise, it runs the function in a thread pool [1]. The function is called with the values extracted from the request.\n\n5. **Response Generation**: After the endpoint function processes the request and returns a response, FastAPI prepares the response to be sent back to the client. This involves serializing the response content and setting the appropriate status code and headers [4].\n\nIn summary, the request flows from the ASGI server to the FastAPI application, where it is routed to the correct endpoint function, processed, and then a response is generated and sent back to the client."
+    },
+    {
+      "id": "a02",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        4,
+        5,
+        2,
+        3,
+        6
+      ],
+      "cited_paths": [
+        "fastapi/dependencies/utils.py",
+        "fastapi/params.py",
+        "docs/en/docs/tutorial/dependencies/index.md",
+        "docs/en/docs/features.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 6,
+      "citations_valid": 6,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/dependencies/utils.py",
+        "docs/en/docs/tutorial/dependencies/index.md",
+        "docs/en/docs/tutorial/dependencies/index.md",
+        "fastapi/params.py",
+        "fastapi/params.py",
+        "docs/en/docs/features.md"
+      ],
+      "answer": "The dependency injection system in FastAPI is structured hierarchically, allowing dependencies to define their own sub-dependencies, which creates a tree of dependencies. This system is designed to be simple yet powerful, enabling the automatic resolution and injection of dependencies at each level of the hierarchy. \n\nThe core components of this system include the `Depends` class, which allows for the definition of dependencies, and the `Security` class, which extends `Depends` to include security-related scopes. The `get_sub_dependant` function is responsible for creating a sub-dependency, handling security requirements, and managing the injection of dependencies based on the defined structure [1][4][5]. \n\nOverall, this design facilitates the integration of various components, such as databases and authentication systems, into API path operation functions seamlessly [2][3][6]."
+    },
+    {
+      "id": "a03",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        6,
+        3,
+        4
+      ],
+      "cited_paths": [
+        "docs/en/docs/reference/security/index.md",
+        "docs/en/docs/features.md",
+        "docs/en/docs/tutorial/security/index.md"
+      ],
+      "grounded_in_expected": false,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 3,
+      "citations_valid": 3,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/reference/security/index.md",
+        "docs/en/docs/tutorial/security/index.md",
+        "docs/en/docs/features.md",
+        "docs/en/docs/tutorial/security/index.md",
+        "fastapi/security/http.py",
+        "docs/en/docs/reference/security/index.md"
+      ],
+      "answer": "The security and authentication system in FastAPI is organized into several key components and schemes, which are primarily found in the `fastapi.security` module. The main categories include:\n\n1. **API Key Security Schemes**: This includes mechanisms for API keys that can be passed via cookies, headers, or query parameters, specifically:\n   - `APIKeyCookie`\n   - `APIKeyHeader`\n   - `APIKeyQuery` [6].\n\n2. **HTTP Authentication Schemes**: FastAPI supports various HTTP authentication methods, including:\n   - `HTTPBasic`\n   - `HTTPBearer`\n   - `HTTPDigest` [6].\n\n3. **HTTP Credentials**: This encompasses classes for handling HTTP credentials, such as:\n   - `HTTPAuthorizationCredentials`\n   - `HTTPBasicCredentials` [6].\n\n4. **OAuth2 Authentication**: FastAPI provides support for OAuth2, including:\n   - `OAuth2`\n   - `OAuth2AuthorizationCodeBearer`\n   - `OAuth2PasswordBearer` [6].\n\n5. **OAuth2 Password Form**: This includes forms for handling password-based authentication, such as:\n   - `OAuth2PasswordRequestForm`\n   - `OAuth2PasswordRequestFormStrict` [6].\n\n6. **OAuth2 Security Scopes in Dependencies**: FastAPI allows the use of security scopes in dependencies through the `SecurityScopes` class [6].\n\n7. **OpenID Connect**: FastAPI also supports OpenID Connect for authentication [6].\n\nOverall, FastAPI provides a structured and reusable set of tools and components that simplify the integration of these security mechanisms into applications, making it easier to implement authentication and authorization without extensive effort [3][4]."
+    },
+    {
+      "id": "a04",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        2,
+        3,
+        1
+      ],
+      "cited_paths": [
+        "docs/en/docs/alternatives.md",
+        "fastapi/applications.py",
+        "docs/en/docs/benchmarks.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 3,
+      "citations_valid": 3,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/benchmarks.md",
+        "docs/en/docs/alternatives.md",
+        "fastapi/applications.py",
+        "fastapi/__init__.py",
+        "fastapi/applications.py",
+        "docs/en/docs/alternatives.md"
+      ],
+      "answer": "FastAPI builds on top of Starlette by directly inheriting from the Starlette class, which allows it to handle all core web functionalities. This means that anything you can do with Starlette can also be done with FastAPI, effectively making FastAPI an enhanced version of Starlette, often described as \"Starlette on steroids\" [2]. \n\nIn terms of routing, FastAPI utilizes the routing capabilities provided by Starlette. The FastAPI application class, defined in `fastapi/applications.py`, includes methods for adding API routes, such as `add_api_route` and `api_route`, which are built on top of Starlette's routing mechanisms [3]. This integration allows FastAPI to provide additional features like automatic data validation and serialization, which are essential for building APIs, while still relying on the foundational routing and application structure of Starlette [1]. \n\nThus, FastAPI enhances the capabilities of Starlette by adding features that streamline API development, while still leveraging Starlette's core functionalities for routing and application management."
+    },
+    {
+      "id": "a05",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        3,
+        2,
+        5,
+        4
+      ],
+      "cited_paths": [
+        "fastapi/applications.py",
+        "docs/en/docs/advanced/events.md",
+        "fastapi/routing.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 5,
+      "citations_valid": 5,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/applications.py",
+        "fastapi/routing.py",
+        "docs/en/docs/advanced/events.md",
+        "docs/en/docs/advanced/events.md",
+        "fastapi/routing.py",
+        "docs/en/docs/deployment/server-workers.md"
+      ],
+      "answer": "During application startup, the FastAPI application executes any logic defined in the `lifespan` context manager. This is where you can perform operations that need to occur before the application starts handling requests, such as loading resources or initializing connections. The `lifespan` parameter allows you to define both startup and shutdown logic in a single context manager, replacing the older `on_event` method which is now deprecated [1][3].\n\nThe `lifespan` function is defined using `async def` and includes a `yield` statement. Code before the `yield` is executed during the startup phase, while code after the `yield` runs during the shutdown phase [3]. This approach provides a more structured way to manage application lifecycle events compared to the previous `on_event` method [1][2].\n\nAdditionally, the `lifespan` context manager can be nested, allowing for more complex lifecycle management by merging different lifespan contexts [5]. This ensures that the application can maintain state and perform necessary cleanup when shutting down [4]."
+    },
+    {
+      "id": "a06",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        4,
+        5,
+        3,
+        1,
+        2
+      ],
+      "cited_paths": [
+        "fastapi/params.py",
+        "fastapi/_compat.py",
+        "docs/en/docs/release-notes.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 5,
+      "citations_valid": 5,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/release-notes.md",
+        "fastapi/_compat.py",
+        "fastapi/params.py",
+        "fastapi/params.py",
+        "fastapi/encoders.py"
+      ],
+      "answer": "The codebase supports both Pydantic v1 and Pydantic v2 by maintaining compatibility through conditional logic and feature flags. Specifically, the `Param` class in `fastapi/params.py` uses the `PYDANTIC_VERSION` and `PYDANTIC_V2` constants from `fastapi/_compat.py` to determine which features to enable based on the Pydantic version in use. \n\nFor instance, when Pydantic v2 is detected, additional parameters such as `alias_priority`, `validation_alias`, `serialization_alias`, `strict`, and `json_schema_extra` are included in the initialization of the `Param` class. Conversely, if Pydantic v1 is being used, the code falls back to using parameters compatible with that version, such as `regex` instead of `pattern` [4][5][3]. \n\nAdditionally, the documentation notes that FastAPI still supports Pydantic v1 while allowing users to install Pydantic v2, ensuring that users can transition smoothly and fix any issues that arise during the upgrade process [1]. The test coverage for both versions is also maintained at 100%, ensuring that functionality remains intact across versions [2]."
+    },
+    {
+      "id": "n01",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        3,
+        4
+      ],
+      "cited_paths": [
+        "docs/en/docs/tutorial/bigger-applications.md",
+        "fastapi/routing.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/openapi/utils.py",
+        "docs/en/docs/advanced/behind-a-proxy.md",
+        "docs/en/docs/tutorial/bigger-applications.md",
+        "fastapi/routing.py",
+        "fastapi/routing.py",
+        "docs/en/docs/release-notes.md"
+      ],
+      "answer": "To split your routes across several files in a FastAPI application, you can use the `APIRouter` class to create separate routers for different parts of your application. Here\u2019s how you can do it:\n\n1. **Create a directory structure**: Organize your application into multiple files. For example, you can have a structure like this:\n\n   ```\n   .\n   \u251c\u2500\u2500 app\n   \u2502   \u251c\u2500\u2500 __init__.py\n   \u2502   \u251c\u2500\u2500 main.py\n   \u2502   \u251c\u2500\u2500 dependencies.py\n   \u2502   \u2514\u2500\u2500 routers\n   \u2502       \u251c\u2500\u2500 __init__.py\n   \u2502       \u251c\u2500\u2500 items.py\n   \u2502       \u2514\u2500\u2500 users.py\n   ```\n\n   In this structure, `items.py` and `users.py` can contain routes related to items and users, respectively [3].\n\n2. **Define routes in separate files**: In each of these files (e.g., `items.py` and `users.py`), you can define your routes using the `APIRouter` class. For example, in `items.py`, you might have:\n\n   ```python\n   from fastapi import APIRouter\n\n   router = APIRouter()\n\n   @router.get(\"/items/\")\n   async def read_items():\n       return [{\"item_id\": \"Foo\"}, {\"item_id\": \"Bar\"}]\n   ```\n\n3. **Include routers in the main application**: In your `main.py`, you can include these routers using the `include_router` method of your FastAPI application instance. For example:\n\n   ```python\n   from fastapi import FastAPI\n   from app.routers import items, users\n\n   app = FastAPI()\n\n   app.include_router(items.router)\n   app.include_router(users.router)\n   ```\n\nThis approach allows you to keep your code organized and maintainable by separating different functionalities into their respective files [3][4]."
+    },
+    {
+      "id": "n02",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        4
+      ],
+      "cited_paths": [
+        "docs/en/docs/tutorial/response-model.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/tutorial/response-model.md",
+        "fastapi/_compat.py",
+        "docs/en/docs/tutorial/request-form-models.md",
+        "docs/en/docs/tutorial/response-model.md",
+        "fastapi/dependencies/utils.py",
+        "fastapi/_compat.py"
+      ],
+      "answer": "To make an endpoint return only some of the fields of your model in FastAPI, you can use the `response_model` parameter in your endpoint definition. This allows FastAPI to filter the response data based on the fields declared in the specified response model. \n\nFor example, if you have a model with more fields than you want to return, you can create a separate response model that includes only the fields you want to expose. When you annotate your endpoint with this response model, FastAPI will ensure that only the specified fields are included in the response, even if the function returns more data.\n\nHere's a brief overview of how this works:\n\n1. Define your main model with all the fields.\n2. Create a response model that includes only the fields you want to return.\n3. Use the `response_model` parameter in your endpoint to specify the response model.\n\nThis approach allows you to take advantage of function type annotations for better support in editors and tools while ensuring that the response is filtered correctly by FastAPI [1][4]."
+    },
+    {
+      "id": "n03",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        5
+      ],
+      "cited_paths": [
+        "docs/en/docs/tutorial/header-param-models.md"
+      ],
+      "grounded_in_expected": false,
+      "context_had_answer": false,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 1,
+      "citations_valid": 1,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/advanced/response-headers.md",
+        "fastapi/exception_handlers.py",
+        "docs/en/docs/tutorial/middleware.md",
+        "fastapi/security/http.py",
+        "docs/en/docs/tutorial/header-param-models.md",
+        "docs/en/docs/tutorial/header-param-models.md"
+      ],
+      "answer": "To read a value that the client sent in the request headers in FastAPI, you can use the `Request` object to access the headers directly. Here's how you can do it:\n\n1. Import the `Request` class from `fastapi`.\n2. Define a path operation function that takes a `Request` parameter.\n3. Use `request.headers.get(\"header_name\")` to retrieve the value of the specific header.\n\nFor example, if you want to read a header named `tool`, you would do something like this:\n\n```python\nfrom fastapi import FastAPI, Request\n\napp = FastAPI()\n\n@app.get(\"/\")\nasync def read_header(request: Request):\n    tool_value = request.headers.get(\"tool\")\n    return {\"tool\": tool_value}\n```\n\nThis code snippet demonstrates how to access the headers sent by the client, allowing you to read the value associated with the `tool` header or any other header you need [5]."
+    },
+    {
+      "id": "n04",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        3,
+        2,
+        4,
+        5
+      ],
+      "cited_paths": [
+        "fastapi/security/oauth2.py",
+        "fastapi/routing.py",
+        "fastapi/security/open_id_connect_url.py",
+        "fastapi/security/http.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 4,
+      "citations_valid": 4,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/tutorial/security/oauth2-jwt.md",
+        "fastapi/routing.py",
+        "fastapi/security/oauth2.py",
+        "fastapi/security/open_id_connect_url.py",
+        "fastapi/security/http.py",
+        "fastapi/security/api_key.py"
+      ],
+      "answer": "To ensure that only signed-in users can call an endpoint, you can implement an authentication mechanism that checks for a valid authorization token in the request headers. In FastAPI, this is typically done using the `Authorization` header, which should contain a token that starts with `Bearer `.\n\n1. When a user authenticates, they receive a token that they must include in the `Authorization` header for subsequent requests. The relevant code for checking the `Authorization` header is found in the `OAuth2` class, which retrieves the header and raises an HTTP 403 error if it is missing and `auto_error` is set to true [3].\n\n2. The `run_endpoint_function` is responsible for executing the endpoint function after the request has been validated, ensuring that only requests with valid tokens proceed to the endpoint logic [2].\n\n3. Similar checks are implemented in other security classes like `OpenIdConnect` and `HTTPBase`, which also verify the presence of the `Authorization` header and handle errors accordingly [4][5].\n\nBy using these mechanisms, you can restrict access to your endpoints, allowing only authenticated users to make requests."
+    },
+    {
+      "id": "n05",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        3
+      ],
+      "cited_paths": [
+        "fastapi/background.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/background.py",
+        "docs/en/docs/tutorial/background-tasks.md",
+        "fastapi/background.py",
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/tutorial/dependencies/dependencies-with-yield.md",
+        "docs/en/docs/async.md"
+      ],
+      "answer": "To perform slow work after the response has already been sent to the user in FastAPI, you can use the `BackgroundTasks` class. This allows you to define background tasks that will be executed after the response is returned to the client.\n\nHere\u2019s how you can do it:\n\n1. **Import `BackgroundTasks`**: You need to import the `BackgroundTasks` class from FastAPI.\n2. **Define a parameter in your path operation function**: Add a parameter of type `BackgroundTasks` to your path operation function. This will allow you to add tasks to be executed in the background.\n\nHere is a brief example of how to use it:\n\n```python\nfrom fastapi import FastAPI, BackgroundTasks\n\napp = FastAPI()\n\ndef slow_task(name: str):\n    # Simulate a slow operation\n    import time\n    time.sleep(5)\n    print(f\"Task completed for {name}\")\n\n@app.post(\"/send-notification/\")\nasync def send_notification(name: str, background_tasks: BackgroundTasks):\n    background_tasks.add_task(slow_task, name)\n    return {\"message\": \"Notification sent in the background\"}\n```\n\nIn this example, when a request is made to `/send-notification/`, the response is sent immediately while the `slow_task` function runs in the background, allowing the server to handle other requests without waiting for the slow operation to complete [1][3]."
+    },
+    {
+      "id": "n06",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": true,
+      "has_citations": false,
+      "cited_indices": [],
+      "cited_paths": [],
+      "grounded_in_expected": false,
+      "context_had_answer": false,
+      "refusal_warranted": true,
+      "refusal_unwarranted": false,
+      "citations_checked": 0,
+      "citations_valid": 0,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/advanced/openapi-callbacks.md",
+        "fastapi/security/api_key.py",
+        "fastapi/security/api_key.py",
+        "docs/en/docs/js/custom.js",
+        "docs/en/docs/js/custom.js",
+        "docs/en/docs/how-to/sql-databases-peewee.md"
+      ],
+      "answer": "INSUFFICIENT_CONTEXT  \nThe sources do not provide information on how to allow picture uploads to an API."
+    },
+    {
+      "id": "n07",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": true,
+      "has_citations": false,
+      "cited_indices": [],
+      "cited_paths": [],
+      "grounded_in_expected": false,
+      "context_had_answer": false,
+      "refusal_warranted": true,
+      "refusal_unwarranted": false,
+      "citations_checked": 0,
+      "citations_valid": 0,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/applications.py",
+        "fastapi/routing.py",
+        "docs/en/docs/advanced/events.md",
+        "docs/en/docs/project-generation.md",
+        "docs/en/docs/advanced/websockets.md",
+        "fastapi/applications.py"
+      ],
+      "answer": "INSUFFICIENT_CONTEXT  \nThe sources do not provide information on how to reuse setup logic across multiple endpoints."
+    },
+    {
+      "id": "n08",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": true,
+      "has_citations": false,
+      "cited_indices": [],
+      "cited_paths": [],
+      "grounded_in_expected": false,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": true,
+      "citations_checked": 0,
+      "citations_valid": 0,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/routing.py",
+        "fastapi/routing.py",
+        "docs/en/docs/async.md",
+        "docs/en/docs/how-to/sql-databases-peewee.md",
+        "fastapi/applications.py",
+        "docs/en/docs/async.md"
+      ],
+      "answer": "INSUFFICIENT_CONTEXT  \nThe sources do not provide information on why an app would freeze when calling a slow blocking library inside an endpoint."
+    },
+    {
+      "id": "a07",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        2,
+        5
+      ],
+      "cited_paths": [
+        "fastapi/applications.py",
+        "fastapi/openapi/utils.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 3,
+      "citations_valid": 3,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/applications.py",
+        "fastapi/openapi/utils.py",
+        "docs/en/docs/how-to/extending-openapi.md",
+        "docs/en/docs/tutorial/schema-extra-example.md",
+        "fastapi/openapi/utils.py",
+        "docs/en/docs/tutorial/first-steps.md"
+      ],
+      "answer": "The OpenAPI schema generation code in FastAPI is primarily organized within the `FastAPI` class and utility functions in the `openapi` module. \n\n1. The `FastAPI` class, located in `[1] fastapi/applications.py:966-996`, contains the `openapi` method, which generates the OpenAPI schema for the application. This method checks if the schema has already been generated and stored in `app.openapi_schema`. If not, it calls the `get_openapi` function with various parameters to create the schema.\n\n2. The `get_openapi` function is not explicitly shown in the provided sources, but it is implied to be responsible for constructing the OpenAPI schema based on the application's metadata and routes.\n\n3. Additional utility functions that assist in generating specific parts of the OpenAPI schema are found in `[2] fastapi/openapi/utils.py:361-422` and `[5] fastapi/openapi/utils.py:149-183`. These functions handle aspects such as generating operation request bodies and managing response schemas, which are integral to the overall schema generation process.\n\nOverall, the organization involves a main method in the `FastAPI` class for schema generation and several utility functions for handling specific components of the OpenAPI schema."
+    },
+    {
+      "id": "a08",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        2,
+        1,
+        6
+      ],
+      "cited_paths": [
+        "fastapi/params.py",
+        "fastapi/openapi/models.py",
+        "docs/en/docs/index.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 3,
+      "citations_valid": 3,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/openapi/models.py",
+        "fastapi/params.py",
+        "fastapi/applications.py",
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/js/termynal.js",
+        "docs/en/docs/index.md"
+      ],
+      "answer": "The parameter declaration helpers in FastAPI are organized in the `fastapi/params.py` module, which defines various classes for different types of parameters, such as `Path`, `Query`, `Header`, `Cookie`, `Body`, `Form`, `File`, and `Depends` [2]. These helpers are designed to construct instances of the `Parameter` class, which is a subclass of `ParameterBase` defined in `fastapi/openapi/models.py` [1]. \n\nThe organization allows developers to use standard Python types for parameter declarations, and the helpers facilitate the creation of the corresponding parameter instances that FastAPI uses for request handling and OpenAPI documentation generation [6]."
+    },
+    {
+      "id": "a09",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        6,
+        5
+      ],
+      "cited_paths": [
+        "docs/en/docs/reference/middleware.md",
+        "fastapi/applications.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/tutorial/middleware.md",
+        "fastapi/middleware/",
+        "fastapi/middleware/__init__.py",
+        "docs/en/docs/advanced/middleware.md",
+        "fastapi/applications.py",
+        "docs/en/docs/reference/middleware.md"
+      ],
+      "answer": "FastAPI ships with several middleware options, including:\n\n1. **CORSMiddleware** - for handling Cross-Origin Resource Sharing.\n2. **GZipMiddleware** - for compressing responses using GZip.\n3. **HTTPSRedirectMiddleware** - for redirecting HTTP requests to HTTPS.\n4. **TrustedHostMiddleware** - for validating the host header.\n5. **WSGIMiddleware** - for integrating WSGI applications.\n\nThese middlewares can be imported from the `fastapi.middleware` package [6]. \n\nTo wire middleware into a FastAPI application, you can use the `middleware` method of the `FastAPI` class. This method allows you to define a middleware function that processes requests and responses. For example, you can create a middleware that measures the processing time of requests as follows:\n\n```python\nimport time\nfrom fastapi import FastAPI, Request\n\napp = FastAPI()\n\n@app.middleware(\"http\")\nasync def add_process_time_header(request: Request, call_next):\n    start_time = time.time()\n    response = await call_next(request)\n    process_time = time.time() - start_time\n    response.headers[\"X-Process-Time\"] = str(process_time)\n    return response\n```\n\nIn this example, the middleware is defined using the `@app.middleware(\"http\")` decorator, which registers it to handle HTTP requests [5]."
+    },
+    {
+      "id": "a10",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        2
+      ],
+      "cited_paths": [
+        "fastapi/routing.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/routing.py",
+        "fastapi/routing.py",
+        "docs/en/docs/tutorial/bigger-applications.md",
+        "docs/en/docs/tutorial/bigger-applications.md",
+        "docs/en/docs/alternatives.md",
+        "fastapi/openapi/utils.py"
+      ],
+      "answer": "The routing layer in FastAPI is structured to utilize both individual routes and routers, while also integrating with Starlette's routing capabilities. \n\n1. **Individual Routes**: FastAPI allows the definition of individual routes using methods like `router.get()`, `router.post()`, etc. These methods are used to create path operations directly associated with a specific `APIRouter` instance, which is a subclass of Starlette's routing system [1].\n\n2. **APIRouter**: The `APIRouter` class is designed to group related routes together. It can include various configurations such as a path prefix, tags, dependencies, and response classes that apply to all routes defined within it. The `APIRouter` can also include other routers, allowing for a modular approach to route management [1][2]. When including another `APIRouter`, it merges the routes and configurations from the included router into the current router, ensuring that all settings are appropriately applied [2].\n\n3. **Starlette's Router**: FastAPI's routing is built on top of Starlette's routing system. The `APIRouter` inherits from Starlette's `Router`, which provides the foundational routing functionality. This means that while FastAPI adds additional features and configurations, it still relies on Starlette's underlying mechanisms for handling HTTP requests and routing them to the appropriate endpoints [1][2].\n\nIn summary, FastAPI's routing layer is split between individual routes defined directly on routers, the modular grouping of routes through `APIRouter`, and the foundational routing capabilities provided by Starlette. This structure allows for a flexible and organized way to manage routes in a FastAPI application."
+    },
+    {
+      "id": "a11",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        2,
+        3,
+        6,
+        4,
+        5
+      ],
+      "cited_paths": [
+        "docs/en/docs/tutorial/handling-errors.md",
+        "fastapi/exception_handlers.py",
+        "fastapi/applications.py",
+        "docs/en/docs/release-notes.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 5,
+      "citations_valid": 5,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/exception_handlers.py",
+        "docs/en/docs/tutorial/handling-errors.md",
+        "fastapi/exception_handlers.py",
+        "docs/en/docs/tutorial/handling-errors.md",
+        "docs/en/docs/release-notes.md",
+        "fastapi/applications.py"
+      ],
+      "answer": "Exception classes and their handlers in the FastAPI codebase are organized as follows:\n\n1. **Exception Classes**: FastAPI defines its own exception classes, such as `HTTPException`, which is used to represent HTTP errors. This class is imported from `starlette.exceptions` and is utilized in the exception handling process [2].\n\n2. **Default Exception Handlers**: FastAPI provides default exception handlers, such as `http_exception_handler`, which is defined in `fastapi/exception_handlers.py`. This handler processes `HTTPException` instances and returns appropriate JSON responses based on the exception's status code and detail [3].\n\n3. **Custom Exception Handlers**: Developers can create custom exception handlers by using the `exception_handler` method of the `FastAPI` class. This method allows the registration of a handler for specific exception classes or status codes. The custom handler can then define how to respond to those exceptions [6].\n\n4. **Reusing Default Handlers**: FastAPI allows developers to reuse its default exception handlers by importing them from `fastapi.exception_handlers`. This is useful for maintaining consistent error handling across applications [2][4].\n\n5. **Documentation and Customization**: The FastAPI documentation provides guidance on how to handle exceptions, including how to install custom exception handlers and override default ones. This allows for flexibility in managing error responses [5].\n\nOverall, the organization of exception classes and handlers in FastAPI facilitates both built-in and customizable error handling strategies."
+    },
+    {
+      "id": "a12",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        3,
+        5,
+        4,
+        1
+      ],
+      "cited_paths": [
+        "fastapi/params.py",
+        "fastapi/param_functions.py",
+        "fastapi/dependencies/utils.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 4,
+      "citations_valid": 4,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/dependencies/utils.py",
+        "fastapi/dependencies/utils.py",
+        "fastapi/params.py",
+        "fastapi/params.py",
+        "fastapi/param_functions.py",
+        "fastapi/openapi/utils.py"
+      ],
+      "answer": "Dependency metadata in FastAPI is represented internally using the `Depends` class, which is defined in the `fastapi/params.py` file. This class has an `__init__` method that takes a callable dependency and a boolean `use_cache` parameter, which determines whether the result of the dependency should be cached for the duration of the request [3][5]. \n\nFor security-related dependencies, there is a subclass called `Security`, which extends `Depends` and adds an additional `scopes` attribute to hold the security scopes associated with the dependency [4]. \n\nThe `get_sub_dependant` function, located in `fastapi/dependencies/utils.py`, is responsible for creating a `Dependant` instance that includes the dependency metadata, including any security requirements if applicable [1]. This function checks if the dependency is of type `Security` and appends the corresponding security requirements to the `Dependant` instance [1]. \n\nOverall, the combination of the `Depends` and `Security` classes, along with the `get_sub_dependant` function, forms the internal representation of dependency metadata in FastAPI."
+    },
+    {
+      "id": "a13",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        3,
+        4,
+        5
+      ],
+      "cited_paths": [
+        "fastapi/_compat.py",
+        "fastapi/utils.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 3,
+      "citations_valid": 3,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/tutorial/body-fields.md",
+        "docs/en/docs/release-notes.md",
+        "fastapi/_compat.py",
+        "fastapi/utils.py",
+        "fastapi/_compat.py",
+        "fastapi/param_functions.py"
+      ],
+      "answer": "The framework delegates field validation to Pydantic by utilizing the `Field` class from Pydantic, which allows for the declaration of additional validation and metadata for fields in Pydantic models. This is evident in the way FastAPI integrates with Pydantic's validation system, particularly through the `ModelField` class, which encapsulates field information and validation logic.\n\nIn FastAPI, when creating model fields, the `create_model_field` function is used to instantiate `ModelField` objects. This function takes parameters such as `type_`, `default`, `required`, and `field_info`, which is an instance of `FieldInfo` from Pydantic. The `FieldInfo` class contains the necessary metadata and validation rules for the field, which are then applied during the validation process when data is received or serialized [3][4].\n\nAdditionally, the `validate` method within the `ModelField` class uses Pydantic's type adapter to validate the incoming data against the defined field type and constraints. If validation fails, it raises a `ValidationError`, which is handled by FastAPI to provide appropriate error responses [3][5].\n\nOverall, FastAPI leverages Pydantic's robust validation capabilities by creating model fields that encapsulate validation logic, ensuring that incoming data adheres to the specified constraints defined in the Pydantic models."
+    },
+    {
+      "id": "a14",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        4,
+        6,
+        1
+      ],
+      "cited_paths": [
+        "docs/en/docs/reference/responses.md",
+        "fastapi/applications.py",
+        "docs/en/docs/how-to/custom-request-and-route.md"
+      ],
+      "grounded_in_expected": false,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 3,
+      "citations_valid": 3,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/how-to/custom-request-and-route.md",
+        "fastapi/routing.py",
+        "fastapi/routing.py",
+        "docs/en/docs/reference/responses.md",
+        "docs/en/docs/reference/responses.md",
+        "fastapi/applications.py"
+      ],
+      "answer": "Response classes in FastAPI are organized into several custom response types that can be imported from `fastapi.responses`. These include `FileResponse`, `HTMLResponse`, `JSONResponse`, `ORJSONResponse`, `PlainTextResponse`, `RedirectResponse`, `Response`, `StreamingResponse`, and `UJSONResponse` [4].\n\nWhen defining a route, you can specify which response class to use by setting the `response_class` parameter in the `api_route` method of the `FastAPI` class. If not specified, it defaults to `JSONResponse` [6]. Additionally, when creating a custom `APIRoute`, you can also set the `response_class` parameter, which will apply to all path operations under that route [1]."
+    },
+    {
+      "id": "a15",
+      "type": "architectural",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "cited_paths": [
+        "fastapi/dependencies/utils.py",
+        "fastapi/params.py",
+        "fastapi/param_functions.py",
+        "docs/en/docs/tutorial/dependencies/index.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 4,
+      "citations_valid": 4,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/dependencies/utils.py",
+        "fastapi/params.py",
+        "docs/en/docs/features.md",
+        "docs/en/docs/tutorial/dependencies/index.md",
+        "fastapi/param_functions.py",
+        "docs/en/docs/tutorial/dependencies/index.md"
+      ],
+      "answer": "The security dependency resolution in FastAPI is closely tied to its general dependency injection system. The `get_sub_dependant` function is responsible for resolving dependencies, including security dependencies. It checks if the provided dependency is of type `params.Security`, which allows it to handle security scopes appropriately. If the dependency is a security scheme, it creates a `SecurityRequirement` that is then associated with the sub-dependant being created [1].\n\nThe `Security` class, which inherits from `Depends`, allows for the declaration of security dependencies that can specify OAuth2 scopes. This integration with the dependency injection system means that when a path operation function declares a security dependency, FastAPI automatically manages the resolution of that dependency, including any associated scopes [2][5]. \n\nOverall, the dependency injection system in FastAPI facilitates the integration of security features seamlessly, allowing developers to enforce security requirements without manually handling the complexities of dependency resolution [6]."
+    },
+    {
+      "id": "n09",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": true,
+      "has_citations": false,
+      "cited_indices": [],
+      "cited_paths": [],
+      "grounded_in_expected": false,
+      "context_had_answer": false,
+      "refusal_warranted": true,
+      "refusal_unwarranted": false,
+      "citations_checked": 0,
+      "citations_valid": 0,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/how-to/sql-databases-peewee.md",
+        "docs/en/docs/tutorial/sql-databases.md",
+        "docs/en/docs/how-to/sql-databases-peewee.md",
+        "docs/en/docs/tutorial/sql-databases.md",
+        "fastapi/routing.py",
+        "fastapi/routing.py"
+      ],
+      "answer": "INSUFFICIENT_CONTEXT  \nThe sources do not provide information on whether a database connection can be opened once, shared with a route, and closed afterwards."
+    },
+    {
+      "id": "n10",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        2,
+        4
+      ],
+      "cited_paths": [
+        "fastapi/applications.py",
+        "docs/en/docs/how-to/extending-openapi.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/tutorial/metadata.md",
+        "fastapi/applications.py",
+        "docs/en/docs/advanced/behind-a-proxy.md",
+        "docs/en/docs/how-to/extending-openapi.md",
+        "fastapi/applications.py",
+        "docs/en/docs/tutorial/query-params-str-validations.md"
+      ],
+      "answer": "To give your API a title and description that show up in the generated documentation, you can set the `title` and `description` parameters when initializing your `FastAPI` application. Here\u2019s how you can do it:\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI(\n    title=\"Your API Title\",\n    description=\"A brief description of your API.\"\n)\n```\n\nThe `title` parameter specifies the title of the API, which will be visible in the generated OpenAPI documentation (e.g., at `/docs`). The `description` parameter allows you to provide a more detailed description, which can include Markdown formatting and will also be displayed in the documentation [2][4]."
+    },
+    {
+      "id": "n11",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        2
+      ],
+      "cited_paths": [
+        "fastapi/openapi/docs.py"
+      ],
+      "grounded_in_expected": false,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/openapi/docs.py",
+        "fastapi/openapi/docs.py",
+        "docs/en/docs/advanced/custom-response.md",
+        "docs/en/docs/js/custom.js",
+        "docs/en/docs/reference/websockets.md",
+        "docs/en/docs/tutorial/testing.md"
+      ],
+      "answer": "To send back an HTML page instead of JSON in FastAPI, you can use the `HTMLResponse` class. This is demonstrated in the `get_redoc_html` and `get_swagger_ui_html` functions, which generate HTML responses for ReDoc and Swagger UI, respectively.\n\nIn both functions, you construct an HTML string and return it wrapped in an `HTMLResponse`. For example, in `get_redoc_html`, the HTML is generated and returned as follows:\n\n```python\nreturn HTMLResponse(html)\n```\n\nSimilarly, in `get_swagger_ui_html`, the HTML response is also returned in the same manner:\n\n```python\nreturn HTMLResponse(html)\n```\n\nYou can customize the HTML content as needed, including setting the title and including any necessary JavaScript or CSS links. The `HTMLResponse` allows you to serve HTML content directly to the client, which is useful for creating custom documentation or web pages within your FastAPI application [1][2]."
+    },
+    {
+      "id": "n12",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        3
+      ],
+      "cited_paths": [
+        "docs/en/docs/reference/request.md"
+      ],
+      "grounded_in_expected": false,
+      "context_had_answer": false,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 1,
+      "citations_valid": 1,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/routing.py",
+        "fastapi/routing.py",
+        "docs/en/docs/reference/request.md",
+        "fastapi/openapi/utils.py",
+        "docs/en/docs/advanced/templates.md",
+        "docs/en/docs/reference/responses.md"
+      ],
+      "answer": "To access the raw incoming request inside your endpoint, you can declare a parameter of type `Request` in your path operation function. This allows you to directly access the raw request object without any validation. You can import `Request` from `fastapi` as follows:\n\n```python\nfrom fastapi import Request\n```\n\nThen, in your endpoint function, you can use it like this:\n\n```python\n@app.get(\"/your-endpoint\")\nasync def your_endpoint(request: Request):\n    # You can now access the raw request object\n    raw_request = request\n    # Do something with the raw request\n```\n\nThis approach is supported by the FastAPI framework, as indicated in the documentation [3]."
+    },
+    {
+      "id": "n13",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        2,
+        3
+      ],
+      "cited_paths": [
+        "docs/en/docs/advanced/async-tests.md"
+      ],
+      "grounded_in_expected": false,
+      "context_had_answer": false,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 2,
+      "citations_valid": 2,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/routing.py",
+        "docs/en/docs/advanced/async-tests.md",
+        "docs/en/docs/advanced/async-tests.md",
+        "fastapi/datastructures.py",
+        "docs/en/docs/tutorial/sql-databases.md",
+        "docs/en/docs/help-fastapi.md"
+      ],
+      "answer": "To write automated tests for your FastAPI endpoints, you can use the `TestClient` provided by FastAPI, which allows you to send requests to your application and verify responses. For asynchronous tests, you should use the `pytest.mark.anyio` decorator to mark your test functions as asynchronous, enabling you to call async functions within your tests. This is particularly useful when interacting with async database libraries or other async operations [2][3].\n\nHere\u2019s a general approach to writing automated tests for your endpoints:\n\n1. **Use the TestClient**: This client allows you to simulate requests to your FastAPI application.\n2. **Mark tests as async**: If your tests involve async functions, use `pytest.mark.anyio` to ensure they run correctly in an async context.\n3. **Verify responses**: After sending requests, check that the responses match your expectations, such as status codes and response data.\n\nBy structuring your tests this way, you can effectively automate the testing of your FastAPI endpoints [2]."
+    },
+    {
+      "id": "n14",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        3,
+        4,
+        6
+      ],
+      "cited_paths": [
+        "fastapi/openapi/utils.py",
+        "docs/en/docs/advanced/additional-responses.md",
+        "docs/en/docs/tutorial/handling-errors.md"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 3,
+      "citations_valid": 3,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/openapi/utils.py",
+        "fastapi/exceptions.py",
+        "fastapi/openapi/utils.py",
+        "docs/en/docs/advanced/additional-responses.md",
+        "fastapi/exceptions.py",
+        "docs/en/docs/tutorial/handling-errors.md"
+      ],
+      "answer": "To show a helpful error message with a specific status code in FastAPI, you can use the `HTTPException` class. This allows you to return HTTP responses that include both the status code and a message to the client.\n\nYou can raise an `HTTPException` with a specific status code and detail message like this:\n\n```python\nfrom fastapi import HTTPException\n\nraise HTTPException(status_code=404, detail=\"Item not found\")\n```\n\nIn the context of the FastAPI framework, when a validation error occurs, the framework automatically generates a response with a status code of `422 Unprocessable Entity` and a structured error message. This is defined in the OpenAPI schema, where the `HTTPValidationError` schema is referenced for the `422` status code, providing a consistent format for validation errors [3][4].\n\nAdditionally, if you want to handle other types of errors, you can define custom error messages and status codes as needed, ensuring that the client receives clear and informative feedback about the nature of the error [6]."
+    },
+    {
+      "id": "n15",
+      "type": "paraphrase",
+      "answerable": true,
+      "refused": false,
+      "has_citations": true,
+      "cited_indices": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "cited_paths": [
+        "docs/en/docs/tutorial/query-params-str-validations.md",
+        "fastapi/param_functions.py"
+      ],
+      "grounded_in_expected": true,
+      "context_had_answer": true,
+      "refusal_warranted": false,
+      "refusal_unwarranted": false,
+      "citations_checked": 4,
+      "citations_valid": 4,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/tutorial/query-params-str-validations.md",
+        "docs/en/docs/tutorial/query-params-str-validations.md",
+        "fastapi/param_functions.py",
+        "fastapi/param_functions.py",
+        "fastapi/security/api_key.py",
+        "fastapi/security/api_key.py"
+      ],
+      "answer": "To set a maximum length on a query parameter in FastAPI, you can use the `Query` function with the `max_length` argument. Here\u2019s how you can do it:\n\n1. Import `Query` from FastAPI.\n2. Define your query parameter in the function signature, using `Query(max_length=50)` to specify that the maximum length should be 50 characters.\n\nFor example, in Python 3.10 and above, you can define it like this:\n\n```python\nfrom fastapi import FastAPI, Query\n\napp = FastAPI()\n\n@app.get(\"/items/\")\nasync def read_items(q: str | None = Query(max_length=50)):\n    return {\"q\": q}\n```\n\nIn this example, the query parameter `q` is optional and can have a maximum length of 50 characters, as specified by `Query(max_length=50)` [1][2]. \n\nIf you are using a version of Python below 3.10, you would define it similarly, but with the union type expressed differently:\n\n```python\nfrom fastapi import FastAPI, Query\nfrom typing import Union\n\napp = FastAPI()\n\n@app.get(\"/items/\")\nasync def read_items(q: Union[str, None] = Query(max_length=50)):\n    return {\"q\": q}\n```\n\nThis approach ensures that FastAPI will validate the length of the query parameter according to the specified maximum length [3][4]."
+    },
+    {
+      "id": "u01",
+      "type": "unanswerable",
+      "answerable": false,
+      "refused": true,
+      "has_citations": false,
+      "cited_indices": [],
+      "cited_paths": [],
+      "grounded_in_expected": null,
+      "context_had_answer": null,
+      "refusal_warranted": null,
+      "refusal_unwarranted": null,
+      "citations_checked": 0,
+      "citations_valid": 0,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/advanced/openapi-callbacks.md",
+        "docs/en/docs/advanced/openapi-callbacks.md",
+        "fastapi/cli.py",
+        "fastapi/logger.py",
+        "docs/en/docs/release-notes.md",
+        "fastapi/__main__.py"
+      ],
+      "answer": "INSUFFICIENT_CONTEXT  \nThe sources do not provide information about a billing module or how it calculates monthly charges."
+    },
+    {
+      "id": "u02",
+      "type": "unanswerable",
+      "answerable": false,
+      "refused": true,
+      "has_citations": false,
+      "cited_indices": [],
+      "cited_paths": [],
+      "grounded_in_expected": null,
+      "context_had_answer": null,
+      "refusal_warranted": null,
+      "refusal_unwarranted": null,
+      "citations_checked": 0,
+      "citations_valid": 0,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/deployment/concepts.md",
+        "docs/en/docs/deployment/concepts.md",
+        "docs/en/docs/alternatives.md",
+        "docs/en/docs/tutorial/path-operation-configuration.md",
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/release-notes.md"
+      ],
+      "answer": "INSUFFICIENT_CONTEXT  \nThe sources do not provide information about tenant isolation for multi-tenant deployments."
+    },
+    {
+      "id": "u03",
+      "type": "unanswerable",
+      "answerable": false,
+      "refused": true,
+      "has_citations": false,
+      "cited_indices": [],
+      "cited_paths": [],
+      "grounded_in_expected": null,
+      "context_had_answer": null,
+      "refusal_warranted": null,
+      "refusal_unwarranted": null,
+      "citations_checked": 0,
+      "citations_valid": 0,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/data/external_links.yml",
+        "docs/en/data/external_links.yml",
+        "docs/en/overrides/main.html",
+        "docs/en/docs/deployment/docker.md",
+        "docs/en/docs/js/custom.js",
+        "fastapi/applications.py"
+      ],
+      "answer": "INSUFFICIENT_CONTEXT  \nThe sources provided do not contain information about the specific AWS region targeted by the deployment pipeline."
+    },
+    {
+      "id": "u04",
+      "type": "unanswerable",
+      "answerable": false,
+      "refused": true,
+      "has_citations": false,
+      "cited_indices": [],
+      "cited_paths": [],
+      "grounded_in_expected": null,
+      "context_had_answer": null,
+      "refusal_warranted": null,
+      "refusal_unwarranted": null,
+      "citations_checked": 0,
+      "citations_valid": 0,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/tutorial/sql-databases.md",
+        "docs/en/docs/tutorial/sql-databases.md",
+        "fastapi/datastructures.py",
+        "fastapi/datastructures.py",
+        "fastapi/openapi/models.py",
+        "fastapi/applications.py"
+      ],
+      "answer": "INSUFFICIENT_CONTEXT  \nThe sources do not provide information about the columns in the users table."
+    },
+    {
+      "id": "u05",
+      "type": "unanswerable",
+      "answerable": false,
+      "refused": true,
+      "has_citations": false,
+      "cited_indices": [],
+      "cited_paths": [],
+      "grounded_in_expected": null,
+      "context_had_answer": null,
+      "refusal_warranted": null,
+      "refusal_unwarranted": null,
+      "citations_checked": 0,
+      "citations_valid": 0,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/management-tasks.md",
+        "docs/en/docs/tutorial/bigger-applications.md",
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/deployment/manually.md",
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/tutorial/path-params.md"
+      ],
+      "answer": "INSUFFICIENT_CONTEXT  \nThe sources do not provide information on how feature flags are evaluated at runtime."
+    },
+    {
+      "id": "u06",
+      "type": "unanswerable",
+      "answerable": false,
+      "refused": true,
+      "has_citations": false,
+      "cited_indices": [],
+      "cited_paths": [],
+      "grounded_in_expected": null,
+      "context_had_answer": null,
+      "refusal_warranted": null,
+      "refusal_unwarranted": null,
+      "citations_checked": 0,
+      "citations_valid": 0,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/how-to/async-sql-encode-databases.md",
+        "docs/en/docs/deployment/https.md",
+        "docs/en/docs/how-to/async-sql-encode-databases.md",
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/tutorial/background-tasks.md"
+      ],
+      "answer": "INSUFFICIENT_CONTEXT  \nThe sources do not provide information about how the audit log records administrator actions."
+    },
+    {
+      "id": "u07",
+      "type": "unanswerable",
+      "answerable": false,
+      "refused": true,
+      "has_citations": false,
+      "cited_indices": [],
+      "cited_paths": [],
+      "grounded_in_expected": null,
+      "context_had_answer": null,
+      "refusal_warranted": null,
+      "refusal_unwarranted": null,
+      "citations_checked": 0,
+      "citations_valid": 0,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/applications.py",
+        "docs/en/docs/advanced/async-tests.md",
+        "fastapi/openapi/utils.py",
+        "docs/en/docs/tutorial/background-tasks.md",
+        "fastapi/applications.py",
+        "docs/en/docs/tutorial/testing.md"
+      ],
+      "answer": "INSUFFICIENT_CONTEXT  \nThe sources do not provide information about configuring a circuit breaker for downstream service calls."
+    },
+    {
+      "id": "u08",
+      "type": "unanswerable",
+      "answerable": false,
+      "refused": true,
+      "has_citations": false,
+      "cited_indices": [],
+      "cited_paths": [],
+      "grounded_in_expected": null,
+      "context_had_answer": null,
+      "refusal_warranted": null,
+      "refusal_unwarranted": null,
+      "citations_checked": 0,
+      "citations_valid": 0,
+      "fabricated_indices": [],
+      "retrieved_paths": [
+        "fastapi/openapi/utils.py",
+        "docs/en/docs/tutorial/dependencies/dependencies-in-path-operation-decorators.md",
+        "fastapi/encoders.py",
+        "docs/en/docs/management.md",
+        "fastapi/openapi/utils.py",
+        "docs/en/docs/how-to/conditional-openapi.md"
+      ],
+      "answer": "INSUFFICIENT_CONTEXT  \nThe sources do not provide information on LDAP group membership or its mapping to application roles."
+    }
+  ]
+}

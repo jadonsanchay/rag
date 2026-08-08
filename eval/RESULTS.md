@@ -414,16 +414,126 @@ code half the slots displaces the documentation those questions need. The answer
 layer makes the cost concrete — a 0.2 drop in `paraphrase` r@5 became a 0.267 false
 refusal rate.
 
+---
+
+# Step 6b — LLM judge for claim-level faithfulness
+
+`citations.py` proves a cited span exists; it cannot tell whether the claim matches
+what is at that span. An answer could cite `routing.py:593-618` and assert
+"APIRouter manages database connections" and pass every mechanical check. Closing
+that gap needs a model.
+
+Two design decisions:
+
+- The judge grades **faithfulness to the provided sources**, not correctness in the
+  abstract. Asking "is this true about FastAPI?" invites the judge to answer from
+  its own knowledge of a very popular library, which measures the judge instead of
+  the system.
+- The judge is a **different, stronger model than the generator** (`gpt-4o` judging
+  `gpt-4o-mini`). A model grading its own output shares its blind spots.
+
+## The judge was validated before it was trusted
+
+`uv run python eval/run_judge.py --validate` injects a claim no source can support
+("controlled by the `FASTAPI_STRICT_MODE` environment variable", "memoised in a
+Redis cache", "delegates to the billing module") into real answers and checks the
+judge flags it.
+
+| validation attempt | detection |
+|---|---:|
+| first 8 answers (all `pinpoint`) | 8/8 = 1.000 |
+| stratified across all 4 types, comparing unsupported counts | 10/12 = 0.833 |
+| stratified, checking the injected claim specifically | **11/12 = 0.917** |
+
+Both refinements mattered:
+
+**The easy sample overstated the judge.** `[:8]` returned only `pinpoint` answers,
+which are one or two claims long. Detecting an injection there is trivial compared
+with a 13-claim architectural answer. Stratifying the sample dropped the measured
+detection rate from 1.000 to 0.833.
+
+**The validation method was itself confounded.** Comparing unsupported-claim counts
+before and after injection assumes stable claim decomposition, and the judge's
+decomposition is not stable: the same answer decomposed into 12 claims on one run
+and 13 on another, and `a01`'s baseline unsupported count moved 4 → 2 on identical
+input at `temperature=0`. Checking whether the judge extracted *the injected claim
+specifically* is immune to that, and raised the measured rate to 0.917. The single
+remaining failure was a `DROPPED` case — the judge never extracted the claim at
+all, rather than judging it wrong.
+
+**Consequence for reading the numbers below:** the judge has real run-to-run
+variance. Aggregate faithfulness differences under roughly 0.02 are noise, and
+per-answer verdicts are stronger evidence than aggregate deltas.
+
+## Results
+
+| metric | before class-context fix | after |
+|---|---:|---:|
+| answers graded | 50 | 50 |
+| total claims | 282 | 303 |
+| claim faithfulness | 0.972 | 0.964 |
+| mean answer faithfulness | 0.984 | 0.972 |
+| fully clean answers | 0.920 | 0.860 |
+| **contradicted claims** | **0** | **0** |
+
+## Findings
+
+**B21. The judge found a chunking defect that no retrieval metric could see.**
+For `a12` ("how is dependency metadata represented internally?") the model claimed
+"`Security` is a subclass of `Depends`" — which is *true* (`params.py:773`). The
+judge marked it unsupported. Checking the retrieved chunks showed why: they started
+at `params.py:761` and `params.py:774`, the *method bodies*. `class Depends:` is at
+line 760 and `class Security(Depends):` at 773, so the declarations carrying the
+inheritance were never in the context. The model was reciting prior knowledge.
+
+Retrieval metrics were blind to this: `params.py` *was* retrieved, so file-level
+recall scored a perfect hit. Only claim-level grading exposed it.
+
+The fix prepends the class declaration line to every method chunk (tracked with
+`header_lines`, so citation verification still maps text back to real lines).
+Verified per-answer:
+
+| question | faithfulness before | after |
+|---|---:|---:|
+| a12 | 0.727 | **1.000** |
+| a10 | 0.900 | **1.000** |
+| n12 | 0.800 | **1.000** |
+
+The claim now reads `[supported] The Security class extends Depends`. Retrieval r@5
+also rose 0.870 → 0.889 and `behavioral` r@5 0.917 → 1.000, at the cost of some
+MRR (0.706 → 0.663) — acceptable under the recall@5 rationale in B4.
+
+**B22. The aggregate did not move; the specific defect did.**
+Claim faithfulness went 0.972 → 0.964 while the three targeted answers went to
+1.000 and new answers (`a08`, `a14`, `n04`, `n02`) appeared in the worst list. Given
+the judge variance documented above, the aggregate change is not interpretable as a
+regression. Stated plainly rather than presented as an improvement: the fix is
+verified at the level of the defect it targeted, not at the level of the summary
+statistic.
+
+**B23. The residual unfaithfulness is concentrated in synthesis and invented examples.**
+Of the flagged claims, the recurring shapes were narrative bridging on architectural
+questions ("After the endpoint function completes, it returns a response…" — plausible
+filler spanning a gap between chunks) and fabricated code examples on `paraphrase`
+questions (`n12` invented an `@app.post("/items/")` snippet). Zero claims were ever
+marked *contradicted* across both runs, so the failure mode is unsupported
+elaboration, not stating things the sources refute.
+
 ## Open items
 
-- **`paraphrase` end-to-end quality** is the top remaining defect, and the cause is
-  known (B14/B20). Query-dependent stratum weighting is the fix; not attempted
+- **`paraphrase` end-to-end quality** remains the top defect; cause known
+  (B14/B20/B23). Query-dependent stratum weighting is the fix, not attempted
   because tuning a query classifier against 15 questions would overfit
+- **Answer correctness is still unmeasured.** Faithfulness asks whether the sources
+  support each claim, not whether the answer is right. A grounded answer built from
+  a wrong-but-retrieved chunk still scores 1.000. Reference answers or human
+  grading would be needed
+- **Judge variance is unquantified.** It was observed, not measured. Running the
+  judge N times per answer and reporting a confidence interval would be the
+  correct treatment
 - 1 unwarranted refusal remains (1 of 54)
 - `behavioral`/`pinpoint` remain n=12; grow before trusting small differences
-- Answer *correctness* is unmeasured — grounding checks that a cited file is the
-  expected one, not that the prose is right. That needs either human grading or an
-  LLM judge, and an LLM judge needs its own validation
+- Judging costs roughly $0.75 per full pass with `gpt-4o`
 - Untested: does indexing `tests/` help or hurt?
 - Untested: `jina-embeddings-v2-base-code` vs `text-embedding-3-small`
 - **Behavioral MRR regressed** under the r@5-tuned weights (lexical 0.738 →

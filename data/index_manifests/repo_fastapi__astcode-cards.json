@@ -30,13 +30,13 @@
     "chunks_over_limit": 0,
     "pct_over_limit": 0.0,
     "max_tokens_seen": 1137,
-    "mean_tokens": 224.8,
-    "total_tokens": 591338
+    "mean_tokens": 225.0,
+    "total_tokens": 592087
   },
   "duplicates": {
     "total_chunks": 2631,
-    "unique_chunks": 2585,
-    "duplicate_chunks": 46,
-    "pct_duplicate": 1.7
+    "unique_chunks": 2590,
+    "duplicate_chunks": 41,
+    "pct_duplicate": 1.6
   }
 }

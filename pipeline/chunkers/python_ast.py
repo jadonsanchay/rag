@@ -55,12 +55,28 @@ class PythonASTChunker:
     # --- node handlers ------------------------------------------------------
 
     def _function_chunks(
-        self, node: ast.AST, lines: List[str], path: str, parent: Optional[str]
+        self,
+        node: ast.AST,
+        lines: List[str],
+        path: str,
+        parent: Optional[str],
+        class_line: Optional[str] = None,
     ) -> List[Chunk]:
         start, end = self._node_span(node)
         text = self._slice(lines, start, end)
         header = self._signature_header(node, lines)
-        return self._emit(
+
+        # Prepend the class declaration to a method chunk. Without it the chunk
+        # begins after the `class X(Base):` line, so the base class is invisible:
+        # a faithfulness judge caught the model correctly stating
+        # "Security is a subclass of Depends" from prior knowledge, because the
+        # retrieved chunks started at the method bodies and never showed it.
+        class_context_lines = 0
+        if class_line:
+            text = f"{class_line}\n{text}"
+            class_context_lines = 1
+
+        chunks = self._emit(
             text=text,
             path=path,
             start_line=start,
@@ -70,6 +86,12 @@ class PythonASTChunker:
             parent_symbol=parent,
             header=header,
         )
+        if class_context_lines:
+            for chunk in chunks:
+                # Synthetic leading line, not present at start_line.
+                existing = chunk.extra.get("header_lines", 0) or 0
+                chunk.extra["header_lines"] = existing + class_context_lines
+        return chunks
 
     def _class_chunks(self, node: ast.ClassDef, lines: List[str], path: str) -> List[Chunk]:
         chunks: List[Chunk] = []
@@ -94,9 +116,14 @@ class PythonASTChunker:
             chunk.extra["class_end_line"] = end
         chunks.extend(skeleton)
 
+        class_line = self._first_signature_line(node, lines)
         for child in node.body:
             if isinstance(child, DEF_NODES):
-                chunks.extend(self._function_chunks(child, lines, path, parent=node.name))
+                chunks.extend(
+                    self._function_chunks(
+                        child, lines, path, parent=node.name, class_line=class_line
+                    )
+                )
 
         return chunks
 

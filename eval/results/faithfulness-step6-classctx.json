@@ -1,0 +1,2133 @@
+{
+  "label": "step6-classctx",
+  "judge_model": "gpt-4o",
+  "generator_model": "gpt-4o-mini",
+  "summary": {
+    "answers_graded": 50,
+    "answers_skipped": 0,
+    "total_claims": 303,
+    "supported": 292,
+    "unsupported": 11,
+    "contradicted": 0,
+    "claim_faithfulness": 0.964,
+    "mean_answer_faithfulness": 0.972,
+    "clean_answer_rate": 0.86
+  },
+  "results": [
+    {
+      "question_id": "p01",
+      "total_claims": 1,
+      "supported": 1,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The APIRouter class is defined in the file fastapi/routing.py at lines 593-618",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "p02",
+      "total_claims": 1,
+      "supported": 1,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The `solve_dependencies` function is implemented in the file `fastapi/dependencies/utils.py` from lines 562 to 685",
+          "verdict": "supported",
+          "source": 1
+        }
+      ]
+    },
+    {
+      "question_id": "p03",
+      "total_claims": 2,
+      "supported": 2,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The `jsonable_encoder` function is defined in the file `fastapi/encoders.py`.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `jsonable_encoder` function is defined in the line ranges [3] (lines 102-248) and [1] (lines 249-343).",
+          "verdict": "supported",
+          "source": 1
+        }
+      ]
+    },
+    {
+      "question_id": "p04",
+      "total_claims": 3,
+      "supported": 3,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The HTTPException class is defined in the file fastapi/exceptions.py",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The HTTPException class is defined specifically in the lines 9 to 35 for the class definition",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The HTTPException class is defined specifically in the lines 37 to 65 for its __init__ method",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "p05",
+      "total_claims": 3,
+      "supported": 3,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The `UploadFile` class is defined in the `fastapi/datastructures.py` file",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "The `UploadFile` class is defined specifically starting from line 141",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "The `UploadFile` class extends `StarletteUploadFile`",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "p06",
+      "total_claims": 2,
+      "supported": 2,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The `OAuth2PasswordBearer` class is defined in the file `fastapi/security/oauth2.py`.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "The `OAuth2PasswordBearer` class is defined specifically between lines 400 and 485.",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "p07",
+      "total_claims": 1,
+      "supported": 1,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The get_openapi function is defined in the fastapi/openapi/utils.py module.",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "p08",
+      "total_claims": 2,
+      "supported": 2,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The `Depends` function is defined in the file `fastapi/param_functions.py` at lines 2220-2277",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "Its constructor is defined in `fastapi/params.py` at lines 761-765",
+          "verdict": "supported",
+          "source": 5
+        }
+      ]
+    },
+    {
+      "question_id": "p09",
+      "total_claims": 1,
+      "supported": 1,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The `BackgroundTasks` class is defined in the file `fastapi/background.py` at lines 9-36",
+          "verdict": "supported",
+          "source": 1
+        }
+      ]
+    },
+    {
+      "question_id": "p10",
+      "total_claims": 1,
+      "supported": 1,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The `serialize_response` function is defined in the file `fastapi/routing.py` at lines 143-201",
+          "verdict": "supported",
+          "source": 1
+        }
+      ]
+    },
+    {
+      "question_id": "p11",
+      "total_claims": 1,
+      "supported": 1,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The function create_model_field is defined in the file fastapi/utils.py at lines 63-106",
+          "verdict": "supported",
+          "source": 1
+        }
+      ]
+    },
+    {
+      "question_id": "p12",
+      "total_claims": 2,
+      "supported": 2,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The SecurityScopes class is defined in the file fastapi/security/oauth2.py at lines 598-638",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "Its constructor is specifically detailed in lines 611-638",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "b01",
+      "total_claims": 7,
+      "supported": 7,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "FastAPI uses the `jsonable_encoder` function to convert Pydantic models and other Python objects into JSON-serializable data.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "This function takes an object as input and returns a version that is compatible with JSON, typically a Python dictionary or list.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "The `jsonable_encoder` function can handle various parameters to customize the encoding process, such as `include` and `exclude` to specify which fields to include or exclude, `by_alias` to determine if alias names should be used, and `exclude_none` to omit fields with `None` values.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "It also supports a `custom_encoder` parameter for defining custom serialization logic for specific types.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "Internally, if the object is a Pydantic model, `jsonable_encoder` converts it to a dictionary using the `_model_dump` method, which respects the specified parameters for inclusion and exclusion of fields.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "If the object is a dataclass, it uses `dataclasses.asdict` to convert it to a dictionary before applying the same encoding logic.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "This process ensures that the output is a standard data structure that can be easily serialized to JSON using Python's `json.dumps()` function.",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "b02",
+      "total_claims": 7,
+      "supported": 7,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "When a request contains invalid data, FastAPI raises a `RequestValidationError`.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "The `RequestValidationError` is handled by the `request_validation_exception_handler`.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The handler is defined as an asynchronous function that takes a `Request` and the `RequestValidationError` exception as parameters.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "It returns a `JSONResponse` with a status code of `HTTP_422_UNPROCESSABLE_ENTITY`.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The response includes the details of the validation errors in the response content, encoded as JSON using `jsonable_encoder`.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "Developers can override the default exception handler by using the `@app.exception_handler(RequestValidationError)` decorator.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "This allows them to define their own response format for validation errors.",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "b03",
+      "total_claims": 5,
+      "supported": 5,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "FastAPI decides whether to run an endpoint function in a threadpool or the event loop based on whether the function is defined as a coroutine or a regular function.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "If the endpoint function is defined with `async def`, it is treated as a coroutine and is awaited directly in the event loop.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "If the function is defined with `def`, it is run in an external threadpool to prevent blocking the server.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "Blocking operations would hinder the performance of the asynchronous framework.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "This behavior applies not only to path operation functions but also to dependencies defined as regular functions, which are also executed in the threadpool.",
+          "verdict": "supported",
+          "source": 4
+        }
+      ]
+    },
+    {
+      "question_id": "b04",
+      "total_claims": 6,
+      "supported": 6,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "Dependency overrides are applied during the request handling process by utilizing the `dependency_overrides_provider` parameter in the `solve_dependencies` function.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "When a dependency is being resolved, the function checks if there are any overrides specified in the `dependency_overrides_provider`.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "If overrides exist, it retrieves the original callable for the dependency and replaces it with the overridden version from the `dependency_overrides` dictionary.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "This process allows for the original dependency to be substituted with a different implementation, which can be particularly useful for testing or modifying behavior without changing the core application logic.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "The `get_request_handler` function also passes the `dependency_overrides_provider` to the `solve_dependencies` function.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "Any request handling that involves dependencies can utilize the overrides as needed.",
+          "verdict": "supported",
+          "source": 4
+        }
+      ]
+    },
+    {
+      "question_id": "b05",
+      "total_claims": 11,
+      "supported": 11,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "FastAPI builds the OpenAPI schema for a single path operation by utilizing the `get_openapi_path` function.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "The `get_openapi_path` function is responsible for generating the OpenAPI metadata for each route defined in the application.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "The function takes several parameters, including the route itself, operation IDs, and schema generators, and constructs the OpenAPI path object accordingly.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "The function first checks if the route is included in the schema and retrieves the response class associated with the route.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "It then iterates over the HTTP methods defined for that route to build the operation metadata, including parameters and responses.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "It collects parameters for the operation and, if the method allows a body (like POST or PUT), it generates the request body schema.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "This is done by calling `get_openapi_operation_request_body`, which constructs the request body schema based on the route's body field.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "The function sets up the responses for the operation, including default responses and any additional responses defined in the route.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "It merges any extra metadata provided in the `openapi_extra` attribute of the route into the operation schema, allowing for customization of the OpenAPI output.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "After gathering all necessary information, the operation is assembled into a dictionary that represents the OpenAPI path operation.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "This dictionary includes details like the operation ID, summary, parameters, request body, and responses.",
+          "verdict": "supported",
+          "source": 4
+        }
+      ]
+    },
+    {
+      "question_id": "b06",
+      "total_claims": 5,
+      "supported": 5,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "FastAPI parses form data and uploaded files from a request by using the `File` and `Form` classes.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "When a request includes files, it is encoded as `multipart/form-data`, which allows FastAPI to correctly extract the files and form fields from the request body.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "If you declare parameters using `File` for files and `Form` for form fields, FastAPI will handle the parsing automatically based on the request's content type.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "To receive uploaded files, you need to install the `python-multipart` package, as it is required for handling the form data encoding.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "You can declare multiple `File` and `Form` parameters in a single path operation, but you cannot also declare `Body` fields expecting JSON, since the request will be encoded as `multipart/form-data` instead of `application/json`.",
+          "verdict": "supported",
+          "source": 1
+        }
+      ]
+    },
+    {
+      "question_id": "b07",
+      "total_claims": 7,
+      "supported": 7,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The `response_model` in FastAPI filters the fields returned from an endpoint by creating a new Pydantic model object based on the data returned by the endpoint.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "This new object is constructed using the contents of the returned object and is filtered according to the fields declared in the `response_model`.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "Only the specified fields in the `response_model` will be included in the final response, even if the original returned object contains additional data.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "When an endpoint is defined, if a `response_model` is provided, FastAPI will use it to validate and convert the output data to match the type declaration.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "The `response_model` takes priority over the actual return type of the function, ensuring that the response adheres to the structure defined by the `response_model`.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "The implementation in the `APIRoute` class ensures that a new field is created for the response, which prevents any inheritance issues from subclasses of the model.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "The implementation in the `APIRoute` class guarantees that the response is always a new object filtered by the `response_model`.",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "b08",
+      "total_claims": 7,
+      "supported": 7,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "A WebSocket connection in FastAPI is routed using the `websocket_route` method, which is defined in both the `APIRouter` and `FastAPI` classes.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "This method allows you to specify a path and a handler function for the WebSocket connection.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "When you call `websocket_route`, it adds the specified route to the router, enabling the application to handle WebSocket connections at that path.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "Once a WebSocket connection is established, you typically declare a parameter of type `WebSocket` in your handler function.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "This allows you to read data from the client and send data back to it.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "When the WebSocket connection is closed, the `await websocket.receive_text()` call will raise a `WebSocketDisconnect` exception.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `WebSocketDisconnect` exception can be caught and handled to manage disconnections appropriately.",
+          "verdict": "supported",
+          "source": 1
+        }
+      ]
+    },
+    {
+      "question_id": "b09",
+      "total_claims": 7,
+      "supported": 7,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The `include_router` method in both `APIRouter` and `FastAPI` merges prefixes, tags, and dependencies from a sub-router into the current router.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "Merging Prefixes: When including a sub-router, the prefix of the sub-router is combined with the prefix of the current router.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The method ensures that the prefix starts with a '/' and does not end with one, as the routes will start with '/'",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "Merging Tags: The tags from the sub-router are extended to the current tags.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "If tags are provided in the `include_router` call, they are combined with the tags from the sub-router.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "Merging Dependencies: Dependencies from the sub-router are also merged with the current dependencies.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The method allows for the inclusion of dependencies that apply to all path operations in the router.",
+          "verdict": "supported",
+          "source": 4
+        }
+      ]
+    },
+    {
+      "question_id": "b10",
+      "total_claims": 5,
+      "supported": 5,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "Custom exception handlers in FastAPI are registered using the `exception_handler` method of the `FastAPI` class.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "The `exception_handler` method takes an exception class or a status code as its first argument and a callable (the handler function) as its second argument.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "The handler function is then invoked whenever the specified exception is raised.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "Example of registering a custom exception handler with `UnicornException`.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "The `unicorn_exception_handler` function will be called whenever a `UnicornException` is raised, returning a JSON response with a custom message and status code.",
+          "verdict": "supported",
+          "source": 6
+        }
+      ]
+    },
+    {
+      "question_id": "b11",
+      "total_claims": 11,
+      "supported": 11,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The Swagger UI HTML page is generated by the get_swagger_ui_html function.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The function constructs the HTML response that loads Swagger UI for the interactive API documentation.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The API documentation is typically accessible at the /docs endpoint.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "The function takes several parameters, including the OpenAPI URL, title, and URLs for the Swagger UI JavaScript and CSS files.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "In the FastAPI class, the setup method is responsible for adding the route for the Swagger UI HTML page.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "The setup method defines an asynchronous function swagger_ui_html that constructs the OpenAPI URL and the OAuth2 redirect URL.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "The setup method calls get_swagger_ui_html with these parameters to generate the HTML response.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "The route is added to the application using self.add_route(self.docs_url, swagger_ui_html, include_in_schema=False).",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "This makes the Swagger UI available at the specified docs_url.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "If OAuth2 is configured, the setup method also adds a route for handling the OAuth2 redirection by calling get_swagger_ui_oauth2_redirect_html.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "get_swagger_ui_oauth2_redirect_html generates the necessary HTML for the OAuth2 flow.",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "b12",
+      "total_claims": 5,
+      "supported": 5,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "FastAPI caches the result of a dependency within a single request by storing the returned value in a 'cache' after the dependency is called for the first time.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "If the same dependency is declared multiple times within the same request, FastAPI will reuse the cached value instead of calling the dependency again.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "This behavior is controlled by the `use_cache` parameter in the `Depends` function, which is set to `True` by default.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "If a developer wants to ensure that the dependency is called again for each declaration within the same request, they can set `use_cache=False` when declaring the dependency.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "The caching mechanism is implemented in the `solve_dependencies` function, which checks if the dependency is already in the cache and uses it if available, otherwise it calls the dependency and stores the result in the cache for future use within that request.",
+          "verdict": "supported",
+          "source": 5
+        }
+      ]
+    },
+    {
+      "question_id": "a01",
+      "total_claims": 15,
+      "supported": 12,
+      "unsupported": 3,
+      "contradicted": 0,
+      "faithfulness": 0.8,
+      "clean": false,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The request flow in a FastAPI application begins at the ASGI entry point, where the ASGI server (like Uvicorn) receives the request.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "The server then forwards the request to the FastAPI application, which is an ASGI app.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "The ASGI server starts and waits for incoming requests.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "When a request is received, it is processed according to the ASGI specification, which includes the `scope` and `receive` components that are essential for creating a `Request` instance.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "FastAPI uses a router to match the incoming request to the appropriate endpoint.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "This is handled by the `APIRouter` class, which is part of the routing module.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "The router checks the request path and method against the defined routes.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "Once a matching route is found, FastAPI retrieves the request handler for that route using the `get_request_handler` method.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "This handler is responsible for processing the request.",
+          "verdict": "unsupported",
+          "source": null
+        },
+        {
+          "claim": "The request handler calls the endpoint function.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "This is done through the `run_endpoint_function` method, which checks if the endpoint is a coroutine.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "If it is, it awaits the function; otherwise, it runs the function in a thread pool.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The function is called with the values extracted from the request.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "After the endpoint function processes the request and returns a response, FastAPI prepares the response to be sent back to the client.",
+          "verdict": "unsupported",
+          "source": null
+        },
+        {
+          "claim": "This involves serializing the response content and setting the appropriate status code and headers.",
+          "verdict": "unsupported",
+          "source": null
+        }
+      ]
+    },
+    {
+      "question_id": "a02",
+      "total_claims": 6,
+      "supported": 6,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The dependency injection system in FastAPI is structured hierarchically, allowing dependencies to define their own sub-dependencies, which creates a tree of dependencies.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "This system is designed to be simple yet powerful, enabling the automatic resolution and injection of dependencies at each level of the hierarchy.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "The core components of this system include the `Depends` class, which allows for the definition of dependencies.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "The `Security` class extends `Depends` to include security-related scopes.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "The `get_sub_dependant` function is responsible for creating a sub-dependency, handling security requirements, and managing the injection of dependencies based on the defined structure.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "This design facilitates the integration of various components, such as databases and authentication systems, into API path operation functions seamlessly.",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "a03",
+      "total_claims": 11,
+      "supported": 11,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The security and authentication system in FastAPI is organized into several key components and schemes, primarily found in the fastapi.security module.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "API Key Security Schemes include mechanisms for API keys that can be passed via cookies, headers, or query parameters.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "API Key Security Schemes include APIKeyCookie, APIKeyHeader, APIKeyQuery.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "HTTP Authentication Schemes include HTTPBasic, HTTPBearer, HTTPDigest.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "HTTP Credentials include HTTPAuthorizationCredentials, HTTPBasicCredentials.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "OAuth2 Authentication includes OAuth2, OAuth2AuthorizationCodeBearer, OAuth2PasswordBearer.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "OAuth2 Password Form includes OAuth2PasswordRequestForm, OAuth2PasswordRequestFormStrict.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "OAuth2 Security Scopes in Dependencies use the SecurityScopes class.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "OpenID Connect is supported by FastAPI.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "FastAPI provides a structured and reusable set of tools and components that simplify the integration of these security mechanisms into applications.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "FastAPI makes it easier to implement authentication and authorization without extensive effort.",
+          "verdict": "supported",
+          "source": 4
+        }
+      ]
+    },
+    {
+      "question_id": "a04",
+      "total_claims": 10,
+      "supported": 10,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "FastAPI builds on top of Starlette by directly inheriting from the Starlette class.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "This allows it to handle all core web functionalities.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "Anything you can do with Starlette can also be done with FastAPI.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "FastAPI is an enhanced version of Starlette, often described as 'Starlette on steroids'.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "FastAPI utilizes the routing capabilities provided by Starlette.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "The FastAPI application class includes methods for adding API routes, such as 'add_api_route' and 'api_route'.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "These methods are built on top of Starlette's routing mechanisms.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "FastAPI provides additional features like automatic data validation and serialization.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "These features are essential for building APIs.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "FastAPI relies on the foundational routing and application structure of Starlette.",
+          "verdict": "supported",
+          "source": 1
+        }
+      ]
+    },
+    {
+      "question_id": "a05",
+      "total_claims": 8,
+      "supported": 8,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "During application startup, the FastAPI application executes any logic defined in the `lifespan` context manager.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "This is where you can perform operations that need to occur before the application starts handling requests, such as loading resources or initializing connections.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "The `lifespan` parameter allows you to define both startup and shutdown logic in a single context manager, replacing the older `on_event` method which is now deprecated.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `lifespan` function is defined using `async def` and includes a `yield` statement.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "Code before the `yield` is executed during the startup phase, while code after the `yield` runs during the shutdown phase.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "This approach provides a more structured way to manage application lifecycle events compared to the previous `on_event` method.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `lifespan` context manager can be nested, allowing for more complex lifecycle management by merging different lifespan contexts.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "This ensures that the application can maintain state and perform necessary cleanup when shutting down.",
+          "verdict": "supported",
+          "source": 4
+        }
+      ]
+    },
+    {
+      "question_id": "a06",
+      "total_claims": 6,
+      "supported": 6,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The codebase supports both Pydantic v1 and Pydantic v2 by maintaining compatibility through conditional logic and feature flags.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "The `Param` class in `fastapi/params.py` uses the `PYDANTIC_VERSION` and `PYDANTIC_V2` constants from `fastapi/_compat.py` to determine which features to enable based on the Pydantic version in use.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "When Pydantic v2 is detected, additional parameters such as `alias_priority`, `validation_alias`, `serialization_alias`, `strict`, and `json_schema_extra` are included in the initialization of the `Param` class.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "If Pydantic v1 is being used, the code falls back to using parameters compatible with that version, such as `regex` instead of `pattern`.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "FastAPI still supports Pydantic v1 while allowing users to install Pydantic v2, ensuring that users can transition smoothly and fix any issues that arise during the upgrade process.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The test coverage for both versions is also maintained at 100%, ensuring that functionality remains intact across versions.",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "n01",
+      "total_claims": 4,
+      "supported": 4,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "Use the APIRouter class to create separate routers for different parts of your application.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "Organize your application into multiple files with a structure like the provided example.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "Define routes in separate files using the APIRouter class.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "Include routers in the main application using the include_router method.",
+          "verdict": "supported",
+          "source": 3
+        }
+      ]
+    },
+    {
+      "question_id": "n02",
+      "total_claims": 8,
+      "supported": 7,
+      "unsupported": 1,
+      "contradicted": 0,
+      "faithfulness": 0.875,
+      "clean": false,
+      "error": null,
+      "claims": [
+        {
+          "claim": "To make an endpoint return only some of the fields of your model in FastAPI, you can use the `response_model` parameter in your endpoint definition.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "This allows FastAPI to filter the response data based on the fields declared in the specified response model.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "If you have a model with more fields than you want to return, you can create a separate response model that includes only the fields you want to expose.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "When you annotate your endpoint with this response model, FastAPI will ensure that only the specified fields are included in the response, even if the function returns more data.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "Define your main model with all the fields.",
+          "verdict": "unsupported",
+          "source": null
+        },
+        {
+          "claim": "Create a response model that includes only the fields you want to return.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "Use the `response_model` parameter in your endpoint to specify the response model.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "This approach allows you to take advantage of function type annotations for better support in editors and tools while ensuring that the response is filtered correctly by FastAPI.",
+          "verdict": "supported",
+          "source": 1
+        }
+      ]
+    },
+    {
+      "question_id": "n03",
+      "total_claims": 6,
+      "supported": 6,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "To read a value that the client sent in the request headers in FastAPI, you can use the `Request` object to access the headers directly.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "Import the `Request` class from `fastapi`.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "Define a path operation function that takes a `Request` parameter.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "Use `request.headers.get(\"header_name\")` to retrieve the value of the specific header.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "If you want to read a header named `tool`, you would do something like this: `tool_value = request.headers.get(\"tool\")`.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "This code snippet demonstrates how to access the headers sent by the client, allowing you to read the value associated with the `tool` header or any other header you need.",
+          "verdict": "supported",
+          "source": 4
+        }
+      ]
+    },
+    {
+      "question_id": "n04",
+      "total_claims": 7,
+      "supported": 6,
+      "unsupported": 1,
+      "contradicted": 0,
+      "faithfulness": 0.857,
+      "clean": false,
+      "error": null,
+      "claims": [
+        {
+          "claim": "To ensure that only signed-in users can call an endpoint, you can implement an authentication mechanism that checks for a valid authorization token in the request headers.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "In FastAPI, this is typically done using the `Authorization` header, which should contain a token that starts with `Bearer `.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "When a user authenticates, they receive a token that they must include in the `Authorization` header for subsequent requests.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The relevant code for checking the `Authorization` header is found in the `OAuth2` class, which retrieves the header and raises an HTTP 403 error if it is missing and `auto_error` is set to true.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "The `run_endpoint_function` is responsible for executing the endpoint function after the request has been validated, ensuring that only requests with valid tokens proceed to the endpoint logic.",
+          "verdict": "unsupported",
+          "source": null
+        },
+        {
+          "claim": "Similar checks are implemented in other security classes like `OpenIdConnect` and `HTTPBase`, which also verify the presence of the `Authorization` header and handle errors accordingly.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "By using these mechanisms, you can restrict access to your endpoints, allowing only authenticated users to make requests.",
+          "verdict": "supported",
+          "source": 3
+        }
+      ]
+    },
+    {
+      "question_id": "n05",
+      "total_claims": 7,
+      "supported": 7,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "To perform slow work after the response has already been sent to the user in FastAPI, you can use the `BackgroundTasks` class.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "This allows you to define background tasks that will be executed after the response is returned to the client.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "Import `BackgroundTasks`",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "Define a parameter in your path operation function",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "Add a parameter of type `BackgroundTasks` to your path operation function.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "This will allow you to add tasks to be executed in the background.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "In this example, when a request is made to `/send-notification/`, the response is sent immediately while the `slow_task` function runs in the background.",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "a07",
+      "total_claims": 8,
+      "supported": 7,
+      "unsupported": 1,
+      "contradicted": 0,
+      "faithfulness": 0.875,
+      "clean": false,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The OpenAPI schema generation code in FastAPI is primarily organized within the `FastAPI` class and utility functions in the `openapi` module.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `FastAPI` class, located in `[1] fastapi/applications.py:966-996`, contains the `openapi` method, which generates the OpenAPI schema for the application.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "This method checks if the schema has already been generated and stored in `app.openapi_schema`.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "If not, it calls the `get_openapi` function with various parameters to create the schema.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `get_openapi` function is not explicitly shown in the provided sources, but it is implied to be responsible for constructing the OpenAPI schema based on the application's metadata and routes.",
+          "verdict": "unsupported",
+          "source": null
+        },
+        {
+          "claim": "Additional utility functions that assist in generating specific parts of the OpenAPI schema are found in `[2] fastapi/openapi/utils.py:361-422` and `[5] fastapi/openapi/utils.py:149-183`.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "These functions handle aspects such as generating operation request bodies and managing response schemas, which are integral to the overall schema generation process.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "Overall, the organization involves a main method in the `FastAPI` class for schema generation and several utility functions for handling specific components of the OpenAPI schema.",
+          "verdict": "supported",
+          "source": 1
+        }
+      ]
+    },
+    {
+      "question_id": "a08",
+      "total_claims": 6,
+      "supported": 3,
+      "unsupported": 3,
+      "contradicted": 0,
+      "faithfulness": 0.5,
+      "clean": false,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The parameter declaration helpers in FastAPI are organized in the fastapi/params.py module.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "The fastapi/params.py module defines various classes for different types of parameters, such as Path, Query, Header, Cookie, Body, Form, File, and Depends.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "These helpers are designed to construct instances of the Parameter class.",
+          "verdict": "unsupported",
+          "source": null
+        },
+        {
+          "claim": "The Parameter class is a subclass of ParameterBase defined in fastapi/openapi/models.py.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The organization allows developers to use standard Python types for parameter declarations.",
+          "verdict": "unsupported",
+          "source": null
+        },
+        {
+          "claim": "The helpers facilitate the creation of the corresponding parameter instances that FastAPI uses for request handling and OpenAPI documentation generation.",
+          "verdict": "unsupported",
+          "source": null
+        }
+      ]
+    },
+    {
+      "question_id": "a09",
+      "total_claims": 10,
+      "supported": 10,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "FastAPI ships with CORSMiddleware for handling Cross-Origin Resource Sharing.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "FastAPI ships with GZipMiddleware for compressing responses using GZip.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "FastAPI ships with HTTPSRedirectMiddleware for redirecting HTTP requests to HTTPS.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "FastAPI ships with TrustedHostMiddleware for validating the host header.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "FastAPI ships with WSGIMiddleware for integrating WSGI applications.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "These middlewares can be imported from the fastapi.middleware package.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "To wire middleware into a FastAPI application, you can use the middleware method of the FastAPI class.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "The middleware method allows you to define a middleware function that processes requests and responses.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "You can create a middleware that measures the processing time of requests using the @app.middleware('http') decorator.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "The @app.middleware('http') decorator registers the middleware to handle HTTP requests.",
+          "verdict": "supported",
+          "source": 5
+        }
+      ]
+    },
+    {
+      "question_id": "a10",
+      "total_claims": 9,
+      "supported": 9,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "FastAPI allows the definition of individual routes using methods like `router.get()`, `router.post()`, etc.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "These methods are used to create path operations directly associated with a specific `APIRouter` instance, which is a subclass of Starlette's routing system.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `APIRouter` class is designed to group related routes together.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "APIRouter can include various configurations such as a path prefix, tags, dependencies, and response classes that apply to all routes defined within it.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `APIRouter` can also include other routers, allowing for a modular approach to route management.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "When including another `APIRouter`, it merges the routes and configurations from the included router into the current router, ensuring that all settings are appropriately applied.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "FastAPI's routing is built on top of Starlette's routing system.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `APIRouter` inherits from Starlette's `Router`, which provides the foundational routing functionality.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "FastAPI adds additional features and configurations but still relies on Starlette's underlying mechanisms for handling HTTP requests and routing them to the appropriate endpoints.",
+          "verdict": "supported",
+          "source": 1
+        }
+      ]
+    },
+    {
+      "question_id": "a11",
+      "total_claims": 8,
+      "supported": 7,
+      "unsupported": 1,
+      "contradicted": 0,
+      "faithfulness": 0.875,
+      "clean": false,
+      "error": null,
+      "claims": [
+        {
+          "claim": "FastAPI defines its own exception classes, such as HTTPException, which is used to represent HTTP errors.",
+          "verdict": "unsupported",
+          "source": null
+        },
+        {
+          "claim": "HTTPException is imported from starlette.exceptions and is utilized in the exception handling process.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "FastAPI provides default exception handlers, such as http_exception_handler, which is defined in fastapi/exception_handlers.py.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "http_exception_handler processes HTTPException instances and returns appropriate JSON responses based on the exception's status code and detail.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "Developers can create custom exception handlers by using the exception_handler method of the FastAPI class.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "The exception_handler method allows the registration of a handler for specific exception classes or status codes.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "FastAPI allows developers to reuse its default exception handlers by importing them from fastapi.exception_handlers.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "The FastAPI documentation provides guidance on how to handle exceptions, including how to install custom exception handlers and override default ones.",
+          "verdict": "supported",
+          "source": 5
+        }
+      ]
+    },
+    {
+      "question_id": "a12",
+      "total_claims": 11,
+      "supported": 11,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "Dependency metadata in FastAPI is represented internally using the `Depends` class.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "The `Depends` class is defined in the `fastapi/params.py` file.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "The `Depends` class has an `__init__` method that takes a callable dependency and a boolean `use_cache` parameter.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "The `use_cache` parameter determines whether the result of the dependency should be cached for the duration of the request.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "For security-related dependencies, there is a subclass called `Security`.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "The `Security` class extends `Depends` and adds an additional `scopes` attribute.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "The `get_sub_dependant` function is located in `fastapi/dependencies/utils.py`.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `get_sub_dependant` function is responsible for creating a `Dependant` instance that includes the dependency metadata.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `get_sub_dependant` function includes any security requirements if applicable.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `get_sub_dependant` function checks if the dependency is of type `Security` and appends the corresponding security requirements to the `Dependant` instance.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The combination of the `Depends` and `Security` classes, along with the `get_sub_dependant` function, forms the internal representation of dependency metadata in FastAPI.",
+          "verdict": "supported",
+          "source": null
+        }
+      ]
+    },
+    {
+      "question_id": "a13",
+      "total_claims": 9,
+      "supported": 9,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The framework delegates field validation to Pydantic by utilizing the `Field` class from Pydantic.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "FastAPI integrates with Pydantic's validation system through the `ModelField` class.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "In FastAPI, the `create_model_field` function is used to instantiate `ModelField` objects.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "The `create_model_field` function takes parameters such as `type_`, `default`, `required`, and `field_info`.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "`field_info` is an instance of `FieldInfo` from Pydantic.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "The `FieldInfo` class contains metadata and validation rules for the field.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "The `validate` method within the `ModelField` class uses Pydantic's type adapter to validate incoming data.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "If validation fails, it raises a `ValidationError`, which is handled by FastAPI.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "FastAPI leverages Pydantic's validation capabilities by creating model fields that encapsulate validation logic.",
+          "verdict": "supported",
+          "source": 3
+        }
+      ]
+    },
+    {
+      "question_id": "a14",
+      "total_claims": 5,
+      "supported": 4,
+      "unsupported": 1,
+      "contradicted": 0,
+      "faithfulness": 0.8,
+      "clean": false,
+      "error": null,
+      "claims": [
+        {
+          "claim": "Response classes in FastAPI are organized into several custom response types that can be imported from fastapi.responses.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "These include FileResponse, HTMLResponse, JSONResponse, ORJSONResponse, PlainTextResponse, RedirectResponse, Response, StreamingResponse, and UJSONResponse.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "When defining a route, you can specify which response class to use by setting the response_class parameter in the api_route method of the FastAPI class.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "If not specified, it defaults to JSONResponse.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "When creating a custom APIRoute, you can also set the response_class parameter, which will apply to all path operations under that route.",
+          "verdict": "unsupported",
+          "source": null
+        }
+      ]
+    },
+    {
+      "question_id": "a15",
+      "total_claims": 11,
+      "supported": 11,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "The security dependency resolution in FastAPI is closely tied to its general dependency injection system.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "The `get_sub_dependant` function is responsible for resolving dependencies, including security dependencies.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `get_sub_dependant` function checks if the provided dependency is of type `params.Security`.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `get_sub_dependant` function handles security scopes appropriately.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "If the dependency is a security scheme, `get_sub_dependant` creates a `SecurityRequirement`.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `SecurityRequirement` is associated with the sub-dependant being created.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `Security` class inherits from `Depends`.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "The `Security` class allows for the declaration of security dependencies that can specify OAuth2 scopes.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "FastAPI automatically manages the resolution of security dependencies, including any associated scopes.",
+          "verdict": "supported",
+          "source": 5
+        },
+        {
+          "claim": "The dependency injection system in FastAPI facilitates the integration of security features seamlessly.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "The dependency injection system allows developers to enforce security requirements without manually handling the complexities of dependency resolution.",
+          "verdict": "supported",
+          "source": 6
+        }
+      ]
+    },
+    {
+      "question_id": "n10",
+      "total_claims": 3,
+      "supported": 3,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "Set the `title` and `description` parameters when initializing your `FastAPI` application.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "The `title` parameter specifies the title of the API, which will be visible in the generated OpenAPI documentation (e.g., at `/docs`).",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "The `description` parameter allows you to provide a more detailed description, which can include Markdown formatting and will also be displayed in the documentation.",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "n11",
+      "total_claims": 7,
+      "supported": 7,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "To send back an HTML page instead of JSON in FastAPI, you can use the `HTMLResponse` class.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "This is demonstrated in the `get_redoc_html` and `get_swagger_ui_html` functions, which generate HTML responses for ReDoc and Swagger UI, respectively.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "In both functions, you construct an HTML string and return it wrapped in an `HTMLResponse`.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "For example, in `get_redoc_html`, the HTML is generated and returned as follows: `return HTMLResponse(html)`",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "Similarly, in `get_swagger_ui_html`, the HTML response is also returned in the same manner: `return HTMLResponse(html)`",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "You can customize the HTML content as needed, including setting the title and including any necessary JavaScript or CSS links.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "The `HTMLResponse` allows you to serve HTML content directly to the client, which is useful for creating custom documentation or web pages within your FastAPI application.",
+          "verdict": "supported",
+          "source": 3
+        }
+      ]
+    },
+    {
+      "question_id": "n12",
+      "total_claims": 5,
+      "supported": 5,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "To access the raw incoming request inside your endpoint, you can declare a parameter of type `Request` in your path operation function.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "This allows you to directly access the raw request object without any validation.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "You can import `Request` from `fastapi` as follows: `from fastapi import Request`.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "In your endpoint function, you can use it like this: `@app.get(\"/your-endpoint\") async def your_endpoint(request: Request): raw_request = request`",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "This approach is supported by the FastAPI framework, as indicated in the documentation.",
+          "verdict": "supported",
+          "source": 3
+        }
+      ]
+    },
+    {
+      "question_id": "n13",
+      "total_claims": 7,
+      "supported": 7,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "Use the TestClient provided by FastAPI to send requests to your application and verify responses.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "For asynchronous tests, use the pytest.mark.anyio decorator to mark your test functions as asynchronous.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "pytest.mark.anyio enables you to call async functions within your tests.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "This is particularly useful when interacting with async database libraries or other async operations.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "Use the TestClient to simulate requests to your FastAPI application.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "Mark tests as async if they involve async functions using pytest.mark.anyio.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "Verify responses by checking that they match expectations, such as status codes and response data.",
+          "verdict": "supported",
+          "source": 2
+        }
+      ]
+    },
+    {
+      "question_id": "n14",
+      "total_claims": 6,
+      "supported": 6,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "To show a helpful error message with a specific status code in FastAPI, you can use the `HTTPException` class.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "This allows you to return HTTP responses that include both the status code and a message to the client.",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "You can raise an `HTTPException` with a specific status code and detail message like this: `raise HTTPException(status_code=404, detail=\"Item not found\")`",
+          "verdict": "supported",
+          "source": 6
+        },
+        {
+          "claim": "In the context of the FastAPI framework, when a validation error occurs, the framework automatically generates a response with a status code of `422 Unprocessable Entity` and a structured error message.",
+          "verdict": "supported",
+          "source": 3
+        },
+        {
+          "claim": "This is defined in the OpenAPI schema, where the `HTTPValidationError` schema is referenced for the `422` status code, providing a consistent format for validation errors.",
+          "verdict": "supported",
+          "source": 4
+        },
+        {
+          "claim": "Additionally, if you want to handle other types of errors, you can define custom error messages and status codes as needed, ensuring that the client receives clear and informative feedback about the nature of the error.",
+          "verdict": "supported",
+          "source": 6
+        }
+      ]
+    },
+    {
+      "question_id": "n15",
+      "total_claims": 7,
+      "supported": 7,
+      "unsupported": 0,
+      "contradicted": 0,
+      "faithfulness": 1.0,
+      "clean": true,
+      "error": null,
+      "claims": [
+        {
+          "claim": "To set a maximum length on a query parameter in FastAPI, you can use the `Query` function with the `max_length` argument.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "Import `Query` from FastAPI.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "Define your query parameter in the function signature, using `Query(max_length=50)` to specify that the maximum length should be 50 characters.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "In Python 3.10 and above, you can define it like this: `q: str | None = Query(max_length=50)`.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "The query parameter `q` is optional and can have a maximum length of 50 characters, as specified by `Query(max_length=50)`.",
+          "verdict": "supported",
+          "source": 1
+        },
+        {
+          "claim": "If you are using a version of Python below 3.10, you would define it similarly, but with the union type expressed differently.",
+          "verdict": "supported",
+          "source": 2
+        },
+        {
+          "claim": "This approach ensures that FastAPI will validate the length of the query parameter according to the specified maximum length.",
+          "verdict": "supported",
+          "source": 1
+        }
+      ]
+    }
+  ]
+}

@@ -51,23 +51,23 @@
       "chunks_over_limit": 0,
       "pct_over_limit": 0.0,
       "max_tokens_seen": 1137,
-      "mean_tokens": 224.8,
-      "total_tokens": 591338
+      "mean_tokens": 225.0,
+      "total_tokens": 592087
     },
     "duplicates": {
       "total_chunks": 2631,
-      "unique_chunks": 2585,
-      "duplicate_chunks": 46,
-      "pct_duplicate": 1.7
+      "unique_chunks": 2590,
+      "duplicate_chunks": 41,
+      "pct_duplicate": 1.6
     }
   },
   "summary": {
     "overall": {
       "n": 54,
-      "recall@1": 0.574,
-      "recall@5": 0.87,
+      "recall@1": 0.5,
+      "recall@5": 0.889,
       "recall@10": 0.926,
-      "mrr": 0.706,
+      "mrr": 0.663,
       "misses": [
         "n03",
         "n12",
@@ -77,18 +77,18 @@
     "by_type": {
       "architectural": {
         "n": 15,
-        "recall@1": 0.6,
+        "recall@1": 0.467,
         "recall@5": 1.0,
         "recall@10": 1.0,
-        "mrr": 0.761,
+        "mrr": 0.68,
         "misses": []
       },
       "behavioral": {
         "n": 12,
-        "recall@1": 0.667,
-        "recall@5": 0.917,
+        "recall@1": 0.583,
+        "recall@5": 1.0,
         "recall@10": 1.0,
-        "mrr": 0.785,
+        "mrr": 0.732,
         "misses": []
       },
       "paraphrase": {
@@ -96,7 +96,7 @@
         "recall@1": 0.333,
         "recall@5": 0.6,
         "recall@10": 0.733,
-        "mrr": 0.452,
+        "mrr": 0.453,
         "misses": [
           "n03",
           "n12",
@@ -105,10 +105,10 @@
       },
       "pinpoint": {
         "n": 12,
-        "recall@1": 0.75,
+        "recall@1": 0.667,
         "recall@5": 1.0,
         "recall@10": 1.0,
-        "mrr": 0.875,
+        "mrr": 0.833,
         "misses": []
       }
     }
@@ -121,17 +121,17 @@
       "expected_files": [
         "fastapi/routing.py"
       ],
-      "first_hit_rank": 1,
+      "first_hit_rank": 2,
       "hit_at": {
-        "1": true,
+        "1": false,
         "5": true,
         "10": true
       },
-      "reciprocal_rank": 1.0,
+      "reciprocal_rank": 0.5,
       "distinct_files_retrieved": 6,
       "top_5_paths": [
-        "fastapi/routing.py",
         "docs/en/docs/reference/apirouter.md",
+        "fastapi/routing.py",
         "docs/en/docs/reference/apirouter.md",
         "docs/en/docs/tutorial/bigger-applications.md",
         "fastapi/routing.py"
@@ -155,7 +155,7 @@
         "10": true
       },
       "reciprocal_rank": 1.0,
-      "distinct_files_retrieved": 6,
+      "distinct_files_retrieved": 7,
       "top_5_paths": [
         "fastapi/dependencies/utils.py",
         "docs/en/docs/release-notes.md",
@@ -209,7 +209,7 @@
         "10": true
       },
       "reciprocal_rank": 1.0,
-      "distinct_files_retrieved": 7,
+      "distinct_files_retrieved": 6,
       "top_5_paths": [
         "fastapi/exceptions.py",
         "fastapi/exceptions.py",
@@ -236,13 +236,13 @@
         "10": true
       },
       "reciprocal_rank": 0.5,
-      "distinct_files_retrieved": 7,
+      "distinct_files_retrieved": 6,
       "top_5_paths": [
         "docs/en/docs/reference/uploadfile.md",
         "fastapi/datastructures.py",
+        "fastapi/datastructures.py",
         "docs/en/docs/reference/uploadfile.md",
-        "docs/en/docs/tutorial/request-files.md",
-        "fastapi/datastructures.py"
+        "docs/en/docs/tutorial/request-files.md"
       ],
       "hit_sources": [
         "semantic:code",
@@ -263,7 +263,7 @@
         "10": true
       },
       "reciprocal_rank": 0.5,
-      "distinct_files_retrieved": 7,
+      "distinct_files_retrieved": 6,
       "top_5_paths": [
         "docs/en/docs/tutorial/security/first-steps.md",
         "fastapi/security/oauth2.py",
@@ -293,8 +293,8 @@
       "distinct_files_retrieved": 7,
       "top_5_paths": [
         "fastapi/openapi/",
-        "docs/en/docs/how-to/extending-openapi.md",
         "fastapi/openapi/utils.py",
+        "docs/en/docs/how-to/extending-openapi.md",
         "fastapi/openapi/utils.py",
         "docs/en/docs/how-to/extending-openapi.md"
       ],
@@ -324,7 +324,7 @@
         "fastapi/param_functions.py",
         "docs/en/docs/reference/dependencies.md",
         "fastapi/dependencies/utils.py",
-        "docs/en/docs/tutorial/dependencies/dependencies-in-path-operation-decorators.md"
+        "fastapi/params.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -399,13 +399,13 @@
         "10": true
       },
       "reciprocal_rank": 1.0,
-      "distinct_files_retrieved": 7,
+      "distinct_files_retrieved": 6,
       "top_5_paths": [
         "fastapi/utils.py",
         "fastapi/utils.py",
         "docs/en/docs/release-notes.md",
         "docs/en/docs/tutorial/body-fields.md",
-        "docs/en/docs/how-to/separate-openapi-schemas.md"
+        "docs/en/docs/release-notes.md"
       ],
       "hit_sources": [
         "semantic:code",
@@ -429,9 +429,9 @@
       "distinct_files_retrieved": 6,
       "top_5_paths": [
         "fastapi/security/oauth2.py",
-        "docs/en/docs/advanced/security/oauth2-scopes.md",
-        "docs/en/docs/advanced/security/oauth2-scopes.md",
         "fastapi/security/oauth2.py",
+        "docs/en/docs/advanced/security/oauth2-scopes.md",
+        "docs/en/docs/advanced/security/oauth2-scopes.md",
         "fastapi/dependencies/models.py"
       ],
       "hit_sources": [
@@ -457,9 +457,9 @@
       "top_5_paths": [
         "fastapi/encoders.py",
         "docs/en/docs/tutorial/encoder.md",
-        "fastapi/params.py",
         "docs/en/docs/tutorial/encoder.md",
-        "docs/en/docs/tutorial/body-nested-models.md"
+        "docs/en/docs/tutorial/body-nested-models.md",
+        "fastapi/openapi/models.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -481,13 +481,13 @@
         "10": true
       },
       "reciprocal_rank": 1.0,
-      "distinct_files_retrieved": 8,
+      "distinct_files_retrieved": 7,
       "top_5_paths": [
         "fastapi/exception_handlers.py",
         "docs/en/docs/tutorial/handling-errors.md",
         "fastapi/exception_handlers.py",
         "docs/en/docs/tutorial/handling-errors.md",
-        "docs/en/docs/tutorial/response-status-code.md"
+        "fastapi/exceptions.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -514,9 +514,9 @@
       "top_5_paths": [
         "fastapi/routing.py",
         "docs/en/docs/async.md",
+        "fastapi/applications.py",
         "docs/en/docs/async.md",
-        "docs/en/docs/how-to/sql-databases-peewee.md",
-        "fastapi/routing.py"
+        "docs/en/docs/how-to/sql-databases-peewee.md"
       ],
       "hit_sources": [
         "semantic:code",
@@ -558,18 +558,18 @@
       "expected_files": [
         "fastapi/openapi/utils.py"
       ],
-      "first_hit_rank": 2,
+      "first_hit_rank": 3,
       "hit_at": {
         "1": false,
         "5": true,
         "10": true
       },
-      "reciprocal_rank": 0.5,
+      "reciprocal_rank": 0.3333333333333333,
       "distinct_files_retrieved": 6,
       "top_5_paths": [
         "docs/en/docs/advanced/path-operation-advanced-configuration.md",
-        "fastapi/openapi/utils.py",
         "docs/en/docs/advanced/path-operation-advanced-configuration.md",
+        "fastapi/openapi/utils.py",
         "fastapi/openapi/utils.py",
         "fastapi/applications.py"
       ],
@@ -613,20 +613,20 @@
       "expected_files": [
         "fastapi/routing.py"
       ],
-      "first_hit_rank": 1,
+      "first_hit_rank": 2,
       "hit_at": {
-        "1": true,
+        "1": false,
         "5": true,
         "10": true
       },
-      "reciprocal_rank": 1.0,
+      "reciprocal_rank": 0.5,
       "distinct_files_retrieved": 7,
       "top_5_paths": [
-        "fastapi/routing.py",
         "docs/en/docs/release-notes.md",
+        "fastapi/routing.py",
+        "fastapi/routing.py",
         "docs/en/docs/tutorial/response-model.md",
-        "docs/en/docs/tutorial/response-model.md",
-        "docs/en/docs/advanced/response-change-status-code.md"
+        "docs/en/docs/tutorial/response-model.md"
       ],
       "hit_sources": [
         "semantic:code",
@@ -682,7 +682,7 @@
         "fastapi/applications.py",
         "docs/en/docs/release-notes.md",
         "docs/en/docs/release-notes.md",
-        "fastapi/applications.py"
+        "fastapi/routing.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -751,20 +751,20 @@
       "expected_files": [
         "fastapi/dependencies/utils.py"
       ],
-      "first_hit_rank": 6,
+      "first_hit_rank": 5,
       "hit_at": {
         "1": false,
-        "5": false,
+        "5": true,
         "10": true
       },
-      "reciprocal_rank": 0.16666666666666666,
+      "reciprocal_rank": 0.2,
       "distinct_files_retrieved": 8,
       "top_5_paths": [
         "docs/en/docs/release-notes.md",
         "fastapi/param_functions.py",
-        "fastapi/params.py",
         "docs/en/docs/tutorial/dependencies/sub-dependencies.md",
-        "docs/en/docs/tutorial/sql-databases.md"
+        "docs/en/docs/tutorial/sql-databases.md",
+        "fastapi/dependencies/utils.py"
       ],
       "hit_sources": [
         "lexical:code"
@@ -790,8 +790,8 @@
         "fastapi/routing.py",
         "docs/en/docs/how-to/custom-request-and-route.md",
         "fastapi/routing.py",
-        "docs/en/docs/advanced/middleware.md",
-        "fastapi/applications.py"
+        "fastapi/applications.py",
+        "docs/en/docs/advanced/middleware.md"
       ],
       "hit_sources": [
         "semantic:code",
@@ -820,7 +820,7 @@
         "docs/en/docs/tutorial/dependencies/index.md",
         "docs/en/docs/tutorial/dependencies/index.md",
         "fastapi/params.py",
-        "docs/en/docs/features.md"
+        "fastapi/params.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -837,20 +837,20 @@
         "fastapi/security/http.py",
         "fastapi/security/api_key.py"
       ],
-      "first_hit_rank": 3,
+      "first_hit_rank": 5,
       "hit_at": {
         "1": false,
         "5": true,
         "10": true
       },
-      "reciprocal_rank": 0.3333333333333333,
-      "distinct_files_retrieved": 7,
+      "reciprocal_rank": 0.2,
+      "distinct_files_retrieved": 6,
       "top_5_paths": [
         "docs/en/docs/reference/security/index.md",
         "docs/en/docs/tutorial/security/index.md",
-        "fastapi/security/http.py",
         "docs/en/docs/features.md",
-        "docs/en/docs/tutorial/security/index.md"
+        "docs/en/docs/tutorial/security/index.md",
+        "fastapi/security/http.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -865,20 +865,20 @@
         "fastapi/applications.py",
         "fastapi/routing.py"
       ],
-      "first_hit_rank": 1,
+      "first_hit_rank": 3,
       "hit_at": {
-        "1": true,
+        "1": false,
         "5": true,
         "10": true
       },
-      "reciprocal_rank": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
       "distinct_files_retrieved": 7,
       "top_5_paths": [
-        "fastapi/applications.py",
         "docs/en/docs/benchmarks.md",
         "docs/en/docs/alternatives.md",
-        "fastapi/routing.py",
-        "fastapi/routing.py"
+        "fastapi/applications.py",
+        "fastapi/__init__.py",
+        "fastapi/applications.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -920,19 +920,19 @@
       "expected_files": [
         "fastapi/_compat.py"
       ],
-      "first_hit_rank": 4,
+      "first_hit_rank": 3,
       "hit_at": {
         "1": false,
         "5": true,
         "10": true
       },
-      "reciprocal_rank": 0.25,
+      "reciprocal_rank": 0.3333333333333333,
       "distinct_files_retrieved": 6,
       "top_5_paths": [
         "docs/en/docs/release-notes.md",
         "docs/en/docs/release-notes.md",
-        "fastapi/params.py",
         "fastapi/_compat.py",
+        "fastapi/params.py",
         "fastapi/params.py"
       ],
       "hit_sources": [
@@ -955,7 +955,7 @@
         "10": true
       },
       "reciprocal_rank": 0.3333333333333333,
-      "distinct_files_retrieved": 8,
+      "distinct_files_retrieved": 9,
       "top_5_paths": [
         "fastapi/openapi/utils.py",
         "docs/en/docs/advanced/behind-a-proxy.md",
@@ -983,13 +983,13 @@
         "10": true
       },
       "reciprocal_rank": 1.0,
-      "distinct_files_retrieved": 7,
+      "distinct_files_retrieved": 6,
       "top_5_paths": [
         "docs/en/docs/tutorial/response-model.md",
         "fastapi/_compat.py",
         "docs/en/docs/tutorial/request-form-models.md",
         "docs/en/docs/tutorial/response-model.md",
-        "docs/en/docs/release-notes.md"
+        "fastapi/dependencies/utils.py"
       ],
       "hit_sources": [
         "semantic:prose",
@@ -1011,13 +1011,13 @@
         "10": false
       },
       "reciprocal_rank": 0.0,
-      "distinct_files_retrieved": 8,
+      "distinct_files_retrieved": 9,
       "top_5_paths": [
         "docs/en/docs/advanced/response-headers.md",
         "fastapi/exception_handlers.py",
         "docs/en/docs/tutorial/middleware.md",
-        "fastapi/security/oauth2.py",
-        "fastapi/security/oauth2.py"
+        "fastapi/security/http.py",
+        "docs/en/docs/tutorial/header-param-models.md"
       ],
       "hit_sources": []
     },
@@ -1040,11 +1040,11 @@
       "reciprocal_rank": 0.3333333333333333,
       "distinct_files_retrieved": 7,
       "top_5_paths": [
-        "fastapi/routing.py",
         "docs/en/docs/tutorial/security/oauth2-jwt.md",
+        "fastapi/routing.py",
         "fastapi/security/oauth2.py",
         "fastapi/security/open_id_connect_url.py",
-        "fastapi/security/api_key.py"
+        "fastapi/security/http.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -1088,19 +1088,19 @@
         "fastapi/datastructures.py",
         "fastapi/param_functions.py"
       ],
-      "first_hit_rank": 14,
+      "first_hit_rank": 13,
       "hit_at": {
         "1": false,
         "5": false,
         "10": false
       },
-      "reciprocal_rank": 0.07142857142857142,
+      "reciprocal_rank": 0.07692307692307693,
       "distinct_files_retrieved": 8,
       "top_5_paths": [
         "docs/en/docs/advanced/openapi-callbacks.md",
         "fastapi/security/api_key.py",
         "fastapi/security/api_key.py",
-        "fastapi/applications.py",
+        "docs/en/docs/js/custom.js",
         "docs/en/docs/js/custom.js"
       ],
       "hit_sources": [
@@ -1151,13 +1151,13 @@
         "10": true
       },
       "reciprocal_rank": 1.0,
-      "distinct_files_retrieved": 7,
+      "distinct_files_retrieved": 8,
       "top_5_paths": [
         "fastapi/routing.py",
         "fastapi/routing.py",
         "docs/en/docs/async.md",
         "docs/en/docs/how-to/sql-databases-peewee.md",
-        "docs/en/docs/async.md"
+        "fastapi/applications.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -1186,7 +1186,7 @@
         "fastapi/openapi/utils.py",
         "docs/en/docs/how-to/extending-openapi.md",
         "docs/en/docs/tutorial/schema-extra-example.md",
-        "docs/en/docs/tutorial/first-steps.md"
+        "fastapi/openapi/utils.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -1201,20 +1201,20 @@
         "fastapi/param_functions.py",
         "fastapi/params.py"
       ],
-      "first_hit_rank": 1,
+      "first_hit_rank": 2,
       "hit_at": {
-        "1": true,
+        "1": false,
         "5": true,
         "10": true
       },
-      "reciprocal_rank": 1.0,
+      "reciprocal_rank": 0.5,
       "distinct_files_retrieved": 8,
       "top_5_paths": [
-        "fastapi/params.py",
         "fastapi/openapi/models.py",
-        "fastapi/openapi/utils.py",
+        "fastapi/params.py",
         "fastapi/applications.py",
-        "docs/en/docs/release-notes.md"
+        "docs/en/docs/release-notes.md",
+        "docs/en/docs/js/termynal.js"
       ],
       "hit_sources": [
         "semantic:code",
@@ -1245,7 +1245,7 @@
         "fastapi/middleware/",
         "fastapi/middleware/__init__.py",
         "docs/en/docs/advanced/middleware.md",
-        "docs/en/docs/reference/middleware.md"
+        "fastapi/applications.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -1269,10 +1269,10 @@
       "distinct_files_retrieved": 6,
       "top_5_paths": [
         "fastapi/routing.py",
-        "docs/en/docs/tutorial/bigger-applications.md",
         "fastapi/routing.py",
-        "fastapi/openapi/utils.py",
-        "docs/en/docs/tutorial/bigger-applications.md"
+        "docs/en/docs/tutorial/bigger-applications.md",
+        "docs/en/docs/tutorial/bigger-applications.md",
+        "docs/en/docs/alternatives.md"
       ],
       "hit_sources": [
         "semantic:code",
@@ -1324,7 +1324,7 @@
         "10": true
       },
       "reciprocal_rank": 1.0,
-      "distinct_files_retrieved": 7,
+      "distinct_files_retrieved": 8,
       "top_5_paths": [
         "fastapi/dependencies/utils.py",
         "fastapi/dependencies/utils.py",
@@ -1358,7 +1358,7 @@
         "docs/en/docs/release-notes.md",
         "fastapi/_compat.py",
         "fastapi/utils.py",
-        "fastapi/param_functions.py"
+        "fastapi/_compat.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -1384,8 +1384,8 @@
       "top_5_paths": [
         "docs/en/docs/how-to/custom-request-and-route.md",
         "fastapi/routing.py",
-        "docs/en/docs/reference/responses.md",
         "fastapi/routing.py",
+        "docs/en/docs/reference/responses.md",
         "docs/en/docs/reference/responses.md"
       ],
       "hit_sources": [
@@ -1412,10 +1412,10 @@
       "distinct_files_retrieved": 8,
       "top_5_paths": [
         "fastapi/dependencies/utils.py",
+        "fastapi/params.py",
         "docs/en/docs/features.md",
         "docs/en/docs/tutorial/dependencies/index.md",
-        "fastapi/param_functions.py",
-        "docs/en/docs/tutorial/dependencies/index.md"
+        "fastapi/param_functions.py"
       ],
       "hit_sources": [
         "semantic:code",
@@ -1430,14 +1430,14 @@
         "docs/en/docs/tutorial/dependencies/dependencies-with-yield.md",
         "fastapi/dependencies/utils.py"
       ],
-      "first_hit_rank": 9,
+      "first_hit_rank": 8,
       "hit_at": {
         "1": false,
         "5": false,
         "10": true
       },
-      "reciprocal_rank": 0.1111111111111111,
-      "distinct_files_retrieved": 6,
+      "reciprocal_rank": 0.125,
+      "distinct_files_retrieved": 7,
       "top_5_paths": [
         "docs/en/docs/how-to/sql-databases-peewee.md",
         "docs/en/docs/tutorial/sql-databases.md",
@@ -1465,13 +1465,13 @@
         "10": true
       },
       "reciprocal_rank": 1.0,
-      "distinct_files_retrieved": 9,
+      "distinct_files_retrieved": 8,
       "top_5_paths": [
         "docs/en/docs/tutorial/metadata.md",
         "fastapi/applications.py",
         "docs/en/docs/advanced/behind-a-proxy.md",
         "docs/en/docs/how-to/extending-openapi.md",
-        "fastapi/security/api_key.py"
+        "fastapi/applications.py"
       ],
       "hit_sources": [
         "semantic:prose",
