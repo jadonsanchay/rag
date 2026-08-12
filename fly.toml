@@ -11,6 +11,10 @@ APP_DATA_DIR = "/data"
 # instance shouldn't accept the same 400MB/6000-file ceiling a laptop can.
 MAX_REPO_MB = "50"
 MAX_INDEXED_FILES = "2000"
+# force_https above means every request here really is HTTPS — safe to mark
+# the session cookie Secure. Left false in local dev (plain HTTP), where a
+# Secure cookie would just get silently dropped by the browser.
+COOKIE_SECURE = "true"
 
 [[mounts]]
 source = "codebase_qa_data"

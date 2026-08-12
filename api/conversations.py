@@ -14,10 +14,11 @@ import logging
 import time
 from typing import Iterator, List, Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from starlette.concurrency import run_in_threadpool
 
+from api.auth import require_user
 from api.metrics import metrics
 from api.schemas import (
     AnswerOut,
@@ -30,7 +31,7 @@ from api.schemas import (
 from api.sse import sse_comment, sse_event
 from pipeline.conversation import QueryRewriter
 from pipeline.manifests import repo_root_for
-from pipeline.registry import get_registry
+from pipeline.registry import User, get_registry
 
 logger = logging.getLogger("codebase_qa.api")
 
@@ -47,10 +48,14 @@ def get_rewriter() -> QueryRewriter:
 
 
 @router.post("", response_model=ConversationOut)
-def create_conversation(request: NewConversationRequest) -> ConversationOut:
+def create_conversation(
+    request: NewConversationRequest, user: User = Depends(require_user)
+) -> ConversationOut:
     registry = get_registry()
     repo = registry.get_repo(request.repo_id)
-    if repo is None:
+    # 404, not 403, if the repo id exists but belongs to someone else — same
+    # non-owner treatment as a repo id that doesn't exist at all.
+    if repo is None or repo.user_id != user.id:
         raise HTTPException(status_code=404, detail="Unknown repo")
     if not repo.ready:
         raise HTTPException(
@@ -58,16 +63,25 @@ def create_conversation(request: NewConversationRequest) -> ConversationOut:
             detail=f"Repo is not ready (status: {repo.status})",
         )
 
-    conversation_id = registry.create_conversation(request.repo_id)
+    conversation_id = registry.create_conversation(request.repo_id, user.id)
     return ConversationOut(id=conversation_id, repo_id=request.repo_id)
 
 
-@router.get("/{conversation_id}/messages", response_model=List[MessageOut])
-def list_messages(conversation_id: str) -> List[MessageOut]:
-    registry = get_registry()
-    if registry.get_conversation(conversation_id) is None:
+def _require_conversation(conversation_id: str, user: User) -> dict:
+    conversation = get_registry().get_conversation(conversation_id)
+    if conversation is None or conversation["user_id"] != user.id:
         raise HTTPException(status_code=404, detail="Unknown conversation")
-    return [MessageOut(**message) for message in registry.messages(conversation_id)]
+    return conversation
+
+
+@router.get("/{conversation_id}/messages", response_model=List[MessageOut])
+def list_messages(
+    conversation_id: str, user: User = Depends(require_user)
+) -> List[MessageOut]:
+    _require_conversation(conversation_id, user)
+    return [
+        MessageOut(**message) for message in get_registry().messages(conversation_id)
+    ]
 
 
 def chat_stream(conversation_id: str, request: ChatRequest) -> Iterator[str]:
@@ -201,11 +215,11 @@ def chat_stream(conversation_id: str, request: ChatRequest) -> Iterator[str]:
 
 
 @router.post("/{conversation_id}/messages")
-async def send_message(conversation_id: str, request: ChatRequest) -> StreamingResponse:
+async def send_message(
+    conversation_id: str, request: ChatRequest, user: User = Depends(require_user)
+) -> StreamingResponse:
     registry = get_registry()
-    conversation = registry.get_conversation(conversation_id)
-    if conversation is None:
-        raise HTTPException(status_code=404, detail="Unknown conversation")
+    conversation = _require_conversation(conversation_id, user)
 
     repo = registry.get_repo(conversation["repo_id"])
     if repo is None or not repo.ready:

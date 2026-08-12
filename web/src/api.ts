@@ -1,5 +1,43 @@
 const API = "/api";
 
+// --- auth --------------------------------------------------------------
+
+export interface CurrentUser {
+  id: string;
+  email: string;
+}
+
+async function authRequest(path: string, body?: unknown): Promise<CurrentUser> {
+  const response = await fetch(`${API}/auth/${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(typeof data.detail === "string" ? data.detail : `HTTP ${response.status}`);
+  }
+  return data;
+}
+
+export const signup = (email: string, password: string) =>
+  authRequest("signup", { email, password });
+
+export const login = (email: string, password: string) =>
+  authRequest("login", { email, password });
+
+export async function logout(): Promise<void> {
+  await fetch(`${API}/auth/logout`, { method: "POST" });
+}
+
+/** null means "not logged in" — not thrown, so a cold page load isn't an error. */
+export async function getMe(): Promise<CurrentUser | null> {
+  const response = await fetch(`${API}/auth/me`);
+  if (response.status === 401) return null;
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+}
+
 export interface Source {
   index: number;
   path: string;

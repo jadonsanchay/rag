@@ -15,6 +15,7 @@ import { AnswerText } from "./components/AnswerText";
 import { RepoBar } from "./components/RepoBar";
 import { SourceList } from "./components/SourceList";
 import { SourceViewer } from "./components/SourceViewer";
+import { useAuth } from "./context/AuthContext";
 
 const REFUSAL_TOKEN = "INSUFFICIENT_CONTEXT";
 const POLL_MS = 2000;
@@ -40,6 +41,7 @@ interface Turn {
 
 export default function App() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [repos, setRepos] = useState<RepoStatus[]>([]);
   const [activeRepoId, setActiveRepoId] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
@@ -183,6 +185,17 @@ export default function App() {
         <span className="tagline-inline">
           Ask questions about a codebase in plain English — every answer links back to the
           exact file and line it came from.
+        </span>
+        <span className="masthead-user">
+          {user?.email}
+          <button
+            className="masthead-logout"
+            onClick={() => {
+              void logout().then(() => navigate("/"));
+            }}
+          >
+            Log out
+          </button>
         </span>
       </div>
 

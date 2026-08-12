@@ -20,8 +20,9 @@ GLOBAL_REQUEST_CEILING = int(os.environ.get("GLOBAL_REQUEST_CEILING", "2000"))
 
 
 def is_limited_path(method: str, path: str) -> bool:
-    """Only the LLM/embedding-backed endpoints are limited — /health, /metrics,
-    and read-only GETs stay free."""
+    """LLM/embedding-backed endpoints, plus the auth endpoints — two different
+    threat models (spend vs. credential stuffing / mass account creation)
+    sharing the same limiter. /health, /metrics, and read-only GETs stay free."""
     if method != "POST":
         return False
     if path == "/api/ask":
@@ -29,6 +30,8 @@ def is_limited_path(method: str, path: str) -> bool:
     if path.startswith("/api/conversations/") and path.endswith("/messages"):
         return True
     if path == "/api/repos":
+        return True
+    if path in ("/api/auth/login", "/api/auth/signup"):
         return True
     return False
 

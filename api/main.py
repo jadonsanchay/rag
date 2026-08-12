@@ -18,11 +18,13 @@ import time
 from pathlib import Path
 from typing import Dict, Iterator, List, Optional, Tuple
 
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from starlette.concurrency import run_in_threadpool
 
+from api.auth import require_user
+from api.auth import router as auth_router
 from api.metrics import metrics
 from api.ratelimit import client_ip, is_limited_path, limiter
 from api.schemas import (
@@ -35,6 +37,7 @@ from api.schemas import (
 from api.conversations import router as conversations_router
 from api.repos import router as repos_router
 from api.sse import sse_comment, sse_event
+from pipeline.registry import User
 from pipeline import config
 from pipeline.generator import AnswerGenerator
 from pipeline.logging_config import configure_logging
@@ -103,6 +106,7 @@ async def log_requests(request: Request, call_next):
 # /health and /metrics stay unprefixed (infra checks hit them directly); every
 # route the frontend calls through api.ts lives under /api so one origin can
 # serve both the SPA and the API in production (see the StaticFiles mount below).
+app.include_router(auth_router, prefix="/api")
 app.include_router(repos_router, prefix="/api")
 app.include_router(conversations_router, prefix="/api")
 
@@ -345,7 +349,7 @@ def ask_stream(request: AskRequest) -> Iterator[str]:
 
 
 @app.post("/api/ask")
-async def ask(request: AskRequest) -> StreamingResponse:
+async def ask(request: AskRequest, user: User = Depends(require_user)) -> StreamingResponse:
     """Stream an answer: trace, then tokens, then the verified result.
 
     Retrieval and generation are both blocking, so the synchronous generator is

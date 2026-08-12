@@ -29,12 +29,31 @@ READY = "ready"
 FAILED = "failed"
 
 SCHEMA = """
+CREATE TABLE IF NOT EXISTS users (
+    id            TEXT PRIMARY KEY,
+    email         TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    created_at    REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+    token      TEXT PRIMARY KEY,
+    user_id    TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at REAL NOT NULL,
+    expires_at REAL NOT NULL
+);
+
+-- repos: one row per (user, collection). Multiple users can each have their
+-- own row pointing at the same collection — the underlying index (Chroma
+-- collection, lexical index, cloned tree) is shared and built once; only the
+-- registry row (and therefore visibility + conversations) is per-user.
 CREATE TABLE IF NOT EXISTS repos (
     id            TEXT PRIMARY KEY,
+    user_id       TEXT REFERENCES users(id) ON DELETE CASCADE,
     name          TEXT NOT NULL,
     url           TEXT,
     variant       TEXT NOT NULL,
-    collection    TEXT NOT NULL UNIQUE,
+    collection    TEXT NOT NULL,
     repo_path     TEXT,
     commit_sha    TEXT,
     status        TEXT NOT NULL,
@@ -48,12 +67,14 @@ CREATE TABLE IF NOT EXISTS repos (
     embedding_model    TEXT,
     created_at    REAL NOT NULL,
     updated_at    REAL NOT NULL,
-    indexed_at    REAL
+    indexed_at    REAL,
+    UNIQUE(user_id, collection)
 );
 
 CREATE TABLE IF NOT EXISTS conversations (
     id         TEXT PRIMARY KEY,
     repo_id    TEXT NOT NULL REFERENCES repos(id) ON DELETE CASCADE,
+    user_id    TEXT REFERENCES users(id) ON DELETE CASCADE,
     title      TEXT,
     created_at REAL NOT NULL
 );
@@ -70,12 +91,15 @@ CREATE TABLE IF NOT EXISTS messages (
 
 CREATE INDEX IF NOT EXISTS idx_messages_conversation
     ON messages(conversation_id, created_at);
+
+CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
 """
 
 
 @dataclass
 class Repo:
     id: str
+    user_id: Optional[str]
     name: str
     url: Optional[str]
     variant: str
@@ -100,6 +124,14 @@ class Repo:
         return self.status == READY
 
 
+@dataclass
+class User:
+    id: str
+    email: str
+    password_hash: str
+    created_at: float
+
+
 def _connect() -> sqlite3.Connection:
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     # check_same_thread=False: the API reads from a threadpool and background
@@ -120,20 +152,88 @@ class Registry:
         self.connection.commit()
 
     def _migrate(self) -> None:
-        """Add columns introduced after a database was first created."""
-        existing = {
+        """Add columns/rebuild tables introduced after a database was first created.
+
+        `SCHEMA` above already creates fresh databases in their final shape —
+        everything here only fires against a database that predates a given
+        change (checked by column presence, same as `embedding_provider` below).
+        """
+        repo_columns = {
             row["name"]
             for row in self.connection.execute("PRAGMA table_info(repos)").fetchall()
         }
         for column in ("embedding_provider", "embedding_model"):
-            if column not in existing:
+            if column not in repo_columns:
                 self.connection.execute(f"ALTER TABLE repos ADD COLUMN {column} TEXT")
+
+        if "user_id" not in repo_columns:
+            # `repos` used to be UNIQUE(collection) — one row per index, globally.
+            # It's now UNIQUE(user_id, collection): each user gets their own row
+            # while sharing the underlying index. SQLite can't ALTER a UNIQUE
+            # constraint in place, so this is the standard rename/recreate/copy/drop —
+            # with `legacy_alter_table` ON, or the RENAME below silently rewrites
+            # `conversations.repo_id`'s foreign-key text to point at "repos_old"
+            # (SQLite tracks renames through FK references by default), which would
+            # leave it dangling the moment repos_old is dropped a few lines down.
+            self.connection.execute("PRAGMA legacy_alter_table=ON")
+            self.connection.execute("PRAGMA foreign_keys=OFF")
+            self.connection.executescript(
+                """
+                ALTER TABLE repos RENAME TO repos_old;
+                CREATE TABLE repos (
+                    id            TEXT PRIMARY KEY,
+                    user_id       TEXT REFERENCES users(id) ON DELETE CASCADE,
+                    name          TEXT NOT NULL,
+                    url           TEXT,
+                    variant       TEXT NOT NULL,
+                    collection    TEXT NOT NULL,
+                    repo_path     TEXT,
+                    commit_sha    TEXT,
+                    status        TEXT NOT NULL,
+                    stage         TEXT,
+                    error         TEXT,
+                    files_indexed INTEGER DEFAULT 0,
+                    chunks        INTEGER DEFAULT 0,
+                    size_bytes    INTEGER DEFAULT 0,
+                    languages     TEXT,
+                    embedding_provider TEXT,
+                    embedding_model    TEXT,
+                    created_at    REAL NOT NULL,
+                    updated_at    REAL NOT NULL,
+                    indexed_at    REAL,
+                    UNIQUE(user_id, collection)
+                );
+                INSERT INTO repos (
+                    id, user_id, name, url, variant, collection, repo_path, commit_sha,
+                    status, stage, error, files_indexed, chunks, size_bytes, languages,
+                    embedding_provider, embedding_model, created_at, updated_at, indexed_at
+                )
+                SELECT
+                    id, NULL, name, url, variant, collection, repo_path, commit_sha,
+                    status, stage, error, files_indexed, chunks, size_bytes, languages,
+                    embedding_provider, embedding_model, created_at, updated_at, indexed_at
+                FROM repos_old;
+                DROP TABLE repos_old;
+                """
+            )
+            self.connection.execute("PRAGMA foreign_keys=ON")
+            self.connection.execute("PRAGMA legacy_alter_table=OFF")
+
+        conv_columns = {
+            row["name"]
+            for row in self.connection.execute("PRAGMA table_info(conversations)").fetchall()
+        }
+        if "user_id" not in conv_columns:
+            self.connection.execute(
+                "ALTER TABLE conversations ADD COLUMN user_id TEXT REFERENCES users(id)"
+            )
 
     # --- repos -------------------------------------------------------------
 
     def _row_to_repo(self, row: sqlite3.Row) -> Repo:
         return Repo(
             id=row["id"],
+            user_id=row["user_id"],
             name=row["name"],
             url=row["url"],
             variant=row["variant"],
@@ -162,13 +262,15 @@ class Registry:
         url: Optional[str] = None,
         repo_path: Optional[str] = None,
         status: str = QUEUED,
+        user_id: Optional[str] = None,
     ) -> Repo:
         now = time.time()
         repo_id = uuid.uuid4().hex[:12]
         self.connection.execute(
-            "INSERT INTO repos (id, name, url, variant, collection, repo_path, "
-            "status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (repo_id, name, url, variant, collection, repo_path, status, now, now),
+            "INSERT INTO repos (id, user_id, name, url, variant, collection, "
+            "repo_path, status, created_at, updated_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (repo_id, user_id, name, url, variant, collection, repo_path, status, now, now),
         )
         self.connection.commit()
         return self.get_repo(repo_id)  # type: ignore[return-value]
@@ -177,7 +279,8 @@ class Registry:
         """Record a repo indexed outside the API (the CLI path).
 
         Keyed on collection so re-running the CLI updates in place rather than
-        accumulating duplicate rows.
+        accumulating duplicate rows. Ownerless (`user_id` stays NULL) — the CLI
+        path predates accounts and isn't tied to any one user.
         """
         existing = self.get_by_collection(fields["collection"])
         if existing:
@@ -211,6 +314,25 @@ class Registry:
         )
         self.connection.commit()
 
+    def update_repos_by_collection(self, collection: str, **fields: Any) -> None:
+        """Like `update_repo`, but for every row sharing this collection.
+
+        A reindex rebuilds one shared index; every user's row pointing at it
+        needs the refreshed stats, not just the row that triggered the job.
+        """
+        if not fields:
+            return
+        if "languages" in fields and isinstance(fields["languages"], dict):
+            fields["languages"] = json.dumps(fields["languages"])
+        fields["updated_at"] = time.time()
+
+        assignments = ", ".join(f"{key} = ?" for key in fields)
+        self.connection.execute(
+            f"UPDATE repos SET {assignments} WHERE collection = ?",
+            (*fields.values(), collection),
+        )
+        self.connection.commit()
+
     def get_repo(self, repo_id: str) -> Optional[Repo]:
         row = self.connection.execute(
             "SELECT * FROM repos WHERE id = ?", (repo_id,)
@@ -218,10 +340,58 @@ class Registry:
         return self._row_to_repo(row) if row else None
 
     def get_by_collection(self, collection: str) -> Optional[Repo]:
+        """Any row for this collection, regardless of owner — used only by the
+        ownerless CLI/manifest-import path. Web-facing reuse logic wants
+        `find_ready_repo_by_collection` instead."""
         row = self.connection.execute(
-            "SELECT * FROM repos WHERE collection = ?", (collection,)
+            "SELECT * FROM repos WHERE collection = ? LIMIT 1", (collection,)
         ).fetchone()
         return self._row_to_repo(row) if row else None
+
+    def find_user_repo_by_collection(self, user_id: str, collection: str) -> Optional[Repo]:
+        row = self.connection.execute(
+            "SELECT * FROM repos WHERE user_id = ? AND collection = ?",
+            (user_id, collection),
+        ).fetchone()
+        return self._row_to_repo(row) if row else None
+
+    def find_ready_repo_by_collection(self, collection: str) -> Optional[Repo]:
+        """Any user's ready row for this collection — the index to reuse
+        instead of re-cloning/re-embedding for a second user."""
+        row = self.connection.execute(
+            "SELECT * FROM repos WHERE collection = ? AND status = ? LIMIT 1",
+            (collection, READY),
+        ).fetchone()
+        return self._row_to_repo(row) if row else None
+
+    def attach_existing_repo(self, existing: Repo, user_id: str) -> Repo:
+        """Give `user_id` their own row over an already-built index."""
+        now = time.time()
+        repo_id = uuid.uuid4().hex[:12]
+        self.connection.execute(
+            "INSERT INTO repos (id, user_id, name, url, variant, collection, "
+            "repo_path, commit_sha, status, files_indexed, chunks, size_bytes, "
+            "languages, embedding_provider, embedding_model, created_at, "
+            "updated_at, indexed_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                repo_id, user_id, existing.name, existing.url, existing.variant,
+                existing.collection, existing.repo_path, existing.commit_sha,
+                READY, existing.files_indexed, existing.chunks, existing.size_bytes,
+                json.dumps(existing.languages), existing.embedding_provider,
+                existing.embedding_model, now, now, existing.indexed_at,
+            ),
+        )
+        self.connection.commit()
+        return self.get_repo(repo_id)  # type: ignore[return-value]
+
+    def collection_in_use(self, collection: str, excluding_repo_id: str) -> bool:
+        """Does any *other* row still reference this collection? Used before
+        tearing down the shared index on delete."""
+        row = self.connection.execute(
+            "SELECT 1 FROM repos WHERE collection = ? AND id != ? LIMIT 1",
+            (collection, excluding_repo_id),
+        ).fetchone()
+        return row is not None
 
     def find_repo(self, name: str, variant: Optional[str] = None) -> Optional[Repo]:
         if variant:
@@ -235,9 +405,9 @@ class Registry:
             ).fetchone()
         return self._row_to_repo(row) if row else None
 
-    def list_repos(self) -> List[Repo]:
+    def list_repos(self, user_id: str) -> List[Repo]:
         rows = self.connection.execute(
-            "SELECT * FROM repos ORDER BY created_at DESC"
+            "SELECT * FROM repos WHERE user_id = ? ORDER BY created_at DESC", (user_id,)
         ).fetchall()
         return [self._row_to_repo(row) for row in rows]
 
@@ -247,11 +417,14 @@ class Registry:
 
     # --- conversations -----------------------------------------------------
 
-    def create_conversation(self, repo_id: str, title: Optional[str] = None) -> str:
+    def create_conversation(
+        self, repo_id: str, user_id: str, title: Optional[str] = None
+    ) -> str:
         conversation_id = uuid.uuid4().hex[:12]
         self.connection.execute(
-            "INSERT INTO conversations (id, repo_id, title, created_at) VALUES (?, ?, ?, ?)",
-            (conversation_id, repo_id, title, time.time()),
+            "INSERT INTO conversations (id, repo_id, user_id, title, created_at) "
+            "VALUES (?, ?, ?, ?, ?)",
+            (conversation_id, repo_id, user_id, title, time.time()),
         )
         self.connection.commit()
         return conversation_id
@@ -315,6 +488,62 @@ class Registry:
             (conversation_id, max_turns),
         ).fetchall()
         return [{"role": r["role"], "content": r["content"]} for r in reversed(rows)]
+
+    # --- users and sessions --------------------------------------------------
+
+    def _row_to_user(self, row: sqlite3.Row) -> User:
+        return User(
+            id=row["id"],
+            email=row["email"],
+            password_hash=row["password_hash"],
+            created_at=row["created_at"],
+        )
+
+    def create_user(self, email: str, password_hash: str) -> User:
+        user_id = uuid.uuid4().hex[:12]
+        now = time.time()
+        self.connection.execute(
+            "INSERT INTO users (id, email, password_hash, created_at) VALUES (?, ?, ?, ?)",
+            (user_id, email, password_hash, now),
+        )
+        self.connection.commit()
+        return self.get_user(user_id)  # type: ignore[return-value]
+
+    def get_user(self, user_id: str) -> Optional[User]:
+        row = self.connection.execute(
+            "SELECT * FROM users WHERE id = ?", (user_id,)
+        ).fetchone()
+        return self._row_to_user(row) if row else None
+
+    def get_user_by_email(self, email: str) -> Optional[User]:
+        row = self.connection.execute(
+            "SELECT * FROM users WHERE email = ?", (email,)
+        ).fetchone()
+        return self._row_to_user(row) if row else None
+
+    def create_session(self, user_id: str, token: str, ttl_seconds: float) -> None:
+        now = time.time()
+        self.connection.execute(
+            "INSERT INTO sessions (token, user_id, created_at, expires_at) "
+            "VALUES (?, ?, ?, ?)",
+            (token, user_id, now, now + ttl_seconds),
+        )
+        self.connection.commit()
+
+    def get_session_user(self, token: str) -> Optional[User]:
+        """The user for a session token, or None if the token is missing or
+        expired. Expired rows are lazily deleted rather than swept by a
+        background job — cheap enough at this scale, no extra infrastructure."""
+        row = self.connection.execute(
+            "SELECT users.* FROM sessions JOIN users ON users.id = sessions.user_id "
+            "WHERE sessions.token = ? AND sessions.expires_at > ?",
+            (token, time.time()),
+        ).fetchone()
+        return self._row_to_user(row) if row else None
+
+    def delete_session(self, token: str) -> None:
+        self.connection.execute("DELETE FROM sessions WHERE token = ?", (token,))
+        self.connection.commit()
 
     def close(self) -> None:
         self.connection.close()

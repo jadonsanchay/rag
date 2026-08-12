@@ -240,8 +240,11 @@ def run_ingest(repo_id: str, url: Optional[str] = None) -> None:
             on_stage=lambda name: registry.update_repo(repo_id, stage=name),
         )
 
-        registry.update_repo(
-            repo_id,
+        # By collection, not by id: multiple users can have their own row over
+        # this same shared index, and all of them need the refreshed stats,
+        # not just the row that happened to trigger this job.
+        registry.update_repos_by_collection(
+            repo.collection,
             status=READY,
             stage=None,
             error=None,
@@ -263,19 +266,29 @@ def run_ingest(repo_id: str, url: Optional[str] = None) -> None:
             },
         )
     except IngestError as exc:
-        registry.update_repo(repo_id, status=FAILED, stage=None, error=str(exc))
+        registry.update_repos_by_collection(
+            repo.collection, status=FAILED, stage=None, error=str(exc)
+        )
         logger.error(
             "ingest failed", extra={"repo_id": repo_id, "repo": repo.name, "reason": str(exc)}
         )
     except Exception as exc:  # noqa: BLE001 - never leave a job in limbo
-        registry.update_repo(
-            repo_id, status=FAILED, stage=None, error=f"{type(exc).__name__}: {exc}"
+        registry.update_repos_by_collection(
+            repo.collection, status=FAILED, stage=None, error=f"{type(exc).__name__}: {exc}"
         )
         logger.exception("ingest crashed", extra={"repo_id": repo_id, "repo": repo.name})
 
 
-def delete_repo_data(repo_id: str, remove_clone: bool = True) -> None:
-    """Drop a repo's indexes, registry row, and optionally its working tree."""
+def delete_repo_data(
+    repo_id: str, remove_clone: bool = True, teardown_index: bool = True
+) -> None:
+    """Drop a repo's registry row, and — only when `teardown_index` — its
+    indexes and (optionally) its working tree too.
+
+    `teardown_index=False` when another user's row still points at the same
+    collection: that user's repo list depends on this Chroma collection,
+    lexical index, and clone still existing, so only *this* row goes away.
+    """
     from .lexical_index import LexicalIndex
     from .vector_store import VectorStore
 
@@ -284,23 +297,24 @@ def delete_repo_data(repo_id: str, remove_clone: bool = True) -> None:
     if repo is None:
         return
 
-    try:
-        VectorStore(collection_name=repo.collection).client.delete_collection(
-            repo.collection
-        )
-    except Exception:  # noqa: BLE001 - collection may not exist
-        pass
+    if teardown_index:
+        try:
+            VectorStore(collection_name=repo.collection).client.delete_collection(
+                repo.collection
+            )
+        except Exception:  # noqa: BLE001 - collection may not exist
+            pass
 
-    lexical_db = LexicalIndex(repo.collection).db_path
-    try:
-        lexical_db.unlink(missing_ok=True)
-    except OSError:
-        pass
+        lexical_db = LexicalIndex(repo.collection).db_path
+        try:
+            lexical_db.unlink(missing_ok=True)
+        except OSError:
+            pass
 
-    # Only remove clones this tool created; never a user's own working tree.
-    if remove_clone and repo.repo_path:
-        path = Path(repo.repo_path)
-        if path.is_dir() and config.REPOS_DIR in path.parents:
-            shutil.rmtree(path, ignore_errors=True)
+        # Only remove clones this tool created; never a user's own working tree.
+        if remove_clone and repo.repo_path:
+            path = Path(repo.repo_path)
+            if path.is_dir() and config.REPOS_DIR in path.parents:
+                shutil.rmtree(path, ignore_errors=True)
 
     registry.delete_repo(repo_id)

@@ -118,19 +118,23 @@ uv run uvicorn api.main:app --reload --port 8000
 # http://localhost:8000/docs
 ```
 
-| endpoint | purpose |
-|---|---|
-| `POST /api/repos` | add a public GitHub URL; clones and indexes in the background (202) |
-| `GET /api/repos/{id}` | poll the indexing stage: `queued → cloning → indexing → ready` |
-| `POST /api/repos/{id}/reindex` | re-clone and rebuild |
-| `DELETE /api/repos/{id}` | drop indexes, registry row, and the clone |
-| `POST /api/conversations` | start a thread against one repo |
-| `POST /api/conversations/{id}/messages` | SSE: `rewrite` → `trace` → `token`… → `done` |
-| `POST /api/ask` | stateless single question; SSE `trace` → `token`… → `done` |
-| `GET /api/repos` | indexed collections and their manifests |
-| `GET /api/file` | a slice of a source file, for the viewer behind a citation |
-| `GET /health` | liveness (unprefixed — infra checks hit this directly) |
-| `GET /metrics` | in-process counters: requests, refusals, mean retrieval/generation ms |
+| endpoint | auth? | purpose |
+|---|---|---|
+| `POST /api/auth/signup` | — | create an account, sets the session cookie |
+| `POST /api/auth/login` | — | sets the session cookie |
+| `POST /api/auth/logout` | — | deletes the session, clears the cookie |
+| `GET /api/auth/me` | required | current user, or 401 |
+| `POST /api/repos` | required | add a public GitHub URL; clones and indexes in the background (202), or attaches to an already-indexed copy instantly (see **Authentication**) |
+| `GET /api/repos` | required | *your* indexed repos |
+| `GET /api/repos/{id}` | required | poll the indexing stage: `queued → cloning → indexing → ready` |
+| `POST /api/repos/{id}/reindex` | required | re-clone and rebuild |
+| `DELETE /api/repos/{id}` | required | drop your row (and the shared index too, if nobody else still references it) |
+| `POST /api/conversations` | required | start a thread against one of your repos |
+| `POST /api/conversations/{id}/messages` | required | SSE: `rewrite` → `trace` → `token`… → `done` |
+| `POST /api/ask` | required | stateless single question; SSE `trace` → `token`… → `done` |
+| `GET /api/file` | — | a slice of a source file, for the viewer behind a citation |
+| `GET /health` | — | liveness (unprefixed — infra checks hit this directly) |
+| `GET /metrics` | — | in-process counters: requests, refusals, mean retrieval/generation ms |
 
 Everything the frontend calls lives under `/api`; `/health` and `/metrics` stay
 unprefixed since they're for infra/you, not the SPA. In production the same
@@ -153,8 +157,10 @@ npm run dev            # http://localhost:5173
 ```
 
 `/` is a landing page explaining what the tool does; "Try it now" routes to `/app`
-(`react-router-dom`, the one new npm dependency in this session's work). Paste a
-GitHub URL to index a repo, switch between indexed repos, then chat. Each
+(`react-router-dom`, one of two new dependencies in this session's work — see
+**Authentication**), which requires an account and redirects to `/login`
+otherwise. Once in, paste a GitHub URL to index a repo, switch between your
+own indexed repos, then chat. Each
 turn shows the streamed answer with clickable `[n]` citation markers, the sources
 with the trace explaining why each ranked (`lexical:code #3 · semantic:code #1`),
 and — for follow-ups — the standalone query the question was rewritten into. Click
@@ -174,6 +180,38 @@ The smoke test asserts the thing unit tests cannot: that sources are on screen
 *while the answer element does not yet exist*, that citation spans verify, that
 clicking a marker highlights its source, and that an unanswerable question is
 refused rather than answered.
+
+## Authentication
+
+Real accounts, not a cosmetic login screen: signup/login/logout, session-based
+(`pipeline/registry.py`'s `sessions` table — a random token in an `HttpOnly`,
+`SameSite=Lax` cookie, not a JWT). Passwords are hashed with `bcrypt` (the
+other new dependency this session added). Logout deletes the session row —
+real, immediate revocation, which a stateless JWT can't do without a
+blocklist. No CSRF token: the cookie is `HttpOnly` + `SameSite=Lax` and every
+mutating request needs a JSON body, which a cross-site HTML `<form>` can't
+send — a standard, sufficient mitigation at this scale.
+
+**Repos are per-user visible, but the index is shared.** If you index a repo
+someone else already has `ready`, adding the same URL+variant gives you your
+own row over their already-built index instantly — no re-cloning, no
+re-embedding, no doubled OpenAI spend for identical content. Conversations
+stay strictly yours: a conversation id that exists but isn't yours returns
+`404`, not `403` — same non-disclosure GitHub uses for private repos.
+Deleting your repo only tears down the underlying Chroma collection, lexical
+index, and clone if no one else's row still references it.
+
+One accepted gap, stated plainly: if someone else's index for the same
+collection is still *mid-index* (not yet `ready`) when you add it, this
+doesn't link your request to their in-flight job — it starts its own. Two
+people independently indexing the same brand-new repo within the same few
+minutes is rare and self-correcting (later additions reuse whichever copy
+finishes first); the cross-job linking to close that gap isn't worth the
+complexity here.
+
+`/api/auth/login` and `/api/auth/signup` share the same per-IP rate limiter as
+the cost-bearing endpoints (`api/ratelimit.py`) — a different threat model
+(credential stuffing / mass account creation) reusing the same mechanism.
 
 ## Observability
 
@@ -290,14 +328,16 @@ pipeline/          library code
   generator.py       cited answers, refusal contract, streaming
   citations.py       verify cited spans against the working tree
   manifests.py       where each indexed repo actually lives on disk
-  registry.py        SQLite: indexed repos, their status, conversations
+  registry.py        SQLite: users, sessions, per-user repos, conversations
   ingest_job.py      clone + background indexing with guards
   conversation.py    rewrite follow-ups into standalone queries
   logging_config.py  stdlib JSON logging to stdout
 api/               FastAPI + SSE
+  auth.py            signup/login/logout/me, session cookies, bcrypt
   metrics.py         in-process counters behind GET /metrics
   ratelimit.py       per-IP + global in-memory rate limiting
 web/               React + TypeScript SPA (Vite)
+  Login.tsx / Signup.tsx / RequireAuth.tsx, AuthContext
 eval/              golden set, harnesses, judge, RESULTS.md
 index_repo.py      build the indexes
 query.py / ask.py  CLI
@@ -317,7 +357,12 @@ query.py / ask.py  CLI
 - Re-indexing rebuilds from scratch; there is no incremental update.
 - Background jobs run in-process (FastAPI `BackgroundTasks`). Fine for one user;
   a restart mid-index leaves a repo stuck in `indexing`.
-- No auth. Public GitHub repos only, capped at `MAX_REPO_MB`/`MAX_INDEXED_FILES`
+- Accounts exist (see **Authentication**) but there's no email verification
+  or password reset — signup is instant and self-service, appropriate for a
+  demo, not for anything holding real user data.
+- Public GitHub repos only, capped at `MAX_REPO_MB`/`MAX_INDEXED_FILES`
   (400MB/6000 files locally, tighter in `fly.toml`). Rate limiting (see
-  **Deploy**) bounds request volume, not identity — anyone can still ask
-  questions, just not unboundedly.
+  **Deploy**) bounds request volume per IP, not per account.
+- Reindexing only your own row still rebuilds the *shared* index everyone
+  else's row points at — there's no per-user isolation of the underlying
+  data, only of visibility and conversations (see **Authentication**).

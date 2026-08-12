@@ -2158,6 +2158,7 @@ name = "rag"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "bcrypt" },
     { name = "chromadb" },
     { name = "fastapi" },
     { name = "langchain-core" },
@@ -2173,6 +2174,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "bcrypt", specifier = ">=5.0.0" },
     { name = "chromadb", specifier = ">=1.5.9" },
     { name = "fastapi", specifier = ">=0.141.1" },
     { name = "langchain-core", specifier = ">=1.5.2" },

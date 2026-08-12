@@ -12,5 +12,8 @@ wheels/
 # Vector store (generated)
 data/vector_store/
 
+# Cloned repos (generated, re-clonable — REPOS_DIR default per pipeline/config.py)
+data/repos/
+
 # Secrets
 .env

@@ -120,3 +120,23 @@ class ChatRequest(BaseModel):
     question: str = Field(min_length=1, max_length=1000)
     mode: str = Field(default="hybrid", pattern="^(semantic|lexical|hybrid)$")
     top_k: int = Field(default=6, ge=1, le=20)
+
+
+# --- auth --------------------------------------------------------------
+
+
+class SignupRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=255)
+    # bcrypt silently truncates beyond 72 bytes — cap here so a longer
+    # password doesn't quietly behave differently on hash vs. later verify.
+    password: str = Field(min_length=8, max_length=72)
+
+
+class LoginRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=255)
+    password: str = Field(min_length=1, max_length=72)
+
+
+class UserOut(BaseModel):
+    id: str
+    email: str

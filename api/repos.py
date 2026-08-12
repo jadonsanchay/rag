@@ -1,9 +1,16 @@
-"""Repo lifecycle endpoints: add by URL, poll status, re-index, delete."""
+"""Repo lifecycle endpoints: add by URL, poll status, re-index, delete.
 
-from typing import List, Optional
+Repos are per-user visible but the underlying index is shared: if another
+user already has a `ready` row for the same collection (same GitHub repo +
+variant), adding it here attaches a new row to the existing index instead of
+re-cloning and re-embedding — see `add_repo`.
+"""
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from typing import List
 
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+
+from api.auth import require_user
 from api.schemas import AddRepoRequest, RepoStatusOut
 from pipeline.ingest_job import (
     IngestError,
@@ -11,10 +18,12 @@ from pipeline.ingest_job import (
     parse_github_url,
     run_ingest,
 )
-from pipeline.registry import QUEUED, Repo, get_registry
+from pipeline.registry import CLONING, INDEXING, QUEUED, Repo, User, get_registry
 from pipeline.vector_store import collection_name_for_repo
 
 router = APIRouter(prefix="/repos", tags=["repos"])
+
+IN_PROGRESS = {QUEUED, CLONING, INDEXING}
 
 
 def to_status(repo: Repo) -> RepoStatusOut:
@@ -36,24 +45,33 @@ def to_status(repo: Repo) -> RepoStatusOut:
     )
 
 
-def require_repo(repo_id: str) -> Repo:
+def require_repo(repo_id: str, user: User) -> Repo:
+    """404, not 403, on a repo id that exists but belongs to someone else —
+    don't confirm it exists to a non-owner."""
     repo = get_registry().get_repo(repo_id)
-    if repo is None:
+    if repo is None or repo.user_id != user.id:
         raise HTTPException(status_code=404, detail=f"No repo with id '{repo_id}'")
     return repo
 
 
 @router.get("", response_model=List[RepoStatusOut])
-def list_repos() -> List[RepoStatusOut]:
-    return [to_status(repo) for repo in get_registry().list_repos()]
+def list_repos(user: User = Depends(require_user)) -> List[RepoStatusOut]:
+    return [to_status(repo) for repo in get_registry().list_repos(user.id)]
 
 
 @router.post("", response_model=RepoStatusOut, status_code=202)
-def add_repo(request: AddRepoRequest, background: BackgroundTasks) -> RepoStatusOut:
-    """Accept a GitHub URL and start indexing in the background.
+def add_repo(
+    request: AddRepoRequest,
+    background: BackgroundTasks,
+    user: User = Depends(require_user),
+) -> RepoStatusOut:
+    """Accept a GitHub URL and start indexing in the background — unless
+    someone already has this exact repo+variant `ready`, in which case this
+    user gets their own row over the existing index for free.
 
-    Returns 202 immediately: cloning and embedding take minutes, so the client
-    polls GET /repos/{id} for the stage rather than holding a request open.
+    Returns 202 immediately when a job is actually started: cloning and
+    embedding take minutes, so the client polls GET /repos/{id} for the stage
+    rather than holding a request open.
     """
     try:
         parsed = parse_github_url(request.url)
@@ -63,36 +81,51 @@ def add_repo(request: AddRepoRequest, background: BackgroundTasks) -> RepoStatus
     registry = get_registry()
     collection = collection_name_for_repo(parsed.slug, request.variant)
 
-    existing = registry.get_by_collection(collection)
-    if existing and existing.status in {"queued", "cloning", "indexing"}:
-        # Idempotent: re-submitting a repo already being indexed is not an error.
-        return to_status(existing)
-    if existing:
-        registry.update_repo(existing.id, status=QUEUED, stage="queued", error=None)
-        repo = registry.get_repo(existing.id)
-    else:
-        repo = registry.create_repo(
-            name=parsed.slug,
-            variant=request.variant,
-            collection=collection,
-            url=request.url,
-            status=QUEUED,
-        )
+    mine = registry.find_user_repo_by_collection(user.id, collection)
+    if mine:
+        if mine.status in IN_PROGRESS:
+            # Idempotent: re-submitting a repo already being indexed for you
+            # is not an error.
+            return to_status(mine)
+        if mine.status == "failed":
+            registry.update_repo(mine.id, status=QUEUED, stage="queued", error=None)
+            background.add_task(run_ingest, mine.id, request.url)
+            return to_status(registry.get_repo(mine.id))
+        return to_status(mine)  # already ready
 
+    ready_elsewhere = registry.find_ready_repo_by_collection(collection)
+    if ready_elsewhere:
+        # Someone else already built this index — reuse it, no clone/embed spend.
+        repo = registry.attach_existing_repo(ready_elsewhere, user_id=user.id)
+        return to_status(repo)
+
+    repo = registry.create_repo(
+        name=parsed.slug,
+        variant=request.variant,
+        collection=collection,
+        url=request.url,
+        status=QUEUED,
+        user_id=user.id,
+    )
     background.add_task(run_ingest, repo.id, request.url)
     return to_status(repo)
 
 
 @router.get("/{repo_id}", response_model=RepoStatusOut)
-def get_repo(repo_id: str) -> RepoStatusOut:
-    return to_status(require_repo(repo_id))
+def get_repo(repo_id: str, user: User = Depends(require_user)) -> RepoStatusOut:
+    return to_status(require_repo(repo_id, user))
 
 
 @router.post("/{repo_id}/reindex", response_model=RepoStatusOut, status_code=202)
-def reindex(repo_id: str, background: BackgroundTasks) -> RepoStatusOut:
+def reindex(
+    repo_id: str, background: BackgroundTasks, user: User = Depends(require_user)
+) -> RepoStatusOut:
     """Re-index in place. Re-clones when the repo came from a URL, so a stale
-    working tree is refreshed rather than re-embedded as-is."""
-    repo = require_repo(repo_id)
+    working tree is refreshed rather than re-embedded as-is.
+
+    Rebuilds the shared index — every other user's row pointing at this same
+    collection picks up the refreshed stats too (see `run_ingest`)."""
+    repo = require_repo(repo_id, user)
     registry = get_registry()
     registry.update_repo(repo_id, status=QUEUED, stage="queued", error=None)
     background.add_task(run_ingest, repo_id, repo.url)
@@ -100,11 +133,14 @@ def reindex(repo_id: str, background: BackgroundTasks) -> RepoStatusOut:
 
 
 @router.delete("/{repo_id}", status_code=204)
-def delete_repo(repo_id: str, remove_clone: bool = True) -> None:
-    """Drop the indexes and registry row.
-
-    The working tree is only removed when this tool cloned it — a repo indexed
-    from a local path must never be deleted from under the user.
-    """
-    require_repo(repo_id)
-    delete_repo_data(repo_id, remove_clone=remove_clone)
+def delete_repo(
+    repo_id: str, remove_clone: bool = True, user: User = Depends(require_user)
+) -> None:
+    """Drop this user's registry row. The underlying index (Chroma collection,
+    lexical index, cloned tree) is only torn down if no other user's row still
+    references the same collection — otherwise it would pull the index out
+    from under someone else's repo list."""
+    repo = require_repo(repo_id, user)
+    registry = get_registry()
+    teardown_index = not registry.collection_in_use(repo.collection, excluding_repo_id=repo_id)
+    delete_repo_data(repo_id, remove_clone=remove_clone, teardown_index=teardown_index)
