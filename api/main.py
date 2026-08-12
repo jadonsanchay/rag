@@ -13,15 +13,18 @@ instead of showing a spinner for the whole wall-clock time.
 """
 
 import json
+import logging
 import time
 from pathlib import Path
 from typing import Dict, Iterator, List, Optional, Tuple
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from starlette.concurrency import run_in_threadpool
 
+from api.metrics import metrics
+from api.ratelimit import client_ip, is_limited_path, limiter
 from api.schemas import (
     AnswerOut,
     AskRequest,
@@ -34,10 +37,14 @@ from api.repos import router as repos_router
 from api.sse import sse_comment, sse_event
 from pipeline import config
 from pipeline.generator import AnswerGenerator
+from pipeline.logging_config import configure_logging
 from pipeline.manifests import load_manifest_for, manifest_path, repo_root_for
 from pipeline.retriever import HybridRetriever
 from pipeline.vector_store import collection_name_for_repo
 from query import build_retriever
+
+configure_logging()
+logger = logging.getLogger("codebase_qa.api")
 
 MANIFEST_DIR = config.DATA_DIR / "index_manifests"
 PREVIEW_CHARS = 400
@@ -53,8 +60,51 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(repos_router)
-app.include_router(conversations_router)
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    started = time.perf_counter()
+
+    if is_limited_path(request.method, request.url.path):
+        rejection = limiter.check(client_ip(request))
+        if rejection:
+            duration_ms = (time.perf_counter() - started) * 1000
+            logger.info(
+                "rate limited",
+                extra={"method": request.method, "path": request.url.path, "duration_ms": round(duration_ms, 1)},
+            )
+            metrics.record_request(request.url.path, 429, duration_ms)
+            return JSONResponse(status_code=429, content={"detail": rejection})
+
+    try:
+        response = await call_next(request)
+    except Exception:
+        duration_ms = (time.perf_counter() - started) * 1000
+        logger.exception(
+            "request failed",
+            extra={"method": request.method, "path": request.url.path, "duration_ms": round(duration_ms, 1)},
+        )
+        metrics.record_request(request.url.path, 500, duration_ms)
+        raise
+    duration_ms = (time.perf_counter() - started) * 1000
+    logger.info(
+        "request",
+        extra={
+            "method": request.method,
+            "path": request.url.path,
+            "status": response.status_code,
+            "duration_ms": round(duration_ms, 1),
+        },
+    )
+    metrics.record_request(request.url.path, response.status_code, duration_ms)
+    return response
+
+
+# /health and /metrics stay unprefixed (infra checks hit them directly); every
+# route the frontend calls through api.ts lives under /api so one origin can
+# serve both the SPA and the API in production (see the StaticFiles mount below).
+app.include_router(repos_router, prefix="/api")
+app.include_router(conversations_router, prefix="/api")
 
 
 @app.on_event("startup")
@@ -65,7 +115,12 @@ def backfill_registry() -> None:
 
     imported = import_manifests()
     if imported:
-        print(f"[startup] imported {imported} repo(s) from manifests")
+        logger.info("startup: imported repos from manifests", extra={"count": imported})
+
+
+@app.get("/metrics")
+def get_metrics() -> dict:
+    return metrics.snapshot()
 
 
 # Building a retriever opens a Chroma client and a SQLite connection, so they are
@@ -158,7 +213,7 @@ def health() -> dict:
     return {"status": "ok", "indexed_repos": len(list(MANIFEST_DIR.glob("*.json")))}
 
 
-@app.get("/file", response_model=FileOut)
+@app.get("/api/file", response_model=FileOut)
 def read_file(
     repo: str = Query(default="fastapi"),
     variant: Optional[str] = Query(default=None),
@@ -205,12 +260,14 @@ def ask_stream(request: AskRequest) -> Iterator[str]:
         retriever = get_retriever(request.repo, request.variant, request.mode)
         results = retriever.retrieve(request.question, top_k=request.top_k)
     except Exception as exc:  # noqa: BLE001 - must reach the client as an event
+        logger.exception("retrieval failed", extra={"repo": request.repo})
         yield sse_event("error", {"message": "Retrieval failed", "detail": str(exc)})
         return
 
     retrieval_ms = int((time.perf_counter() - started) * 1000)
 
     if not results:
+        metrics.record_answer(refused=True, retrieval_ms=retrieval_ms, generation_ms=0, invalid_citations=0)
         yield sse_event("trace", {"sources": [], "retrieval_ms": retrieval_ms})
         yield sse_event(
             "done",
@@ -234,6 +291,7 @@ def ask_stream(request: AskRequest) -> Iterator[str]:
             chunks.append(delta)
             yield sse_event("token", {"text": delta})
     except Exception as exc:  # noqa: BLE001
+        logger.exception("generation failed", extra={"repo": request.repo})
         yield sse_event("error", {"message": "Generation failed", "detail": str(exc)})
         return
 
@@ -245,6 +303,24 @@ def ask_stream(request: AskRequest) -> Iterator[str]:
         text, results, repo_root=repo_root(request.repo, request.variant)
     )
     verification = answer.verification
+    invalid_citations = len(verification.fabricated_indices) if verification else 0
+
+    metrics.record_answer(
+        refused=answer.refused,
+        retrieval_ms=retrieval_ms,
+        generation_ms=generation_ms,
+        invalid_citations=invalid_citations,
+    )
+    logger.info(
+        "answer",
+        extra={
+            "repo": request.repo,
+            "refused": answer.refused,
+            "retrieval_ms": retrieval_ms,
+            "generation_ms": generation_ms,
+            "invalid_citations": invalid_citations,
+        },
+    )
 
     payload = AnswerOut(
         answer=answer.text,
@@ -268,7 +344,7 @@ def ask_stream(request: AskRequest) -> Iterator[str]:
     yield sse_event("done", payload.model_dump())
 
 
-@app.post("/ask")
+@app.post("/api/ask")
 async def ask(request: AskRequest) -> StreamingResponse:
     """Stream an answer: trace, then tokens, then the verified result.
 
@@ -299,3 +375,15 @@ async def ask(request: AskRequest) -> StreamingResponse:
             "X-Accel-Buffering": "no",  # stop nginx buffering the stream
         },
     )
+
+
+# Serves the built SPA from the same process/origin in production, so there is
+# one Docker image, one deploy, and no CORS to configure. Registered last so
+# every /api, /health, and /metrics route above still wins first — this mount
+# only catches what nothing else matched. Absent in local dev (no `web/dist`
+# until `npm run build` has been run), where Vite's own dev server serves the UI.
+_frontend_dist = Path(__file__).resolve().parent.parent / "web" / "dist"
+if _frontend_dist.is_dir():
+    from fastapi.staticfiles import StaticFiles
+
+    app.mount("/", StaticFiles(directory=_frontend_dist, html=True), name="frontend")

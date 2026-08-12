@@ -26,9 +26,11 @@ function location(source: Source): string {
 /**
  * Turn the rank map into a readable explanation.
  *
- * This is the part that stops the system being a black box: a chunk can rank 1st
- * among code but 15th overall, and that is exactly why stratified retrieval finds
- * it. Showing the per-list ranks makes that visible instead of implied.
+ * A chunk can rank 1st among code but 15th overall, and that gap is exactly why
+ * stratified retrieval finds it. This detail is real evidence, not noise — but
+ * it's also implementation vocabulary a first-time visitor hasn't been given, so
+ * it renders behind a per-source disclosure (see `<details>` below) rather than
+ * always-on.
  */
 function why(source: Source): string {
   const entries = Object.entries(source.ranks);
@@ -63,26 +65,29 @@ export function SourceList({
         if (activeIndex === source.index) classes.push("active");
 
         return (
-          <button
-            key={source.index}
-            id={`${idPrefix}-${source.index}`}
-            className={classes.join(" ")}
-            onClick={() => onSelect(source)}
-          >
-            <div className="source-top">
-              <span className="source-idx">{source.index}</span>
-              <span className="source-path">{location(source)}</span>
-              {isCard && <span className="badge card">card</span>}
-              {!isCard && isCode && <span className="badge code">code</span>}
-              {check?.valid && <span className="badge verified">verified</span>}
-              {check && !check.valid && <span className="badge">unverified</span>}
-            </div>
-            <div className="source-meta">
-              {source.symbol && <span>{source.symbol}</span>}
-              <span className="why">{why(source)}</span>
-              <span>score {source.score.toFixed(4)}</span>
-            </div>
-          </button>
+          <div key={source.index} id={`${idPrefix}-${source.index}`} className={classes.join(" ")}>
+            <button className="source-main" onClick={() => onSelect(source)}>
+              <div className="source-top">
+                <span className="source-idx">{source.index}</span>
+                <span className="source-path">{location(source)}</span>
+                {isCard && <span className="badge card">card</span>}
+                {!isCard && isCode && <span className="badge code">code</span>}
+                {check?.valid && <span className="badge verified">verified</span>}
+                {check && !check.valid && <span className="badge">unverified</span>}
+              </div>
+              <div className="source-meta">
+                {source.symbol && <span>{source.symbol}</span>}
+                <span>score {source.score.toFixed(4)}</span>
+              </div>
+            </button>
+
+            {/* Collapsed by default: this is the retrieval-internals story from
+                the README, kept, just not forced on a first-time visitor. */}
+            <details className="source-details">
+              <summary>Show retrieval details</summary>
+              <div className="source-why">{why(source)}</div>
+            </details>
+          </div>
         );
       })}
     </div>

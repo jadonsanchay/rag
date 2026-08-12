@@ -10,6 +10,7 @@ user ("why did it search for *that*?"), so it is shown rather than hidden.
     event: done      answer, citations, message id
 """
 
+import logging
 import time
 from typing import Iterator, List, Optional
 
@@ -17,6 +18,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from starlette.concurrency import run_in_threadpool
 
+from api.metrics import metrics
 from api.schemas import (
     AnswerOut,
     ChatRequest,
@@ -29,6 +31,8 @@ from api.sse import sse_comment, sse_event
 from pipeline.conversation import QueryRewriter
 from pipeline.manifests import repo_root_for
 from pipeline.registry import get_registry
+
+logger = logging.getLogger("codebase_qa.api")
 
 router = APIRouter(prefix="/conversations", tags=["conversations"])
 
@@ -82,6 +86,7 @@ def chat_stream(conversation_id: str, request: ChatRequest) -> Iterator[str]:
     try:
         rewrite = get_rewriter().rewrite(request.question, history)
     except Exception as exc:  # noqa: BLE001 - degrade to the raw question
+        logger.exception("query rewrite failed", extra={"conversation_id": conversation_id})
         yield sse_event("error", {"message": "Rewrite failed", "detail": str(exc)})
         return
 
@@ -106,6 +111,7 @@ def chat_stream(conversation_id: str, request: ChatRequest) -> Iterator[str]:
         retriever = get_retriever(repo.name, repo.variant, request.mode)
         results = retriever.retrieve(rewrite.query, top_k=request.top_k)
     except Exception as exc:  # noqa: BLE001
+        logger.exception("retrieval failed", extra={"conversation_id": conversation_id})
         yield sse_event("error", {"message": "Retrieval failed", "detail": str(exc)})
         return
 
@@ -118,6 +124,7 @@ def chat_stream(conversation_id: str, request: ChatRequest) -> Iterator[str]:
 
     if not results:
         registry.add_message(conversation_id, "assistant", "", trace=[])
+        metrics.record_answer(refused=True, retrieval_ms=retrieval_ms, generation_ms=0, invalid_citations=0)
         yield sse_event(
             "done",
             AnswerOut(answer="", refused=True, timing_ms={"retrieval": retrieval_ms}).model_dump(),
@@ -134,6 +141,7 @@ def chat_stream(conversation_id: str, request: ChatRequest) -> Iterator[str]:
             chunks.append(delta)
             yield sse_event("token", {"text": delta})
     except Exception as exc:  # noqa: BLE001
+        logger.exception("generation failed", extra={"conversation_id": conversation_id})
         yield sse_event("error", {"message": "Generation failed", "detail": str(exc)})
         return
 
@@ -148,6 +156,25 @@ def chat_stream(conversation_id: str, request: ChatRequest) -> Iterator[str]:
         "assistant",
         answer.text,
         trace=[{"index": s["index"], "path": s["path"]} for s in sources],
+    )
+
+    invalid_citations = len(verification.fabricated_indices) if verification else 0
+    generation_ms = int((time.perf_counter() - generation_started) * 1000)
+    metrics.record_answer(
+        refused=answer.refused,
+        retrieval_ms=retrieval_ms,
+        generation_ms=generation_ms,
+        invalid_citations=invalid_citations,
+    )
+    logger.info(
+        "answer",
+        extra={
+            "conversation_id": conversation_id,
+            "refused": answer.refused,
+            "retrieval_ms": retrieval_ms,
+            "generation_ms": generation_ms,
+            "invalid_citations": invalid_citations,
+        },
     )
 
     payload = AnswerOut(
@@ -167,10 +194,7 @@ def chat_stream(conversation_id: str, request: ChatRequest) -> Iterator[str]:
         ],
         fabricated_indices=verification.fabricated_indices if verification else [],
         citation_summary=verification.summary() if verification else "",
-        timing_ms={
-            "retrieval": retrieval_ms,
-            "generation": int((time.perf_counter() - generation_started) * 1000),
-        },
+        timing_ms={"retrieval": retrieval_ms, "generation": generation_ms},
     ).model_dump()
     payload["message_id"] = message_id
     yield sse_event("done", payload)

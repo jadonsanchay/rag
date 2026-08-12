@@ -1,14 +1,18 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "data"
+# Overridable so a single mounted volume (e.g. a Fly.io volume) can cover the
+# vector store, lexical index, registry, and cloned repos together in one place.
+DATA_DIR = Path(os.environ.get("APP_DATA_DIR", BASE_DIR / "data"))
 PDF_DIR = DATA_DIR / "pdf_files"
 TEXT_DIR = DATA_DIR / "text_files"
 VECTOR_STORE_DIR = DATA_DIR / "vector_store"
 LEXICAL_INDEX_DIR = DATA_DIR / "lexical_index"
-# Cloned repos live OUTSIDE the project tree: a vendored pyproject.toml inside
-# it makes uv treat the clone as a local package source and rebuild the venv.
-REPOS_DIR = Path.home() / ".cache" / "codebase-qa" / "repos"
+# Cloned repos live under DATA_DIR (not the project tree): a vendored
+# pyproject.toml inside a clone would make uv treat it as a local package
+# source and rebuild the venv, so it must stay outside BASE_DIR either way.
+REPOS_DIR = DATA_DIR / "repos"
 EVAL_DIR = BASE_DIR / "eval"
 EVAL_RESULTS_DIR = EVAL_DIR / "results"
 

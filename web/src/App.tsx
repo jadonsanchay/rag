@@ -18,6 +18,12 @@ import { SourceViewer } from "./components/SourceViewer";
 const REFUSAL_TOKEN = "INSUFFICIENT_CONTEXT";
 const POLL_MS = 2000;
 const IN_PROGRESS = new Set(["queued", "cloning", "indexing"]);
+const EXAMPLE_QUESTIONS = [
+  "What does this project do?",
+  "How is the code organized?",
+  "Where does the main entry point live?",
+  "How is error handling done here?",
+];
 
 interface Turn {
   id: string;
@@ -170,7 +176,8 @@ export default function App() {
       <div className="masthead">
         <h1>Codebase Q&amp;A</h1>
         <span className="tagline-inline">
-          hybrid retrieval · verified citations · follow-ups rewritten before search
+          Ask questions about a codebase in plain English — every answer links back to the
+          exact file and line it came from.
         </span>
       </div>
 
@@ -187,10 +194,27 @@ export default function App() {
       {notice && <p className="error">{notice}</p>}
 
       {!repos.length && (
-        <p className="placeholder">
-          No repositories indexed yet. Paste a public GitHub URL above — it will be
-          cloned and indexed in the background.
-        </p>
+        <div className="landing">
+          <p className="lead">
+            Paste a public GitHub repository URL above. It gets cloned and indexed, then
+            you can ask questions about it in plain English and get answers with
+            citations back to the exact file and line they came from.
+          </p>
+          <ol className="how-it-works">
+            <li>
+              <strong>Retrieve</strong> — relevant code and docs are pulled from the repo
+              using both keyword and meaning-based search.
+            </li>
+            <li>
+              <strong>Generate</strong> — an answer is written from only that retrieved
+              material, with inline citations.
+            </li>
+            <li>
+              <strong>Verify</strong> — every citation is checked against the real file
+              before it's shown as verified.
+            </li>
+          </ol>
+        </div>
       )}
 
       {activeRepo && !activeRepo.ready && (
@@ -199,6 +223,16 @@ export default function App() {
             ? "This repository failed to index. Fix the URL or try another."
             : "Indexing… you can ask questions as soon as it is ready."}
         </p>
+      )}
+
+      {activeRepo?.ready && !turns.length && (
+        <div className="examples">
+          {EXAMPLE_QUESTIONS.map((q) => (
+            <button key={q} type="button" onClick={() => ask(q)}>
+              {q}
+            </button>
+          ))}
+        </div>
       )}
 
       <div className="transcript">

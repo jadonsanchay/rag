@@ -51,13 +51,15 @@ uv sync
 cp .env.example .env      # then add OPENAI_API_KEY
 ```
 
-Clone a repository to index (kept outside the project tree — a vendored
-`pyproject.toml` inside it makes uv treat the clone as a package source):
+Clone a repository to index. Repos added through the API/UI land under
+`data/repos/` by default (override with `APP_DATA_DIR`, which also relocates
+the vector store, lexical index, and registry — see **Deploy** below); for a
+manual CLI clone, anywhere on disk works:
 
 ```bash
-mkdir -p ~/.cache/codebase-qa/repos
+mkdir -p data/repos
 git clone --depth 1 --branch 0.115.0 \
-  https://github.com/fastapi/fastapi.git ~/.cache/codebase-qa/repos/fastapi
+  https://github.com/fastapi/fastapi.git data/repos/fastapi
 ```
 
 ## Usage
@@ -65,7 +67,7 @@ git clone --depth 1 --branch 0.115.0 \
 **Index** — walk, chunk, embed, and build both indexes:
 
 ```bash
-uv run python index_repo.py ~/.cache/codebase-qa/repos/fastapi \
+uv run python index_repo.py data/repos/fastapi \
   --include fastapi --include docs/en --variant astcode-cards
 ```
 
@@ -74,8 +76,8 @@ reproducible. FastAPI ships 26 translations of its docs and 701 near-duplicate
 tutorial snippets; indexing them floods the index with near-identical chunks.
 
 Any repo works, not just the sample. The manifest records where each indexed tree
-lives, so a repo outside the cache directory still resolves for citation
-verification and the source viewer:
+lives, so a repo outside `data/repos/` still resolves for citation verification
+and the source viewer:
 
 ```bash
 uv run python index_repo.py ~/code/my-typescript-app --variant ts
@@ -118,18 +120,24 @@ uv run uvicorn api.main:app --reload --port 8000
 
 | endpoint | purpose |
 |---|---|
-| `POST /repos` | add a public GitHub URL; clones and indexes in the background (202) |
-| `GET /repos/{id}` | poll the indexing stage: `queued → cloning → indexing → ready` |
-| `POST /repos/{id}/reindex` | re-clone and rebuild |
-| `DELETE /repos/{id}` | drop indexes, registry row, and the clone |
-| `POST /conversations` | start a thread against one repo |
-| `POST /conversations/{id}/messages` | SSE: `rewrite` → `trace` → `token`… → `done` |
-| `POST /ask` | stateless single question; SSE `trace` → `token`… → `done` |
-| `GET /repos` | indexed collections and their manifests |
-| `GET /file` | a slice of a source file, for the viewer behind a citation |
-| `GET /health` | liveness |
+| `POST /api/repos` | add a public GitHub URL; clones and indexes in the background (202) |
+| `GET /api/repos/{id}` | poll the indexing stage: `queued → cloning → indexing → ready` |
+| `POST /api/repos/{id}/reindex` | re-clone and rebuild |
+| `DELETE /api/repos/{id}` | drop indexes, registry row, and the clone |
+| `POST /api/conversations` | start a thread against one repo |
+| `POST /api/conversations/{id}/messages` | SSE: `rewrite` → `trace` → `token`… → `done` |
+| `POST /api/ask` | stateless single question; SSE `trace` → `token`… → `done` |
+| `GET /api/repos` | indexed collections and their manifests |
+| `GET /api/file` | a slice of a source file, for the viewer behind a citation |
+| `GET /health` | liveness (unprefixed — infra checks hit this directly) |
+| `GET /metrics` | in-process counters: requests, refusals, mean retrieval/generation ms |
 
-`/ask` emits the retrieval trace **before** generation starts. Measured warm:
+Everything the frontend calls lives under `/api`; `/health` and `/metrics` stay
+unprefixed since they're for infra/you, not the SPA. In production the same
+FastAPI process also serves the built SPA at `/` (see **Deploy**), so `/api/*`,
+`/health`, `/metrics`, and the app itself are all one origin, no CORS involved.
+
+`/api/ask` emits the retrieval trace **before** generation starts. Measured warm:
 trace at ~640ms, first token ~1.6s, complete ~3.0s — so the UI can render sources
 and let you start reading code roughly two seconds before the answer finishes.
 Retrieval and generation both block, so they are pumped on a worker thread;
@@ -164,6 +172,77 @@ The smoke test asserts the thing unit tests cannot: that sources are on screen
 *while the answer element does not yet exist*, that citation spans verify, that
 clicking a marker highlights its source, and that an unanswerable question is
 refused rather than answered.
+
+## Observability
+
+Structured JSON logs to stdout (stdlib `logging`, no new dependency —
+`pipeline/logging_config.py`), plus an in-process `GET /metrics`. Deliberately
+not a Prometheus/Grafana stack: nothing scrapes it, and standing one up would be
+theater for a single-instance project. If this runs somewhere with a real log
+viewer (Fly and Railway both show stdout), JSON lines are immediately useful
+there for free.
+
+What's logged, one line per event: every HTTP request (method, path, status,
+duration), every `/api/ask` and `/api/conversations/{id}/messages` answer
+(refused?, retrieval ms, generation ms, invalid-citation count), every ingest
+job's stage transitions and failures, and a full traceback for anything that
+raises inside a request.
+
+```bash
+curl localhost:8000/metrics
+# {"requests_total": 42, "requests_by_status": {"200": 40, "429": 2}, ...
+#  "answers_total": 12, "refusals_total": 1,
+#  "mean_retrieval_ms": 1840.2, "mean_generation_ms": 2310.5,
+#  "citation_invalid_total": 0}
+```
+
+Counters are in-memory and reset on restart — enough to answer "is this healthy
+right now," not a historical record.
+
+## Deploy
+
+One container serves both the API and the built frontend (`StaticFiles` mounted
+at `/` in `api/main.py`), so there's one image, one deploy, one URL, and no CORS
+to configure in production.
+
+```bash
+npm --prefix web run build        # -> web/dist, baked into the image below
+docker build -t codebase-qa .
+docker run -p 8000:8000 --env-file .env -v codebase_qa_data:/data codebase-qa
+```
+
+Deploying to [Fly.io](https://fly.io) (the `fly.toml` here targets it; any host
+with persistent disk works, since Chroma, SQLite, and cloned repos are all files):
+
+```bash
+flyctl apps create codebase-qa            # or edit fly.toml's app name first
+flyctl volumes create codebase_qa_data --size 3 --region iad
+flyctl secrets set OPENAI_API_KEY=sk-...
+flyctl deploy
+```
+
+**Before sharing the URL with anyone**, set a hard monthly spend cap on the
+OpenAI account in the [usage limits dashboard](https://platform.openai.com/settings/organization/limits) —
+five minutes, and the last line of defense if the application-level guards below
+have a bug. Everything else here reduces risk; that one bounds it.
+
+### Cost and abuse controls
+
+- **Per-IP rate limit** on `/api/ask`, `/api/conversations/{id}/messages`, and
+  `POST /api/repos` — the three endpoints that spend money (embeddings,
+  generation, or a full clone+index). Hand-rolled in-memory sliding window
+  (`api/ratelimit.py`, no new dependency), returns `429` with a plain message.
+  `RATE_LIMIT_PER_IP` (default 20) requests per `RATE_LIMIT_WINDOW_SECONDS`
+  (default 60).
+- **Global request ceiling** (`GLOBAL_REQUEST_CEILING`, default 2000) on the
+  same endpoints — one counter, resets on restart. Acceptable for a demo: a
+  restart is rare, not an exploitable reset-the-clock loophole in practice here.
+- **Ingest guards**, already enforced before any embedding spend happens:
+  `MAX_REPO_MB` (400 locally, 50 in `fly.toml`) and `MAX_INDEXED_FILES` (6000
+  locally, 2000 in `fly.toml`) — both env-overridable in
+  `pipeline/ingest_job.py`.
+- All four are environment variables, so the deployed instance can run tighter
+  than local dev without a code change — see the `[env]` block in `fly.toml`.
 
 ## Evaluation
 
@@ -209,7 +288,10 @@ pipeline/          library code
   registry.py        SQLite: indexed repos, their status, conversations
   ingest_job.py      clone + background indexing with guards
   conversation.py    rewrite follow-ups into standalone queries
+  logging_config.py  stdlib JSON logging to stdout
 api/               FastAPI + SSE
+  metrics.py         in-process counters behind GET /metrics
+  ratelimit.py       per-IP + global in-memory rate limiting
 web/               React + TypeScript SPA (Vite)
 eval/              golden set, harnesses, judge, RESULTS.md
 index_repo.py      build the indexes
@@ -230,4 +312,7 @@ query.py / ask.py  CLI
 - Re-indexing rebuilds from scratch; there is no incremental update.
 - Background jobs run in-process (FastAPI `BackgroundTasks`). Fine for one user;
   a restart mid-index leaves a repo stuck in `indexing`.
-- No auth. Public GitHub repos only, capped at 400MB and 6000 indexable files.
+- No auth. Public GitHub repos only, capped at `MAX_REPO_MB`/`MAX_INDEXED_FILES`
+  (400MB/6000 files locally, tighter in `fly.toml`). Rate limiting (see
+  **Deploy**) bounds request volume, not identity — anyone can still ask
+  questions, just not unboundedly.

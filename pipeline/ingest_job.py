@@ -9,6 +9,8 @@ git is invoked without a shell, and the clone is bounded by depth, timeout and a
 on-disk size check.
 """
 
+import logging
+import os
 import re
 import shutil
 import subprocess
@@ -20,6 +22,8 @@ from typing import Callable, Optional, Sequence
 from . import config
 from .registry import CLONING, FAILED, INDEXING, READY, get_registry
 
+logger = logging.getLogger("codebase_qa.ingest")
+
 # Only https GitHub URLs. Rejects ssh/git/file schemes, which could otherwise
 # reach the local filesystem or a private host.
 GITHUB_URL = re.compile(
@@ -28,8 +32,10 @@ GITHUB_URL = re.compile(
 )
 
 CLONE_TIMEOUT_SECONDS = 300
-MAX_REPO_MB = 400
-MAX_INDEXED_FILES = 6000
+# Env-overridable so the deployed instance (fly.toml) can run tighter caps
+# than local dev without a code change.
+MAX_REPO_MB = int(os.environ.get("MAX_REPO_MB", "400"))
+MAX_INDEXED_FILES = int(os.environ.get("MAX_INDEXED_FILES", "6000"))
 
 
 class IngestError(Exception):
@@ -247,18 +253,25 @@ def run_ingest(repo_id: str, url: Optional[str] = None) -> None:
             embedding_model=stats["embedding_model"],
             size_bytes=int(directory_size_mb(repo_path) * 1024 * 1024),
         )
-        print(
-            f"[ingest] {repo.name}: ready in {time.time() - started:.0f}s "
-            f"({stats['chunks']} chunks)"
+        logger.info(
+            "ingest ready",
+            extra={
+                "repo_id": repo_id,
+                "repo": repo.name,
+                "duration_s": round(time.time() - started, 1),
+                "chunks": stats["chunks"],
+            },
         )
     except IngestError as exc:
         registry.update_repo(repo_id, status=FAILED, stage=None, error=str(exc))
-        print(f"[ingest] {repo.name}: failed — {exc}")
+        logger.error(
+            "ingest failed", extra={"repo_id": repo_id, "repo": repo.name, "reason": str(exc)}
+        )
     except Exception as exc:  # noqa: BLE001 - never leave a job in limbo
         registry.update_repo(
             repo_id, status=FAILED, stage=None, error=f"{type(exc).__name__}: {exc}"
         )
-        print(f"[ingest] {repo.name}: crashed — {exc}")
+        logger.exception("ingest crashed", extra={"repo_id": repo_id, "repo": repo.name})
 
 
 def delete_repo_data(repo_id: str, remove_clone: bool = True) -> None:
