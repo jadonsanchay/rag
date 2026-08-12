@@ -379,11 +379,22 @@ async def ask(request: AskRequest) -> StreamingResponse:
 
 # Serves the built SPA from the same process/origin in production, so there is
 # one Docker image, one deploy, and no CORS to configure. Registered last so
-# every /api, /health, and /metrics route above still wins first — this mount
-# only catches what nothing else matched. Absent in local dev (no `web/dist`
+# every /api, /health, and /metrics route above still wins first — this catch-all
+# only runs for GETs nothing else matched. Absent in local dev (no `web/dist`
 # until `npm run build` has been run), where Vite's own dev server serves the UI.
+#
+# A plain StaticFiles mount isn't enough: the SPA now has a real client-side
+# route (/app, via react-router) with no matching file on disk, so a direct
+# load or refresh at that path must still get index.html — the router then
+# takes over in the browser. Real files (JS/CSS bundles, favicon) are served
+# as themselves; anything else falls back to index.html.
 _frontend_dist = Path(__file__).resolve().parent.parent / "web" / "dist"
 if _frontend_dist.is_dir():
-    from fastapi.staticfiles import StaticFiles
+    from fastapi.responses import FileResponse
 
-    app.mount("/", StaticFiles(directory=_frontend_dist, html=True), name="frontend")
+    @app.get("/{full_path:path}")
+    def serve_frontend(full_path: str) -> FileResponse:
+        candidate = (_frontend_dist / full_path).resolve()
+        if full_path and candidate.is_file() and candidate.is_relative_to(_frontend_dist):
+            return FileResponse(candidate)
+        return FileResponse(_frontend_dist / "index.html")

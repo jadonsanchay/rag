@@ -152,7 +152,9 @@ npm install
 npm run dev            # http://localhost:5173
 ```
 
-Paste a GitHub URL to index a repo, switch between indexed repos, then chat. Each
+`/` is a landing page explaining what the tool does; "Try it now" routes to `/app`
+(`react-router-dom`, the one new npm dependency in this session's work). Paste a
+GitHub URL to index a repo, switch between indexed repos, then chat. Each
 turn shows the streamed answer with clickable `[n]` citation markers, the sources
 with the trace explaining why each ranked (`lexical:code #3 · semantic:code #1`),
 and — for follow-ups — the standalone query the question was rewritten into. Click
@@ -165,7 +167,7 @@ fences, dangling backticks — and a parser flickers as tokens arrive.
 
 ```bash
 npx playwright install chromium
-npm run smoke          # 11 browser checks
+npm run smoke          # 12 browser checks
 ```
 
 The smoke test asserts the thing unit tests cannot: that sources are on screen
@@ -201,9 +203,12 @@ right now," not a historical record.
 
 ## Deploy
 
-One container serves both the API and the built frontend (`StaticFiles` mounted
-at `/` in `api/main.py`), so there's one image, one deploy, one URL, and no CORS
-to configure in production.
+One container serves both the API and the built frontend (`api/main.py`), so
+there's one image, one deploy, one URL, and no CORS to configure in production.
+The SPA has a real client-side route (`/` landing, `/app` the tool), so the
+fallback route serves real files as themselves and `index.html` for everything
+else — a direct load or refresh at `/app` still resolves; the router takes it
+from there.
 
 ```bash
 npm --prefix web run build        # -> web/dist, baked into the image below

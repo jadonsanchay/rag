@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   addRepo,
   createConversation,
@@ -38,6 +39,7 @@ interface Turn {
 }
 
 export default function App() {
+  const navigate = useNavigate();
   const [repos, setRepos] = useState<RepoStatus[]>([]);
   const [activeRepoId, setActiveRepoId] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
@@ -174,6 +176,9 @@ export default function App() {
   return (
     <div className="app">
       <div className="masthead">
+        <button className="masthead-back" onClick={() => navigate("/")} aria-label="Back to landing page">
+          ←
+        </button>
         <h1>Codebase Q&amp;A</h1>
         <span className="tagline-inline">
           Ask questions about a codebase in plain English — every answer links back to the
@@ -194,27 +199,10 @@ export default function App() {
       {notice && <p className="error">{notice}</p>}
 
       {!repos.length && (
-        <div className="landing">
-          <p className="lead">
-            Paste a public GitHub repository URL above. It gets cloned and indexed, then
-            you can ask questions about it in plain English and get answers with
-            citations back to the exact file and line they came from.
-          </p>
-          <ol className="how-it-works">
-            <li>
-              <strong>Retrieve</strong> — relevant code and docs are pulled from the repo
-              using both keyword and meaning-based search.
-            </li>
-            <li>
-              <strong>Generate</strong> — an answer is written from only that retrieved
-              material, with inline citations.
-            </li>
-            <li>
-              <strong>Verify</strong> — every citation is checked against the real file
-              before it's shown as verified.
-            </li>
-          </ol>
-        </div>
+        <p className="placeholder">
+          Paste a public GitHub repository URL above — it will be cloned and indexed
+          in the background.
+        </p>
       )}
 
       {activeRepo && !activeRepo.ready && (

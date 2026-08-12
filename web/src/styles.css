@@ -51,6 +51,17 @@ button:disabled { cursor: not-allowed; opacity: 0.5; }
   margin: 0;
   color: var(--secondary);
 }
+.masthead-back {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  line-height: 1;
+}
+.masthead-back:hover { border-color: var(--primary); color: var(--primary-dim); }
 .masthead .repo-chip {
   font: 12px var(--mono);
   color: var(--muted);
@@ -184,9 +195,7 @@ button:disabled { cursor: not-allowed; opacity: 0.5; }
 
 .placeholder { color: var(--muted); font-size: 14px; }
 
-.landing { max-width: 640px; margin: 8px 0 24px; }
-.landing .lead { color: var(--text); font-size: 15px; margin: 0 0 16px; }
-.landing .how-it-works {
+.how-it-works {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -194,13 +203,69 @@ button:disabled { cursor: not-allowed; opacity: 0.5; }
   flex-direction: column;
   gap: 10px;
 }
-.landing .how-it-works li {
+.how-it-works li {
   border-left: 2px solid var(--primary);
   padding: 2px 0 2px 14px;
   color: var(--muted);
   font-size: 14px;
 }
-.landing .how-it-works strong { color: var(--secondary); font-family: var(--display); font-size: 15px; }
+.how-it-works strong { color: var(--secondary); font-family: var(--display); font-size: 15px; }
+
+/* --- landing page -------------------------------------------------------- */
+
+.landing-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 64px 20px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.landing-hero { text-align: center; }
+.landing-hero h1 {
+  font: 48px var(--display);
+  font-weight: 400;
+  color: var(--secondary);
+  margin: 0 0 16px;
+}
+.landing-sub {
+  color: var(--muted);
+  font-size: 16px;
+  max-width: 520px;
+  margin: 0 auto 28px;
+}
+.landing-cta {
+  background: var(--secondary);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 32px;
+  font: 18px var(--display);
+}
+.landing-cta:hover { background: var(--secondary-hover); }
+
+.landing-steps { max-width: 480px; margin: 0 auto; }
+
+.landing-features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+@media (max-width: 700px) { .landing-features { grid-template-columns: 1fr; } }
+.landing-feature {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+.landing-feature h3 {
+  font: 16px var(--display);
+  font-weight: 400;
+  color: var(--secondary);
+  margin: 0 0 6px;
+}
+.landing-feature p { color: var(--muted); font-size: 13.5px; margin: 0; }
 
 /* --- verification bar --------------------------------------------------- */
 

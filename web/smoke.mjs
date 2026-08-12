@@ -26,6 +26,12 @@ page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
 
 await page.goto("http://127.0.0.1:5173/", { waitUntil: "networkidle" });
 check("app loads", (await page.title()) === "Codebase Q&A");
+check("landing page shown first", (await page.locator(".landing-cta").count()) > 0);
+await page.locator(".landing-cta").click();
+
+// Client-side navigation to /app, then the repo list fetch — both async, so wait
+// rather than count immediately (a bare count() right after the click races it).
+await page.waitForSelector(".repo-tab", { timeout: 10000 }).catch(() => {});
 check("repo tabs rendered from the registry", (await page.locator(".repo-tab").count()) > 0);
 
 // Target a known repo: "first ready tab" silently changes meaning as the
